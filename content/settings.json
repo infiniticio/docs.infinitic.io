@@ -1,0 +1,10 @@
+{
+  "title": "Infinitic documentation",
+  "url": "https://docs.infinitic.io",
+  "logo": {
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "github": "infiniticio/docs.infinitic.io",
+  "twitter": "@infiniticio"
+}
