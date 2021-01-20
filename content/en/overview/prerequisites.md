@@ -11,8 +11,6 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-## Installation
-
 To run Infinitic you need :
 
 - an Apache Pulsar cluster ([install](https://pulsar.apache.org/docs/en/standalone-docker/))
@@ -38,19 +36,6 @@ services:
       - "8080:8080"
       - "8081:8081"
 
-  # Pulsar Manager
-  dashboard:
-    image: apachepulsar/pulsar-manager:v0.2.0
-    ports:
-      - "9527:9527"
-      - "7750:7750"
-    depends_on:
-      - pulsar-standalone
-    links:
-      - pulsar-standalone
-    environment:
-      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
-
   # Redis storage for state persistence
   redis:
     image: redis:6.0-alpine
@@ -64,36 +49,3 @@ volumes:
   pulsarconf:
   redisdata:
 ```
-
-## Pulsar Manager Setup
-
-Optionally you may want to [install Pulsar Manager](https://github.com/apache/pulsar-manager), a web-based GUI management tool for managing and monitoring Pulsar.
-
-<alert>
-
-This section is here to help but is not specifically related to Infinitic. Please look at [Pulsar Manager](https://github.com/apache/pulsar-manager) website for a reference.
-
-</alert>
-
-Pulsar Manager will be available on [localhost:9527](http://localhost:9527). To be able to log in, do not forget to create an admin user (user = "admin", password = "apachepulsar") with:
-
-```bash
-CSRF_TOKEN=$(curl http://localhost:7750/pulsar-manager/csrf-token)
-curl \
-    -H "X-XSRF-TOKEN: $CSRF_TOKEN" \
-    -H "Cookie: XSRF-TOKEN=$CSRF_TOKEN;" \
-    -H 'Content-Type: application/json' \
-    -X PUT http://localhost:7750/pulsar-manager/users/superuser \
-    -d '{"name": "admin", "password": "apachepulsar", "description": "test", "email": "username@test.org"}'
-```
-
-To create an environment, choose a name (eg. "standalone") and provide the service url of Pulsar.
-
-**If you use Docker**, you need to provide an url accessible _from the Pulsar Manager container_. To obtain it, do
-
-```bash
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $pulsarName
-```
-
-where `$pulsarName` is the name of the Pulsar container (get it by `docker-compose ps`). you should obtain something like `172.18.0.2`.
-Then the service url to use for adding an environment is `http://172.18.0.2:8080`.

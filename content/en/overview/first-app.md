@@ -151,17 +151,51 @@ This command will:
 
 ## Run workers
 
-Now, we'll launch different services:
+Now, we'll launch different services
 
-- Run CarRental service: `./gradlew run --args configs/carRental.yml`
-- Run FlightBooking service: `./gradlew run --args configs/flightBooking.yml`
-- Run HotelBooking service: `./gradlew run --args configs/hotelBooking.yml`
-- Run BookingWorkflow service: `./gradlew run --args configs/bookingWorkflow.yml`
-- Run engines: `./gradlew run --args configs/engines.yml`
+### Run all services together
 
-> Note: if we want to start all services together, we can do `./gradlew run --args="configs/all.yml"`
+We may run all services within the same executable:
 
-**Those services can run from anywhere as soon as they have access to Pulsar** (and Redis for the last one). Those commands just set up and start an `InfiniticWorker` from the configuration files (both the one provided with the command line and `infinitic.yml`):
+```sh
+./gradlew run --args configs/all.yml
+```
+
+### Run all service individually
+
+Or **alternatively**, run all services independently one-by-one to simulate a distributed environment. _Those services can run from anywhere as soon as they have access to Pulsar_ (and Redis for the last one).
+
+- Run CarRental service:
+
+```sh
+./gradlew run --args configs/carRental.yml
+```
+
+- Run FlightBooking service:
+
+```sh
+./gradlew run --args configs/flightBooking.yml
+```
+
+- Run HotelBooking service:
+
+```sh
+./gradlew run --args configs/hotelBooking.yml
+```
+
+- Run BookingWorkflow service:
+
+```sh
+./gradlew run --args configs/bookingWorkflow.yml
+```
+
+- Run engines:
+
+```sh
+./gradlew run --args configs/engines.yml
+```
+
+All those commands just set up and start an `InfiniticWorker` from the provided configuration files (both the one provided with the command line and `infinitic.yml`):
 
 <code-group>
   <code-block label="Kotlin" active>
@@ -181,7 +215,13 @@ fun main(args: Array<String>) {
 
 ## Start A Booking Workflow
 
-Now that **all** our services are running, we can use a client to start a workflow: `./gradlew startWorkflow`
+Now that **all** our services are running, we can start a workflow through an InfiniticClient:
+
+```sh
+./gradlew startWorkflow
+```
+
+This command triggers:
 
 <code-group>
   <code-block label="Kotlin" active>
@@ -218,7 +258,7 @@ fun main() = runBlocking {
   </code-block>
 </code-group>
 
-In our terminal, we should see something like (assuming we've launched all services in the same terminal):
+Assuming we've launched all services together, we should see something like this, where the services are running:
 
 ```log
 CarRentalServiceFake     (4e00ee6c-0ab9-44b8-ab8c-41614efc8dc8): booking ...
@@ -231,23 +271,24 @@ CarRentalServiceFake     (4e00ee6c-0ab9-44b8-ab8c-41614efc8dc8): canceled
 BookingWorkflowImpl: book canceled
 ```
 
-In this example, both FlightBookingService and HotelBookingService failed, so the previous car rental was canceled.
+In the example above, both FlightBookingService and HotelBookingService failed, so the previous car rental was canceled.
 
 ## Failure Simulation
 
 ### Server Failures
 
-We can manually test some crash scenario:
+We can manually test some crash scenarios:
 
 - unexpectedly quit and restart some services
 - unexpectedly close Pulsar and restart it
+- unexpectedly close Redis and restart it
 
-We should verify that any ongoing workflows will automatically resume from where it stops!
+We should verify that any running workflows will automatically resume from where it stops!
 
-This is because workflows state and tasks state are automatically saved at each step. 
-And if this operation fails for any reason, the underlying message will be reprocessed.
+This illustrates one of Infinitic best features: crash resilience.
 
 ### Task Failures
+
 We can also test what happens in tasks when an exception is thrown, by uncommenting the lines below:
 
 <code-group>
@@ -292,4 +333,4 @@ class HotelBookingServiceFake : HotelBookingService {
 }
 ```
 
-The `getRetryDelay` method provides the delay to wait after an exception before triggering a new attempt (5 seconds here). 
+Here, the `getRetryDelay` method tells Infinitic to retry that task after 5 seconds in case of exceptions. Once the task eventually completed, the workflow will resume.
