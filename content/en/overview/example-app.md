@@ -1,5 +1,5 @@
 ---
-title: Our First App
+title: Example App
 description: ""
 position: 1.4
 category: "Overview"
@@ -13,9 +13,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 ## Description
 
-For this first app, we will showcase Infinitic capabilities by implementing a booking process combining a car rental, a flight and a hotel reservation.
-
-> Important: we require that all 3 bookings have to be successful together: if any of them fails, we should cancel the other bookings that were successful.
+For this first app, we will showcase Infinitic capabilities by implementing a booking process combining a car rental, a flight, and a hotel reservation. Moreover, *we require that all 3 bookings have to be successful together*: if any of them fails, we should cancel the other bookings that were successful.
 
 <img src="/first-app.png" class="light-img" width="1280" height="640" alt=""/>
 <img src="/first-app.png" class="dark-img" width="1280" height="640" alt=""/>
@@ -104,7 +102,7 @@ This `book` method:
 
 The code above is really all we need to build this workflow.
 
-To demonstrate that, **we will now run it.**
+To demonstrate that, we will now run it.
 
 ## Prerequisites
 
@@ -112,7 +110,7 @@ Make sure we have a running Pulsar cluster and a Redis database available (see [
 
 ## Installation
 
-Clone this repository locally:
+Clone the example repository locally:
 
 <code-group>
   <code-block label="Kotlin" active>
@@ -136,7 +134,7 @@ The configuration file `configs/infinitic.yml` should contain correct values for
 
 </alert>
 
-## Pulsar's Configuration
+## Pulsar Configuration
 
 _If it's the first time we use Infinitic with our Pulsar cluster_, we need to run:
 
@@ -147,13 +145,29 @@ _If it's the first time we use Infinitic with our Pulsar cluster_, we need to ru
 This command will:
 
 - create an `infinitic` Pulsar tenant (from `pulsar.tenant` value in `configs/infinitic.yml`)
-- create a `dev` namespace (from `pulsar.namespace` value in `configs/infinitic.yml`) with relevant options such as [deduplication enabled](https://pulsar.apache.org/docs/en/cookbooks-deduplication/), [partitioned topics](https://pulsar.apache.org/docs/en/concepts-messaging/#partitioned-topics), [schema enforced](https://pulsar.apache.org/docs/en/schema-get-started/) and retention [policies](https://pulsar.apache.org/docs/en/cookbooks-retention-expiry/).
+- create a `dev` namespace (from `pulsar.namespace` value in `configs/infinitic.yml`) with relevant options such as [deduplication enabled](https://pulsar.apache.org/docs/en/cookbooks-deduplication/), [partitioned topics](https://pulsar.apache.org/docs/en/concepts-messaging/#partitioned-topics), [schema enforced](https://pulsar.apache.org/docs/en/schema-get-started/) and [retention policies](https://pulsar.apache.org/docs/en/cookbooks-retention-expiry/).
 
 ## Run workers
 
-Now, we'll launch different services
+Now, we'll launch different services. The commands below just set up and start an `InfiniticWorker` from the provided configuration files (both the one provided with the command line and `infinitic.yml`):
 
-### Run all services together
+<code-group>
+  <code-block label="Kotlin" active>
+
+```kotlin
+package infinitic.example.kotlin.booking
+
+import io.infinitic.pulsar.InfiniticWorker
+
+fun main(args: Array<String>) {
+    InfiniticWorker.fromFile(*args, "configs/infinitic.yml").start()
+}
+```
+
+  </code-block>
+</code-group>
+
+### Run services all together
 
 We may run all services within the same executable:
 
@@ -161,9 +175,11 @@ We may run all services within the same executable:
 ./gradlew run --args configs/all.yml
 ```
 
-### Run all service individually
+Or **alternatively**, run all services independently one-by-one to simulate a distributed environment:
 
-Or **alternatively**, run all services independently one-by-one to simulate a distributed environment. _Those services can run from anywhere as soon as they have access to Pulsar_ (and Redis for the last one).
+### Run services individually
+
+Those services can run from anywhere as soon as they have access to Pulsar (and Redis for the last one).
 
 - Run CarRental service:
 
@@ -194,24 +210,6 @@ Or **alternatively**, run all services independently one-by-one to simulate a di
 ```sh
 ./gradlew run --args configs/engines.yml
 ```
-
-All those commands just set up and start an `InfiniticWorker` from the provided configuration files (both the one provided with the command line and `infinitic.yml`):
-
-<code-group>
-  <code-block label="Kotlin" active>
-
-```kotlin
-package infinitic.example.kotlin.booking
-
-import io.infinitic.pulsar.InfiniticWorker
-
-fun main(args: Array<String>) {
-    InfiniticWorker.fromFile(*args, "configs/infinitic.yml").start()
-}
-```
-
-  </code-block>
-</code-group>
 
 ## Start A Booking Workflow
 
