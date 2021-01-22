@@ -3,6 +3,7 @@ title: Prerequisites
 description: ""
 position: 1.3
 category: "Overview"
+fullscreen: true
 ---
 
 <alert type="info">
@@ -16,8 +17,7 @@ To run Infinitic you need :
 - an Apache Pulsar cluster ([install](https://pulsar.apache.org/docs/en/standalone-docker/))
 - a Redis database, to store tasks and workflow states ([install](https://redis.io/topics/introduction)).
 
-If you have Docker on your computer, you can simply run `docker-compose up` on this `docker-compose.yml` file
-(this installs also [Pulsar Manager](#pulsar-manager-setup)):
+If you have Docker on your computer, you can simply run `docker-compose up` on this `docker-compose.yml` file:
 
 ```yml
 services:
