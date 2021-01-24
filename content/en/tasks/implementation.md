@@ -50,6 +50,10 @@ A task is simply a method from a Java/Kolin class. When a TaskExecutor receives 
 - the parameters of the method (serialized)
 Then an 
 
+- must be public
+- must have a void constructor
+
+
 <alert type="warning">
 
 Task's class must have an empty constructor. 
