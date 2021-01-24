@@ -32,14 +32,43 @@ Make sure we have a running Pulsar cluster and a Redis database available (see [
 
 Create a new project within a new directory:
 
-```sh
-mkdir hello-world-app && cd hello-world-app && gradle init
+```bash
+mkdir hello-world && cd hello-world && gradle init
 ```
 
 Configure this project:
 
 <code-group>
-  <code-block label="Kotlin" active>
+ 
+  <code-block label="Java" active>
+
+```
+Select type of project to generate:
+  1: basic
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4] 2
+
+Select implementation language:
+  1: C++
+  2: Groovy
+  3: Java
+  4: Kotlin
+  5: Swift
+Enter selection (default: Java) [1..5] 3
+
+Select build script DSL:
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Kotlin) [1..2] 1
+
+Project name (default: hello-world):
+Source package (default: hello.world):
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```
 Select type of project to generate:
@@ -76,7 +105,28 @@ in our build gradle file, we add:
 - instruction to compile to Java 1.8
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```java[build.gradle]
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    // infinitic libraries
+    implementation "io.infinitic:infinitic-pulsar:0.1.+"
+    implementation "io.infinitic:infinitic-client:0.1.+"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kts[build.gradle.kts]
 repositories {
@@ -111,7 +161,14 @@ And install dependencies:
 Let's create a `tasks` directory:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```bash
+mkdir src/main/java/hello/world/tasks
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```bash
 mkdir src/main/kotlin/hello/world/tasks
@@ -123,7 +180,20 @@ mkdir src/main/kotlin/hello/world/tasks
 in which, we add `HelloWorldService` interface:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```java[src/main/main/hello/world/tasks/HelloWorldService.java]
+package hello.world.tasks;
+
+public interface HelloWorldService {
+    String sayHello(String name);
+
+    String addEnthusiasm(String str);
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/tasks/HelloWorldService.kt]
 package hello.world.tasks
@@ -141,7 +211,26 @@ interface HelloWorldService {
 and `HelloWorldServiceImpl` implementation:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```kotlin[src/main/java/hello/world/tasks/HelloWorldServiceImpl.java]
+package hello.world.tasks;
+
+public class HelloWorldServiceImpl implements HelloWorldService {
+    @Override
+    public String sayHello(String name) {
+        return "Hello " + ((name == null) ? "World" : name);
+    }
+
+    @Override
+    public String addEnthusiasm(String str) {
+        return str + "!";
+    }
+}
+```
+
+  </code-block> 
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/tasks/HelloWorldServiceImpl.kt]
 package hello.world.tasks
@@ -161,7 +250,14 @@ class HelloWorldServiceImpl : HelloWorldService {
 Let's create a `workflows` directory:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```bash
+mkdir src/main/java/hello/world/workflows
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```bash
 mkdir src/main/kotlin/hello/world/workflows
@@ -173,7 +269,22 @@ mkdir src/main/kotlin/hello/world/workflows
 in which, we add `HelloWorld` interface (all workflow interfaces must extend `io.infinitic.workflows.Workflow`):
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```kotlin[src/main/java/hello/world/workflows/HelloWorld.java]
+package hello.world.workflows;
+
+import io.infinitic.workflows.Workflow;
+
+import javax.annotation.Nullable;
+
+public interface HelloWorld extends Workflow {
+    String greet(@Nullable String name);
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/workflows/HelloWorld.kt]
 package hello.world.workflows
@@ -191,7 +302,30 @@ interface HelloWorld : Workflow {
 and `HelloWorldImpl` implementation (all workflow implementation must extend io.infinitic.workflows.AbstractWorkflow):
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```kotlin[src/main/java/hello/world/workflows/HelloWorldImpl.java]
+package hello.world.workflows;
+
+import hello.world.tasks.HelloWorldService;
+import io.infinitic.workflows.AbstractWorkflow;
+
+public class HelloWorldImpl extends AbstractWorkflow implements HelloWorld {
+    private final HelloWorldService helloWorldService = task(HelloWorldService.class);
+
+    @Override
+    public String greet(String name) {
+        String str = helloWorldService.sayHello(name);
+        String greeting =  helloWorldService.addEnthusiasm(str);
+        System.out.println(greeting);
+
+        return greeting;
+    }
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/workflows/HelloWorldImpl.kt]
 package hello.world.workflows
@@ -225,7 +359,36 @@ If we have not yet set up Pulsar for Infinitic, then it's time to do it.
 This can be done through this Setup file:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```kotlin[src/main/java/hello/world/Setup.java]
+package hello.world;
+
+import io.infinitic.pulsar.InfiniticAdmin;
+import org.apache.pulsar.client.admin.PulsarAdmin;
+import org.apache.pulsar.client.api.PulsarClientException;
+
+public class Setup {
+    public static void main(String[] args) throws PulsarClientException {
+        PulsarAdmin pulsarAdmin = PulsarAdmin
+                .builder()
+                .serviceHttpUrl("http://localhost:8080")
+                .build();
+
+        InfiniticAdmin infiniticAdmin = new InfiniticAdmin(
+                pulsarAdmin,
+                "infinitic",
+                "dev",
+                null
+        );
+        infiniticAdmin.init();
+        infiniticAdmin.close();
+    }
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/Setup.kt]
 package hello.world
@@ -252,7 +415,18 @@ fun main() {
 We can run it directly from our IDE, or add the `setupPulsar` Gradle task to our build file:
 
 <code-group>
-  <code-block label="Kotlin" active>
+   <code-block label="Java" active>
+
+```java[src/main/java/hello/world/build.gradle]
+task setupPulsar(type: JavaExec) {
+    group = "infinitic"
+    main = "hello.world.Setup"
+    classpath = sourceSets.main.runtimeClasspath
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kts[src/main/kotlin/hello/world/build.gradle.kts]
 task("setupPulsar", JavaExec::class) {
@@ -329,7 +503,22 @@ The configuration file `infinitic.yml` should contain correct values for Redis a
 Then, to create a worker, just replace the App file:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```java[src/main/java/hello/world/App.java]
+package hello.world;
+
+import io.infinitic.pulsar.InfiniticWorker;
+
+public class App {
+    public static void main(String[] args) {
+        InfiniticWorker.fromFile("infinitic.yml").start();
+    }
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/App.kt]
 package hello.world
@@ -359,7 +548,6 @@ SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
 ```
 
-
 <alert type="info">
 
 The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example <nuxt-link to="#simple-logger">Simple Logger</nuxt-link>) as a dependency in our Gradle build file. 
@@ -368,10 +556,9 @@ The SLF4J outputs are there because we do not have any logger yet in the app. To
 
 <alert type="warning">
 
-When coding, keep in mind that workers need to be restarted to account for any change.
+When coding, workers need to be restarted to account for any change.
 
 </alert>
-
 
 ## Start A Workflow
 
@@ -379,7 +566,31 @@ The easiest way to instantiate an InfiniticClient is to use a config file exposi
 Here, we already have the `infinitic.yml` file that we can reuse in a new `Client` file:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```kotlin[src/main/java/hello/world/Client.java]
+package hello.world;
+
+import hello.world.workflows.HelloWorld;
+        import io.infinitic.pulsar.InfiniticClient;
+
+        import javax.annotation.Nullable;
+
+public class Client {
+    public static void main(String[] args) {
+        InfiniticClient client = InfiniticClient.fromFile("infinitic.yml");
+        @Nullable String name = args.length>0 ? args[0] : null;
+        client.startWorkflowAsync(
+                HelloWorld.class,
+                w -> w.greet(name)
+        ).join();
+
+        client.close();
+    }
+}
+```
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/Client.kt]
 package hello.world
@@ -396,14 +607,24 @@ fun main(args: Array<String>) = runBlocking {
     client.close()
 }
 ```
-
   </code-block>
 </code-group>
 
 We can run it directly from our IDE, or add the `startWorkflow` Gradle task to our build file:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```kts[src/main/kotlin/hello/world/build.gradle.kts]
+task startWorkflow(type: JavaExec) {
+    group = "infinitic"
+    main = "hello.world.Client"
+    classpath = sourceSets.main.runtimeClasspath
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kts[src/main/kotlin/hello/world/build.gradle.kts]
 task("startWorkflow", JavaExec::class) {
@@ -422,7 +643,7 @@ and run it from the command line:
 ./gradlew startWorkflow --args Infinitic
 ```
 
-Congrats! We have run our first Infinitic workflow. Where our app/worker is running, we should see:
+Where our app/worker is running, we should see:
 
 ```bash
 > Task :run
@@ -432,9 +653,14 @@ SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further detail
 Hello Infinitic!
 ```
 
+Congrats! We have run our first Infinitic workflow.
+
 ## Debugging
 
+### Check List
+
 Here is a check-list when encountering issues:
+
 - Pulsar should be up and running
 - Redis should be up and running
 - `infinitic.yml` file:
@@ -454,7 +680,18 @@ If nothing happens when it should not, remember that workers won't quit if an ex
 To use `SimpleLogger` as logger in this app, just add the dependency in our Gradle build file:
 
 <code-group>
-  <code-block label="Kotlin" active>
+  <code-block label="Java" active>
+
+```java[build.gradle]
+dependencies {
+    ...
+    implementation "org.slf4j:slf4j-simple:1.7.+"
+    ...
+}
+```
+
+  </code-block>
+  <code-block label="Kotlin">
 
 ```kts[build.gradle.kts]
 dependencies {
@@ -472,7 +709,7 @@ and this `simplelogger.properties` example file in our `resources` directory:
 # SLF4J's SimpleLogger configuration file
 # Simple implementation of Logger that sends all enabled log messages, for all defined loggers, to System.err.
 
-# Log file
+# Uncomment this line to use a log file
 #org.slf4j.simpleLogger.logFile=infinitic.log
 
 # Default logging detail level for all instances of SimpleLogger.
@@ -493,3 +730,24 @@ org.slf4j.simpleLogger.showThreadName=false
 # Defaults to false.
 org.slf4j.simpleLogger.showShortLogName=true
 ```
+
+### Working Repository
+
+If we fail to chase a bug, we still can copy this working repository and look for the differences:
+
+<code-group>
+  <code-block label="Java" active>
+
+```bash
+git clone https://github.com/infiniticio/infinitic-example-java-hello-world
+```
+
+  </code-block>
+  <code-block label="Kotlin">
+
+```bash
+git clone https://github.com/infiniticio/infinitic-example-kotlin-hello-world
+```
+
+  </code-block>
+</code-group>
