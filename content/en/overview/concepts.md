@@ -3,7 +3,6 @@ title: Concepts
 description: ""
 position: 1.2
 category: "Overview"
-fullscreen: true
 ---
 
 <alert type="info">

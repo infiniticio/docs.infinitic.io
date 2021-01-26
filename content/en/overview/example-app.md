@@ -77,7 +77,6 @@ public class BookingWorkflowImpl extends AbstractWorkflow implements BookingWork
             HotelBookingCart hotelCart
     ) {
         // parallel bookings using car rental, flight and hotel services
-
         Deferred<CarRentalResult> carRental = async(carRentalService, t -> t.book(carRentalCart));
         Deferred<FlightBookingResult> flight = async(flightService, t -> t.book(flightCart));
         Deferred<HotelBookingResult> hotel = async(hotelService, t -> t.book(hotelCart));

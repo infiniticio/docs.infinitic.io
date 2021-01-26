@@ -3,7 +3,6 @@ title: Prerequisites
 description: ""
 position: 1.3
 category: "Overview"
-fullscreen: true
 ---
 
 <alert type="info">
