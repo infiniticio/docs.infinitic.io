@@ -3,7 +3,6 @@ title: Introduction
 description: ""
 position: 1.1
 category: "Overview"
-fullscreen: true
 ---
 
 <!-- <img src="/preview.png" class="light-img" width="1280" height="640" alt=""/>
