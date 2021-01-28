@@ -11,8 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-<img src="/concept-introduction.png" class="light-img" width="1280" height="640" alt=""/>
-<img src="/concept-introduction.png" class="dark-img" width="1280" height="640" alt=""/>
+<img src="/concept-tasks@2x.png" class="img" width="1280" height="640" alt=""/>
 
 ## Task Interface
 
@@ -20,7 +19,7 @@ When a client (or a workflow) dispatches a task, the information sent is:
 - a class name
 - a method name and its serialized parameters.
 
-This entirely describes the task to execute. That's why a client (or a workflow) only uses interfaces (and does not need to know any actual implementation).
+This entirely describes the task to execute. That's why a client (or a workflow) only uses interfaces and does not need to know an actual implementation.
 
 <alert type="warning">
 
@@ -56,7 +55,7 @@ interface HelloWorldService {
   </code-block>
 </code-group>
 
-For both tasks, the only parameter and the return value is a primitive (String), so they are <nuxt-link to="/tasks/serializability">serializable/deserializable</nuxt-link>. 
+For both tasks above, the only parameter and the return value is a primitive (String), so they are <nuxt-link to="/tasks/serializability">serializable/deserializable</nuxt-link>. 
 
 An Infinitic client can dispatch a task using this interface:
 
@@ -100,7 +99,7 @@ Here are two examples of task implementation, from our <nuxt-link to="/overview/
 <code-group>
   <code-block label="Java" active>
 
-```kotlin
+```java
 public class HelloWorldServiceImpl implements HelloWorldService {
     @Override
     public String sayHello(String name) {
