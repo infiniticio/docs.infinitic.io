@@ -1,7 +1,7 @@
 ---
 title: Serializability
 description: ""
-position: 2.2
+position: 2.5
 category: "Tasks"
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Serializability
 description: ""
-position: 3.2
+position: 3.3
 category: "Workflows"
 ---
 

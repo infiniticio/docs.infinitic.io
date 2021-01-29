@@ -1,7 +1,7 @@
 ---
 title: Running Workflows
 description: ""
-position: 3.4
+position: 3.2
 category: "Workflows"
 ---
 
@@ -29,14 +29,16 @@ Use `io.infinitic.pulsar.InfiniticWorker` to start a workflow executor:
 ```java
 InfiniticWorker.fromFile("infinitic.yml").start()
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 InfiniticWorker.fromFile("infinitic.yml").start()
 ```
+
 </code-block></code-group>
 
-Here is an example of a valid `infinitic.yml` file for running a task executor:
+Here is an example of a valid `infinitic.yml` file for running a workflow executor:
 
 ```yml
 pulsar:
@@ -53,12 +55,13 @@ workflows:
 
 ## Description
 
-Workflow executors are in charge of processing WorkflowTasks. 
+Workflow executors are in charge of processing WorkflowTasks.
 
 For each workflow name provided by the configuration, workflow executor:
-- starts a Pulsar consumer with a [shared subscription](https://pulsar.apache.org/docs/en/concepts-messaging/#shared) on the workflow-specific Pulsar topic. 
+
+- starts a Pulsar consumer with a [shared subscription](https://pulsar.apache.org/docs/en/concepts-messaging/#shared) on the workflow-specific Pulsar topic.
 - starts n threads in charge of processing. This number can be adjusted through the `concurrency` settings.
-- pulls messages from the workflow-specific Pulsar topic when a thread a available and send it to this thread for processing. Once completed, the Pulsar message is finally acknowledged. 
+- pulls messages from the workflow-specific Pulsar topic when a thread a available and send it to this thread for processing. Once completed, the Pulsar message is finally acknowledged.
 
 ## Recommandations
 
@@ -67,10 +70,10 @@ For each workflow name provided by the configuration, workflow executor:
 
 </alert>
 
-When deploying a workflow executor on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file. 
+When deploying a workflow executor on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file.
 
 <alert type="warning">
 
-When providing a name in the configuration file, this name MUST be unique among your different machines. 
+When providing a name in the configuration file, this name MUST be unique among your different machines.
 
 </alert>
