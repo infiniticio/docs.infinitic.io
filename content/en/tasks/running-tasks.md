@@ -1,7 +1,7 @@
 ---
 title: Running Tasks
 description: ""
-position: 2.6
+position: 2.2
 category: "Tasks"
 ---
 
@@ -11,7 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-As described [here](/references/architecture), Infinitic provides a worker implementation that can play 4 different roles, depending on its configuration:
+Infinitic provides a worker that can have [4 different roles](/references/architecture), depending on its configuration:
 
 - task engine
 - **task executor**
@@ -22,7 +22,7 @@ Task executors are in charge of processing tasks: they listen Pulsar for instruc
 
 ## Implementation
 
-To start a task executor, just do:
+Use `io.infinitic.pulsar.InfiniticWorker` to start a task executor:
 
 <code-group><code-block label="Java" active>
 
@@ -49,6 +49,7 @@ tasks:
   - name: example.booking.tasks.carRental.CarRentalService
     class: example.booking.tasks.carRental.CarRentalServiceFake
     concurrency: 5
+    shared: false
   - name: example.booking.tasks.flight.FlightBookingService
     class: example.booking.tasks.flight.FlightBookingServiceFake
     concurrency: 5
@@ -57,22 +58,28 @@ tasks:
     concurrency: 5
 ```
 
-## Description
+## Actions
 
-Task executors are in charge of processing tasks. 
+For each entry under the `tasks` section of the configuration, a task executor will:
+- start a Pulsar consumer with a [shared subscription](https://pulsar.apache.org/docs/en/concepts-messaging/#shared) on a Pulsar topic automatically created and dedicated to this task;
+- start n threads in charge of processings (this number is the `concurrency` settings - 1 by default);
+- pull messages from Pulsar as soon as a thread is available to process it. Once the processing completed, the Pulsar message is acknowledged, and the thread becomes available for another message.
 
-For each task name provided by the configuration, they start a Pulsar consumer with a shared subscription on a task-specific topic. The `concurrency` settings describes for each task how many [coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) are dedicated to the processing of this task. A message is pulled from the consumer once a coroutine is available to process it. The Pulsar message is finally ackowledged after completion (or failure) of the task. 
+## Recommandations
 
-<alert type="info">
+- Launching multiple task executors on the same machine is useless (increase the `concurrency` settings instead).
+- Launching a task executor on multiple machines is useful if you need to increase the throughput and the resilience:
 
-We do not need to launch multiple task executors on the same machine (increase the `concurrency` settings instead).
+    <alert type="info">
 
-But it makes sense to launch task executors on multiple machines. 
+    Task executors are stateless. They can be scaled horizontally.
 
-</alert>
+    </alert>
+
+When deploying a task executor on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file. 
 
 <alert type="warning">
 
-When deploying task executors on multiple machines, it may be convenient to add a name attribute on the configuration file. Make sure that this name is unique among your different machines.
+When providing a name in the configuration file, this name MUST be unique among your different machines. 
 
 </alert>

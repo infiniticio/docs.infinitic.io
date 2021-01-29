@@ -11,24 +11,18 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-<img src="/concept-introduction.png" class="light-img" width="1280" height="640" alt=""/>
-<img src="/concept-introduction.png" class="dark-img" width="1280" height="640" alt=""/>
+<img src="/concept-tasks@2x.png" class="img" width="1280" height="640" alt=""/>
 
 ## Task Interface
 
-When a client (or a workflow) dispatches a task, the information sent is:
+The information needed to dispatch a task are:
 - a class name
-- a method name and its serialized parameters.
+- a method name
+- the parameters of the method
 
-This entirely describes the task to execute. That's why a client (or a workflow) only uses interfaces (and does not need to know any actual implementation).
+To ensure that a client (or a workflow) provides the right number and type of parameters, it's convenient for clients (and workflow) to use the interface of the tasks they dispatch.
 
-<alert type="warning">
-
-Task parameters and return value must be <nuxt-link to="/tasks/serializability"> serializable/deserializable</nuxt-link>
-
-</alert>
-
-Here is an example of interface (from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app) describing the signatures of two tasks:
+Here is an example of task interface from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app:
 
 <code-group>
   <code-block label="Java" active>
@@ -56,8 +50,6 @@ interface HelloWorldService {
   </code-block>
 </code-group>
 
-For both tasks, the only parameter and the return value is a primitive (String), so they are <nuxt-link to="/tasks/serializability">serializable/deserializable</nuxt-link>. 
-
 An Infinitic client can dispatch a task using this interface:
 
 <code-group>
@@ -81,26 +73,37 @@ infiniticClient.startTask<HelloWorldService> { sayHello("Infinitic" }
   </code-block>
 </code-group>
 
-## Task Implementation
-
-When a [task executor](references/architecture) receives the instruction to run a task:
-- a class name
-- a method name and its serialized parameters.
-
-It instantiates the class registered with this name, deserializes the parameters, and executes the method with them.
+When a task is dispatched, the values of the method's parameters are serialized to be transported by Pulsar up to the [task executors](references/architecture). There, they will be deserialized to execute the method and the return value will be serialized and sent back to Pulsar. For this reason:
 
 <alert type="warning">
 
-Class containing tasks must be public and have an empty constructor.
+Task's methods parameters and return value must be <nuxt-link to="/tasks/serializability"> serializable and deserializable</nuxt-link>
 
 </alert>
 
-Here are two examples of task implementation, from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app:
+If method's parameters and return value are primitives - as in the exemple above (String) - then you can't have serialization issue. 
+
+## Task Implementation
+
+When a [task executor](references/architecture) receives the data to run a task:
+- a class name
+- a method name
+- the serialized parameters of the method
+
+it instantiates the class from its name, deserializes the parameters, and executes the method with them.
+
+<alert type="warning">
+
+Task's class must be public and have an empty constructor.
+
+</alert>
+
+Here is an example of task implementation, from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app:
 
 <code-group>
   <code-block label="Java" active>
 
-```kotlin
+```java
 public class HelloWorldServiceImpl implements HelloWorldService {
     @Override
     public String sayHello(String name) {

@@ -11,7 +11,9 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Infinitic considers that we [do NOT use exception in your tasks as control flow](https://dzone.com/articles/exceptions-as-controlflow-in-java). Any exception occurring is seen as a technical issue that can be transient and fixed by automatic retries or can necessitate a fix in the task implementation followed by a manual retry.
+Infinitic considers that we [do NOT use exception in your tasks as control flow](https://dzone.com/articles/exceptions-as-controlflow-in-java). Any exception occurring is seen as a technical issue that
+-  can be transient and fixed by automatic retries 
+- or can necessitate a fix in the implementation followed by a manual retry.
 
 <alert type="warning">
 
