@@ -13,7 +13,8 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 In some cases, we want to know more about the context of the execution of a task.
 
-Infinitic lets us inject a `TaskAttemptcontext` object in task implementation. To do so, 
+Infinitic lets us inject a `TaskAttemptcontext` object in task implementation. To do so,
+
 - add `infinitic-task-executor` dependency
 
   <code-group>
@@ -50,10 +51,11 @@ Infinitic lets us inject a `TaskAttemptcontext` object in task implementation. T
   public class MyTaskImpl implements MyTask {
       // injecting context
       TaskAttemptContext context;
-      
+
       ...
   }
   ```
+
     </code-block> 
     <code-block label="Kotlin">
 
@@ -65,20 +67,21 @@ Infinitic lets us inject a `TaskAttemptcontext` object in task implementation. T
       ..
   }
   ```
+
     </code-block>
   </code-group>
 
-  This property will be injected by the [task executor](/references/architecture) when instantiating the task.
+  This property will be injected by the [task executor](/overview/architecture) when instantiating the task.
 
 This context will contain the following data:
 
-| Name                      | Type      | Description |
-| ------------------------- | --------- | ----------- |
-| `taskId`                  | string    | the id of the task
-| `taskRetry`               | integer   | the number of times we manually retried this task
-| `taskAttemptId`           | string    | the id of the current task attempt
-| `taskAttemptRetry`        | integer   |  the number of times the task was automatically retried (reset to 0 after a manual retry)
-| `previousTaskAttemptError`| Exception | if any, the exception thrown during the previous attempt
-| `currentTaskAttemptError` | Exception | if any, the exception thrown during the current attempt
+| Name                       | Type      | Description                                                                              |
+| -------------------------- | --------- | ---------------------------------------------------------------------------------------- |
+| `taskId`                   | string    | the id of the task                                                                       |
+| `taskRetry`                | integer   | the number of times we manually retried this task                                        |
+| `taskAttemptId`            | string    | the id of the current task attempt                                                       |
+| `taskAttemptRetry`         | integer   | the number of times the task was automatically retried (reset to 0 after a manual retry) |
+| `previousTaskAttemptError` | Exception | if any, the exception thrown during the previous attempt                                 |
+| `currentTaskAttemptError`  | Exception | if any, the exception thrown during the current attempt                                  |
 
 <img src="/task-retries@2x.png" class="img" width="1280" height="640" alt=""/>

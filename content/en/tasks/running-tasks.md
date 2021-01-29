@@ -11,7 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Infinitic provides a worker that can have [4 different roles](/references/architecture), depending on its configuration:
+Infinitic provides a worker that can have [4 different roles](/overview/architecture), depending on its configuration:
 
 - task engine
 - **task executor**
@@ -29,11 +29,13 @@ Use `io.infinitic.pulsar.InfiniticWorker` to start a task executor:
 ```java
 InfiniticWorker.fromFile("infinitic.yml").start()
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 InfiniticWorker.fromFile("infinitic.yml").start()
 ```
+
 </code-block></code-group>
 
 Here is an example of a valid `infinitic.yml` file for running a task executor:
@@ -61,6 +63,7 @@ tasks:
 ## Actions
 
 For each entry under the `tasks` section of the configuration, a task executor will:
+
 - start a Pulsar consumer with a [shared subscription](https://pulsar.apache.org/docs/en/concepts-messaging/#shared) on a Pulsar topic automatically created and dedicated to this task;
 - start n threads in charge of processings (this number is the `concurrency` settings - 1 by default);
 - pull messages from Pulsar as soon as a thread is available to process it. Once the processing completed, the Pulsar message is acknowledged, and the thread becomes available for another message.
@@ -72,14 +75,14 @@ For each entry under the `tasks` section of the configuration, a task executor w
 
     <alert type="info">
 
-    Task executors are stateless. They can be scaled horizontally.
+  Task executors are stateless. They can be scaled horizontally.
 
     </alert>
 
-When deploying a task executor on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file. 
+When deploying a task executor on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file.
 
 <alert type="warning">
 
-When providing a name in the configuration file, this name MUST be unique among your different machines. 
+When providing a name in the configuration file, this name MUST be unique among your different machines.
 
 </alert>

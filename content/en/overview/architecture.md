@@ -45,5 +45,3 @@ Workflow executors are stateless workers. Their role is to process [workflowTask
 Workflow engines are stateful workers. Its role is to maintain the state of each workflow instance up to its completion or cancellation
 
 
-
-

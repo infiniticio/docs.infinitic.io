@@ -11,7 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Infinitic provides a worker that can have [4 different roles](/references/architecture), depending on its configuration:
+Infinitic provides a worker that can have [4 different roles](/overview/architecture), depending on its configuration:
 
 - **task engine**
 - task executor
@@ -27,11 +27,13 @@ Use `io.infinitic.pulsar.InfiniticWorker` to start a task engine:
 ```java
 InfiniticWorker.fromFile("infinitic.yml").start()
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 InfiniticWorker.fromFile("infinitic.yml").start()
 ```
+
 </code-block></code-group>
 
 Here is an example of a valid `infinitic.yml` file for running a task engine:
@@ -62,10 +64,10 @@ The configuration file is straight-forward. The `consumers` number describes how
 - Launching multiple task engines on the same machine is useless (increase the `consumers` settings instead).
 - Launching a task engine on multiple machines is useful if you need to increase the throughput and the resilience
 
-When deploying a task engine on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file. 
+When deploying a task engine on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file.
 
 <alert type="warning">
 
-When providing a name in the configuration file, this name MUST be unique among your different machines. 
+When providing a name in the configuration file, this name MUST be unique among your different machines.
 
 </alert>

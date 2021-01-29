@@ -11,7 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Infinitic provides a worker that can have [4 different roles](/references/architecture), depending on its configuration:
+Infinitic provides a worker that can have [4 different roles](/overview/architecture), depending on its configuration:
 
 - task engine
 - task executor

@@ -6,5 +6,6 @@
     "dark": "/logo-dark.png"
   },
   "github": "infiniticio/docs.infinitic.io",
-  "twitter": "@infiniticio"
+  "twitter": "@infiniticio",
+  "defaultDir": ""
 }

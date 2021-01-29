@@ -12,21 +12,21 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 </alert>
 
 Infinitic considers that we [do NOT use exception in your tasks as control flow](https://dzone.com/articles/exceptions-as-controlflow-in-java). Any exception occurring is seen as a technical issue that
--  can be transient and fixed by automatic retries 
+
+- can be transient and fixed by automatic retries
 - or can necessitate a fix in the implementation followed by a manual retry.
 
 <alert type="warning">
 
-Don't forget to add a Logger in [workers](/references/architecture). Otherwise, no error will show up. 
+Don't forget to add a Logger in [workers](/overview/architecture). Otherwise, no error will show up.
 
 For an example, see our [Hello World](/overview/hello-world#simple-logger) app.
 
 </alert>
 
+## Retry Task Automatically
 
-##  Retry Task Automatically
-When an error occurs during task processing, the [task executor](/references/architecture) will catch it and check the existence of a `getRetryDelay` method. If it exists, Infinitic will retry the task after the delay provided.
-
+When an error occurs during task processing, the [task executor](/overview/architecture) will catch it and check the existence of a `getRetryDelay` method. If it exists, Infinitic will retry the task after the delay provided.
 
 <code-group>
   <code-block label="Java" active>
@@ -44,6 +44,7 @@ public class CarRentalServiceImpl implements CarRentalService {
     }
 }
 ```
+
   </code-block> 
   <code-block label="Kotlin">
 
@@ -58,6 +59,7 @@ class CarRentalServiceFake : CarRentalService {
     fun getRetryDelay() = 5F
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -70,7 +72,7 @@ Of course, more sophisticated policy can be implemented using [task context](/ta
 public class CarRentalServiceImpl implements CarRentalService {
     // injecting context
     TaskAttemptContext context;
-    
+
     @Override
     public CarRentalResult book(CarRentalCart cart) {
         ...
@@ -87,6 +89,7 @@ public class CarRentalServiceImpl implements CarRentalService {
     }
 }
 ```
+
   </code-block> 
   <code-block label="Kotlin">
 
@@ -110,6 +113,7 @@ class CarRentalServiceFake : CarRentalService {
     }
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -119,9 +123,6 @@ class CarRentalServiceFake : CarRentalService {
 
 </alert>
 
-
-
 ## Retry Task Manually
 
 Description to come.
-
