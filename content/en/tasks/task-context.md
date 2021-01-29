@@ -81,5 +81,4 @@ This context will contain the following data:
 | `previousTaskAttemptError`| Exception | if any, the exception thrown during the previous attempt
 | `currentTaskAttemptError` | Exception | if any, the exception thrown during the current attempt
 
-<img src="/task-retries.png" class="light-img" width="1280" height="640" alt=""/>
-<img src="/task-retries.png" class="dark-img" width="1280" height="640" alt=""/>
+<img src="/task-retries@2x.png" class="img" width="1280" height="640" alt=""/>

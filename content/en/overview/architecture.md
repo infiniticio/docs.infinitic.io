@@ -1,8 +1,8 @@
 ---
 title: Architecture
 description: ""
-position: 4.1
-category: "References"
+position: 1.6
+category: "Overview"
 ---
 
 <alert type="info">
@@ -11,14 +11,9 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-
-
 Let's dive deeper into Infinitic [event-based 's architecture](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c):
 
-<img src="/concept-architecture@2x.png" class="light-img" width="1280" height="640" alt=""/>
-<img src="/concept-architecture@2x.png" class="dark-img" width="1280" height="640" alt=""/>
-
-
+<img src="/concept-architecture@2x.png" class="img" width="1280" height="640" alt=""/>
 
 ## Clients
 
@@ -47,7 +42,7 @@ Task engines are stateful workers. Their role are:
 Workflow executors are stateless workers. Their role is to process [workflowTasks](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c), that are special tasks deciding what should be done next for a given workflow instance
 
 ## Workflow Engine
-Workflow engines are stateful workers. Its role is to maintain the state of each workflow instance, up to its completion or cancellation
+Workflow engines are stateful workers. Its role is to maintain the state of each workflow instance up to its completion or cancellation
 
 
 

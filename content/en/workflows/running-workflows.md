@@ -11,14 +11,14 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Infinitic provides a worker implementation that can play [4 different roles](/references/architecture), depending on its configuration:
+Infinitic provides a worker that can have [4 different roles](/references/architecture), depending on its configuration:
 
 - task engine
 - task executor
 - workflow engine
 - **workflow executor**
 
-Workflow executors are in charge of processing workflowTasks: they listen Pulsar for instructions, process workflowTasks, and send serialized return value back to Pulsar.
+Workflow executors are in charge of processing workflowTasks: they listen to Pulsar for instructions, process workflowTasks, and send serialized return value back to Pulsar.
 
 ## Implementation
 
