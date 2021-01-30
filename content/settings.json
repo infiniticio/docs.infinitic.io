@@ -1,9 +1,9 @@
 {
-  "title": "Infinitic documentation",
+  "title": "Infinitic",
   "url": "https://docs.infinitic.io",
   "logo": {
-    "light": "/logo-light.png",
-    "dark": "/logo-dark.png"
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
   },
   "github": "infiniticio/docs.infinitic.io",
   "twitter": "@infiniticio",
