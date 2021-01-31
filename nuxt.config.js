@@ -37,5 +37,14 @@ export default theme({
         href: '/favicons/site.webmanifest'
       }
     ],
+    title: "Infinitic Documentation",
+    meta: [
+      {
+        hid: "description",
+        name: "description",
+        content:
+          "Infinitic is a framework based on Apache Pulsar that considerably eases building asynchronous distributed apps. In particular, Infinitic is very good at orchestrating workflows.",
+      }
+    ]
   }
 })
