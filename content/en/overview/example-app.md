@@ -339,11 +339,13 @@ public class Client {
         FlightBookingCart flightCart = new FlightBookingCart(getId());
         HotelBookingCart hotelCart = new HotelBookingCart(getId());
 
-        // starting a workflow
-        client.startWorkflowAsync(
-                BookingWorkflow.class,
+        // create a stub from BookingWorkflow interface
+        BookingWorkflow bookingWorkflow = client.workflow(BookingWorkflow.class);
+        // dispatch a workflow
+        client.async(
+                bookingWorkflow, 
                 w -> w.book(carRentalCart, flightCart, hotelCart)
-        ).join();
+        );
 
         // closing underlying PulsarClient
         client.close();
@@ -370,7 +372,6 @@ import kotlinx.coroutines.runBlocking
 import java.util.UUID
 
 fun main() = runBlocking {
-
     // instantiate Infinitic client based on infinitic.yml config file
     val client = InfiniticClient.fromFile("configs/infinitic.yml")
 
@@ -379,8 +380,10 @@ fun main() = runBlocking {
     val flightCart = FlightBookingCart(getId())
     val hotelCart = HotelBookingCart(getId())
 
-    // starting a workflow
-    client.startWorkflow<BookingWorkflow> { book(carRentalCart, flightCart, hotelCart) }
+    // create a stub from BookingWorkflow interface
+    val bookingWorkflow = client.workflow<BookingWorkflow>()
+    // dispatch a workflow
+    client.async(bookingWorkflow) { book(carRentalCart, flightCart, hotelCart) }
 
     // closing underlying PulsarClient
     client.close()

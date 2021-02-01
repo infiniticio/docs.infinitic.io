@@ -4,9 +4,6 @@ description: ""
 position: 1
 ---
 
-<!-- <img src="/preview.png" class="light-img" width="1280" height="640" alt=""/>
-<img src="/preview-dark.png" class="dark-img" width="1280" height="640" alt=""/> -->
-
 <alert type="info">
 
 Infinitic is still in active development. Subscribe [here](https://infinitic.substack.com) to follow progress.

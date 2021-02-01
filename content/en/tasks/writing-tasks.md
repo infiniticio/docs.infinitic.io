@@ -56,18 +56,22 @@ An Infinitic client can dispatch a task using this interface:
   <code-block label="Java" active>
 
 ```java
-infiniticClient.startTaskAsync(
-    HelloWorldService.class,
-    t -> t.sayHello("Infinitic")
-);
-```
+// first create a stub from the HelloWorldService interface
+HelloWorldService helloWorldService = infiniticClient.task(HelloWorldService.class);
 
+// then use this stub to dispatch the desired task
+String id = infiniticClient.async(helloWorldService, t -> t.sayHello("Infinitic"));
+```
   </code-block>
   
   <code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.startTask<HelloWorldService> { sayHello("Infinitic" }
+// first create a stub from the HelloWorldService interface
+val helloWorldService = infiniticClient.task<HelloWorldService>()
+
+// then use this stub to dispatch the desired task
+val id = infiniticClient.async(helloWorldService) { sayHello("Infinitic") }
 ```
 
   </code-block>

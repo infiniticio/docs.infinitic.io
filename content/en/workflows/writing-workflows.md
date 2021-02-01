@@ -60,26 +60,25 @@ interface HelloWorld : Workflow {
 
 An Infinitic client can dispatch a workflow using this interface:
 
-<code-group>
-  <code-block label="Java" active>
+<code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.startWorkflowAsync(
-    HelloWorld.class,
-    t -> t.greet("Infinitic")
-);
-```
+// first create a stub from the HelloWorldService interface
+HelloWorld helloWorld = infiniticClient.workflow(HelloWorld.class);
 
-  </code-block>
-  
-  <code-block label="Kotlin">
+// then use this stub to dispatch the desired task
+String id = infiniticClient.async(helloWorld, t -> t.greet("Infinitic"));
+```
+</code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.startWorkflow<HelloWorld> { greet("Infinitic") }
-```
+// first create a stub from the HelloWorldService interface
+val helloWorld = infiniticClient.workflow<HelloWorld>()
 
-  </code-block>
-</code-group>
+// then use this stub to dispatch the desired task
+val id = infiniticClient.async(helloWorld) { greet("Infinitic") }
+```
+</code-block></code-group>
 
 When a workflow is dispatched, the values of the method's parameters are serialized to be transported by Pulsar up to the [workflow executors](references/architecture). There, they will be deserialized to execute the method. Finally, the return value will be serialized and sent back to Pulsar. For this reason:
 
@@ -324,11 +323,10 @@ task.a3()
 
 The return value of a `async` function is a `io.infinitic.workflows.Deferred<T>`, `T` being the type of the return value of the provided lambda.
 
-A `Deferred` has 3 useful methods in a workflow:
+A `Deferred` has 2 useful methods in a workflow:
 
-- `await()`: wait for the completion or cancellation of a deferred
-- `result()`: wait for the completion or cancellation of a deferred and get its result
-- `status()`: get the current status of a deferred (`ONGOING`, `COMPLETED`, `CANCELED`)
+- `await()`: waits for the completion (or cancellation) of the deferred and returns its result
+- `status()`: gets the current status of the deferred (`ONGOING`, `COMPLETED`, `CANCELED`)
 
 For example:
 
