@@ -65,7 +65,7 @@ import example.booking.tasks.flight.*;
 import example.booking.tasks.hotel.*;
 import io.infinitic.workflows.*;
 
-public class BookingWorkflowImpl extends AbstractWorkflow implements BookingWorkflow {
+public class BookingWorkflowImpl extends Workflow implements BookingWorkflow {
     private final CarRentalService carRentalService = task(CarRentalService.class);
     private final FlightBookingService flightService = task(FlightBookingService.class);
     private final HotelBookingService hotelService = task(HotelBookingService.class);
@@ -77,14 +77,15 @@ public class BookingWorkflowImpl extends AbstractWorkflow implements BookingWork
             HotelBookingCart hotelCart
     ) {
         // parallel bookings using car rental, flight and hotel services
+
         Deferred<CarRentalResult> carRental = async(carRentalService, t -> t.book(carRentalCart));
         Deferred<FlightBookingResult> flight = async(flightService, t -> t.book(flightCart));
         Deferred<HotelBookingResult> hotel = async(hotelService, t -> t.book(hotelCart));
 
         // wait and assign results
-        CarRentalResult carRentalResult = carRental.result(); // wait and assign result for CarRentalService::book
-        FlightBookingResult flightResult = flight.result(); // wait and assign result for FlightService::book method
-        HotelBookingResult hotelResult = hotel.result(); // wait and assign result for HotelService::book method
+        CarRentalResult carRentalResult = carRental.await(); // wait and assign result for CarRentalService::book
+        FlightBookingResult flightResult = flight.await(); // wait and assign result for FlightService::book method
+        HotelBookingResult hotelResult = hotel.await(); // wait and assign result for HotelService::book method
 
         // if at least one of the booking is failed than cancel all successful bookings
         if (carRentalResult == CarRentalResult.FAILURE ||
@@ -122,7 +123,7 @@ import example.booking.tasks.flight.*
 import example.booking.tasks.hotel.*
 import io.infinitic.workflows.*
 
-class BookingWorkflowImpl : AbstractWorkflow(), BookingWorkflow {
+class BookingWorkflowImpl : Workflow(), BookingWorkflow {
     private val carRentalService = task<CarRentalService>()
     private val flightService = task<FlightBookingService>()
     private val hotelService = task<HotelBookingService>()
@@ -138,9 +139,9 @@ class BookingWorkflowImpl : AbstractWorkflow(), BookingWorkflow {
         val hotel = async(hotelService) { book(hotelCart) }
 
         // wait and assign results
-        val carRentalResult = carRental.result() // wait and assign result for CarRentalService::book
-        val flightResult = flight.result() // wait and assign result for FlightService::book method
-        val hotelResult = hotel.result() // wait and assign result for HotelService::book method
+        val carRentalResult = carRental.await() // wait and assign result for CarRentalService::book
+        val flightResult = flight.await() // wait and assign result for FlightService::book method
+        val hotelResult = hotel.await() // wait and assign result for HotelService::book method
 
         // if at least one of the booking is failed than cancel all successful bookings
         if (carRentalResult == CarRentalResult.FAILURE ||
@@ -243,7 +244,8 @@ import io.infinitic.pulsar.InfiniticWorker;
 
 public class Worker {
     public static void main(String[] args) {
-        InfiniticWorker.fromFile(args[0], "configs/infinitic.yml").start();
+        String file = args.length > 0 ? args[0] :  "configs/all.yml";
+        InfiniticWorker.fromFile(file, "configs/infinitic.yml").start();
     }
 }
 ```
@@ -256,7 +258,11 @@ package example.booking
 import io.infinitic.pulsar.InfiniticWorker
 
 fun main(args: Array<String>) {
-    InfiniticWorker.fromFile(*args, "configs/infinitic.yml").start()
+    val file = when (args.size) {
+        0 -> "configs/all.yml"
+        else -> args[0]
+    }
+    InfiniticWorker.fromFile(file, "configs/infinitic.yml").start()
 }
 ```
   </code-block>

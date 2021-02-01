@@ -266,7 +266,7 @@ mkdir src/main/kotlin/hello/world/workflows
   </code-block>
 </code-group>
 
-in which, we add `HelloWorld` interface (all workflow interfaces must extend `io.infinitic.workflows.Workflow`):
+in which, we add `HelloWorld` interface:
 
 <code-group>
   <code-block label="Java" active>
@@ -274,11 +274,9 @@ in which, we add `HelloWorld` interface (all workflow interfaces must extend `io
 ```kotlin[src/main/java/hello/world/workflows/HelloWorld.java]
 package hello.world.workflows;
 
-import io.infinitic.workflows.Workflow;
-
 import javax.annotation.Nullable;
 
-public interface HelloWorld extends Workflow {
+public interface HelloWorld {
     String greet(@Nullable String name);
 }
 ```
@@ -289,35 +287,39 @@ public interface HelloWorld extends Workflow {
 ```kotlin[src/main/kotlin/hello/world/workflows/HelloWorld.kt]
 package hello.world.workflows
 
-import io.infinitic.workflows.Workflow
-
-interface HelloWorld : Workflow {
-    fun greet(name: String?) : String
+interface HelloWorld {
+    fun greet(name: String?): String
 }
 ```
 
   </code-block>
 </code-group>
 
-and `HelloWorldImpl` implementation (all workflow implementation must extend io.infinitic.workflows.AbstractWorkflow):
+and `HelloWorldImpl` implementation:
+
+<alert type="warning">
+
+all workflow implementation must extend `io.infinitic.workflows.Workflow`
+
+</alert>
 
 <code-group>
   <code-block label="Java" active>
 
-```kotlin[src/main/java/hello/world/workflows/HelloWorldImpl.java]
+```java[src/main/java/hello/world/workflows/HelloWorldImpl.java]
 package hello.world.workflows;
 
 import hello.world.tasks.HelloWorldService;
-import io.infinitic.workflows.AbstractWorkflow;
+import io.infinitic.workflows.Workflow;
 
-public class HelloWorldImpl extends AbstractWorkflow implements HelloWorld {
+public class HelloWorldImpl extends Workflow implements HelloWorld {
     private final HelloWorldService helloWorldService = task(HelloWorldService.class);
 
     @Override
     public String greet(String name) {
         String str = helloWorldService.sayHello(name);
         String greeting =  helloWorldService.addEnthusiasm(str);
-        System.out.println(greeting);
+        inline(() -> { System.out.println(greeting); return null; });
 
         return greeting;
     }
@@ -331,16 +333,15 @@ public class HelloWorldImpl extends AbstractWorkflow implements HelloWorld {
 package hello.world.workflows
 
 import hello.world.tasks.HelloWorldService
-import io.infinitic.workflows.AbstractWorkflow
-import io.infinitic.workflows.task
+import io.infinitic.workflows.Workflow
 
-class HelloWorldImpl : AbstractWorkflow(), HelloWorld {
+class HelloWorldImpl : Workflow(), HelloWorld {
     private val helloWorldService = task<HelloWorldService>()
 
     override fun greet(name: String?): String {
         val str = helloWorldService.sayHello(name)
         val greeting =  helloWorldService.addEnthusiasm(str)
-        println(greeting)
+        inline { println(greeting) }
 
         return  greeting
     }
