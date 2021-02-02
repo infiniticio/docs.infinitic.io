@@ -196,11 +196,11 @@ You should avoid also:
 - `inline`
 - `async`
 
-### `task` proxy
+### `task`
 
-When applied on a task interface, this function provides a proxy for this task. Syntaxicly, this proxy can be use as an implementation of the task. Functionally, this proxy dispatches the task or provides its return value, depending on the current workflow history.
+When applied on a task interface, this function provides a [stub](https://en.wikipedia.org/wiki/Method_stub) for this task. Syntaxicly, this stub can be used as an implementation of the task. Functionally, this stub dispatches the task or provides its return value, depending on the current workflow history.
 
-For example, let's consider this line (from the `greet` method of `HelloWorldImpl` above).
+For example, let's consider this line (from the `HelloWorldImpl` workflow above).
 
 <code-group>
   <code-block label="Java" active>
@@ -219,11 +219,13 @@ val str = helloWorldService.sayHello(name)
   </code-block>
 </code-group>
 
-Here `helloWorldService` is a proxy built from the `HelloWorldService` interface. When a workflow executor processes the `greet` method and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution there.
+Here `helloWorldService` is a stub of the `HelloWorldService` task. When a workflow executor processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
 
-After completing this task, a workflow executor will process the `greet` method again, but with an updated workflow history. When reaching this line, the proxy will - this time - provide the deserialized return value of the task, and the `greet` method will continue its execution.
+After completing this task, a workflow executor will process the workflow again, but with an updated workflow history. When reaching this line, the stub will - this time - provide the deserialized return value of the task, and the workflow will continue its execution.
 
-And so on. As we can guess now, the code below will guarantee that `sayHello` and `addEnthusiasm` tasks are processed sequentially, the second using the return value of the first one.
+And so on.
+
+As we can guess now, the code below will guarantee that `sayHello` and `addEnthusiasm` tasks are processed sequentially, the second using the return value of the first one.
 
 <code-group><code-block label="Java" active>
 
@@ -243,7 +245,7 @@ val greeting =  helloWorldService.addEnthusiasm(str)
 
 <img src="/hello-world@2x.png" class="img" width="1280" height="640" alt=""/>
 
-### `workflow` proxy
+### `workflow`
 
 The `workflow` function behaves as the `task` function but dispatches a (sub)workflow, instead of a task. When the (sub)workflow completes, the return value is sent back to the parent workflow.
 
@@ -253,9 +255,9 @@ The illustration below illustrates this, with a workflow of 3 sequential tasks:
 
 ### `inline`
 
-As stated above, being processed multiple times, workflows must NOT contain any action with side-effects or potentially changing values. In some cases, it can be tedious to write a task for a straightforward action, such as getting a random number or the current date.
+As stated above, workflow's code is processed repeatedly, so it must NOT contain any action with side-effects or whose value changes with time. When this is the case, we must put those actions within a task. For simple actions (as getting a random number or the current date), it can be tedious to do.
 
-The `inline` function provides an easy way to "inline" such a task. The provided lambda is processed by the workflow executor only the first time the instruction is reached. Another time, the returned value will be found directly from the workflow history.
+The `inline` function provides an easy way to "inline" such a task. The provided lambda is processed by the workflow executor only the first time. After that, the returned value will be found directly from the workflow history.
 
 <alert type="info">
 
@@ -263,7 +265,7 @@ There is no retry mechanism for inlined tasks, so the `inline` function should b
 
 </alert>
 
-Example of use to manipulate the current date in a workflow:
+For example, we can use the current date in a workflow like this:
 
 <code-group><code-block label="Java" active>
 

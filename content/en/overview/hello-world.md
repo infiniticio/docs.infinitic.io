@@ -351,7 +351,7 @@ class HelloWorldImpl : Workflow(), HelloWorld {
   </code-block>
 </code-group>
 
-Note the `task` function that creates a proxy from `HelloWorldService` interface. From a syntax point of view, this proxy can be used as `HelloWorldService` implementation. But instead of executing its methods, it sends the message to the workflow engine that a task execution is requested. That execution will be processed on task-executor workers. That's why nothing happens if we run a workflow without having deployed any worker.
+Note the `task` function that creates a stub from the `HelloWorldService` interface. From a syntax point of view, this stub can be used as an implementation of `HelloWorldService` . But instead of executing a method, it sends a message to Infinitic requesting this execution. That's why nothing happens if we run a workflow without having deployed any worker.
 
 ## Pulsar Configuration
 
