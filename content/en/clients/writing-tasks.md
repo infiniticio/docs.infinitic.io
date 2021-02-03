@@ -141,17 +141,13 @@ where
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.cancelAsync(helloWorld, output = null)
-
-infiniticClient.cancel(helloWorld, output = null)
+infiniticClient.cancel(helloWorld, output)
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.cancelAsync(helloWorld, output? = null)
-
-infiniticClient.cancel(helloWorld, output? = null)
+infiniticClient.cancel(helloWorld, output)
 ```
 
 </code-block></code-group>
@@ -161,16 +157,12 @@ infiniticClient.cancel(helloWorld, output? = null)
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.pauseAsync(helloWorld)
-
 infiniticClient.pause(helloWorld)
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.pauseAsync(helloWorld)
-
 infiniticClient.pause(helloWorld)
 ```
 
@@ -181,16 +173,12 @@ infiniticClient.pause(helloWorld)
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.resumeAsync(helloWorld)
-
 infiniticClient.resume(helloWorld)
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.resumeAsync(helloWorld)
-
 infiniticClient.resume(helloWorld)
 ```
 
@@ -220,7 +208,8 @@ infiniticClient.send(helloWorld, signal)
 
 ```java
 Deferred<Type> deferred = receive(Type.class)
-deferred.onAwait(() -> void)
+
+deferred.onReceive(() -> ...; return void;)
 
 Type type = deferred.await()
 ```
@@ -229,9 +218,9 @@ Type type = deferred.await()
 
 ```kotlin
 val deferred: Deferred<Type> = receive(Type.class)
-deferred.onAwait {
 
-}
+deferred.onReceive { ... }
+
 val type: Type = deferred.await()
 ```
 

@@ -125,4 +125,80 @@ class CarRentalServiceFake : CarRentalService {
 
 ## Retry Task Manually
 
-Description to come.
+To retry a task, we first need to create a stub for this existing task,
+using its `id`:
+
+<code-group><code-block label="Java" active>
+
+```java
+CarRentalService carRentalService = 
+    infiniticClient.task(CarRentalService.class, id);
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val carRentalService = infiniticClient.task<CarRentalService>(id)
+```
+
+</code-block></code-group>
+
+From there, we can retry this task:
+
+<code-group><code-block label="Java" active>
+
+```java
+infiniticClient.retry(carRentalService);
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+infiniticClient.retry(carRentalService)
+```
+
+</code-block></code-group>
+
+## Cancel Task Manually
+
+To cancel a task, we first need to create a stub for this existing task,
+using its `id`:
+
+<code-group><code-block label="Java" active>
+
+```java
+CarRentalService carRentalService = 
+    infiniticClient.task(CarRentalService.class, id);
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val carRentalService = infiniticClient.task<CarRentalService>(id)
+```
+
+</code-block></code-group>
+
+From there, we can cancel this task:
+
+<code-group><code-block label="Java" active>
+
+```java
+infiniticClient.cancel(carRentalService, output);
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+infiniticClient.cancel(carRentalService, output)
+```
+
+</code-block></code-group>
+
+`output` can be null, and is useful only for task in workflows. `output` will be the return value of this task inside the workflow.
+
+<alert type="danger">
+
+Be careful to provide a value of the correct return type for this task - there is no type checking here. A wrong value type will trigger an exception in the workflow.
+
+</alert>
