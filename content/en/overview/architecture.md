@@ -21,10 +21,10 @@ Infinitic Client let us start and cancel tasks or workflows, usually from your W
 
 ## State Storage
 
-The state of tasks and workflows are currently stored on Redis* by task and workflow engines respectively. This storage is mainly used as a backup in case of failure of those engines. 
+The tasks and workflows' states are stored on Redis* by the task engines and the workflow engines. This storage is mainly used as a backup in case of failure of those engines. 
 
 <alert type="info">
-* To minimize the infrastructure overhead, we want to use Pulsar function states (powered by Bookkeeper Table Service) as a primary option for states' storage, instead of Redis. Unfortunately, this feature is not yet production-ready.
+* To minimize the infrastructure overhead, we envision using Pulsar function states (powered by Bookkeeper Table Service) as a primary option for states' storage, instead of Redis. Unfortunately, this feature is not yet production-ready in Pulsar.
 </alert>
 
 ## Task Executors

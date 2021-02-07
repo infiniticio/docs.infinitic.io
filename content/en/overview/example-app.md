@@ -228,7 +228,7 @@ _If it's the first time we use Infinitic with our Pulsar cluster_, we need to ru
 This command will:
 
 - create an `infinitic` Pulsar tenant (from `pulsar.tenant` value in `configs/infinitic.yml`)
-- create a `dev` namespace (from `pulsar.namespace` value in `configs/infinitic.yml`) with relevant options such as [deduplication enabled](https://pulsar.apache.org/docs/en/cookbooks-deduplication/), [partitioned topics](https://pulsar.apache.org/docs/en/concepts-messaging/#partitioned-topics), [schema enforced](https://pulsar.apache.org/docs/en/schema-get-started/) and [retention policies](https://pulsar.apache.org/docs/en/cookbooks-retention-expiry/).
+- create a `dev` Pulsar namespace (from `pulsar.namespace` value in `configs/infinitic.yml`) with relevant options such as [deduplication enabled](https://pulsar.apache.org/docs/en/cookbooks-deduplication/), [partitioned topics](https://pulsar.apache.org/docs/en/concepts-messaging/#partitioned-topics), [schema enforced](https://pulsar.apache.org/docs/en/schema-get-started/) and [retention policies](https://pulsar.apache.org/docs/en/cookbooks-retention-expiry/).
 
 ## Run workers
 

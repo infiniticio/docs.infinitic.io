@@ -345,7 +345,7 @@ Deferred<String> deferred = async(() -> {
 task.a2();
 task.a3();
 
-String o = deferred.result()
+String o = deferred.await()
 
 task.a4(o);
 ```
@@ -363,7 +363,7 @@ val deferred = async {
 task.a2()
 task.a3()
 
-val o = deferred.result()
+val o = deferred.await()
 
 task.a4(o);
 

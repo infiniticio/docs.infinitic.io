@@ -21,8 +21,8 @@ We'll show here how to build an "Hello World" app from scratch, with the followi
 
 The workflow `HelloWorld` will take a `name` string as input and return `"Hello $name!"` using sequentially 2 tasks run on distributed workers:
 
-- a `sayHello` task that takes a  `name` string as input and returns `"Hello $name"`
-- an `addEnthusiasm` task that takes a  `str` string as input and returns `"$str!"`
+- a `sayHello` task that takes a `name` string as input and returns `"Hello $name"`
+- an `addEnthusiasm` task that takes a `str` string as input and returns `"$str!"`
 
 ## Prerequisites
 
@@ -115,8 +115,8 @@ repositories {
 
 dependencies {
     // infinitic libraries
-    implementation "io.infinitic:infinitic-pulsar:0.1.+"
-    implementation "io.infinitic:infinitic-client:0.1.+"
+    implementation "io.infinitic:infinitic-pulsar:0.2.+"
+    implementation "io.infinitic:infinitic-client:0.2.+"
 }
 
 java {
@@ -138,8 +138,8 @@ dependencies {
     // needed by infinitic client (suspend functions)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.+")
     // infinitic libraries
-    implementation("io.infinitic:infinitic-pulsar:0.1.+")
-    implementation("io.infinitic:infinitic-client:0.1.+")
+    implementation("io.infinitic:infinitic-pulsar:0.2.+")
+    implementation("io.infinitic:infinitic-client:0.2.+")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -551,7 +551,7 @@ SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further detail
 
 <alert type="info">
 
-The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example <nuxt-link to="#simple-logger">Simple Logger</nuxt-link>) as a dependency in our Gradle build file. 
+The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example <nuxt-link to="#simple-logger">Simple Logger</nuxt-link>) as a dependency in our Gradle build file.
 
 </alert>
 
@@ -591,6 +591,7 @@ public class Client {
     }
 }
 ```
+
   </code-block>
   <code-block label="Kotlin">
 
@@ -612,6 +613,7 @@ fun main(args: Array<String>) = runBlocking {
     client.close()
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -672,7 +674,7 @@ Here is a check-list when encountering issues:
   - should expose correct values to access Pulsar and Redis
   - should have `name` and `class` that match interface names and implementation full names respectively of our task and workflows
   - should have at least 1 taskEngine consumer, 1 workflowEngine consumer
--  at least one worker should be running
+- at least one worker should be running
 
 <alert type="warning">
 
@@ -680,8 +682,8 @@ If nothing happens when it should not, remember that workers won't quit if an ex
 
 </alert>
 
-
 ### Simple Logger
+
 To use `SimpleLogger` as logger in this app, just add the dependency in our Gradle build file:
 
 <code-group>
@@ -705,6 +707,7 @@ dependencies {
     ...
 }
 ```
+
   </code-block>
 </code-group>
 

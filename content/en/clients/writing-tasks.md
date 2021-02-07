@@ -20,13 +20,11 @@ Creation of a stub for a new workflow:
 ```java
 HelloWorld helloWorld = infiniticClient.workflow(HelloWorld.class, options, meta);
 ```
-
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 val helloWorld: HelloWorld = infiniticClient.workflow<HelloWorld>(options, meta);
 ```
-
 </code-block></code-group>
 
 ### Asynchrounsly
