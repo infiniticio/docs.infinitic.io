@@ -1,7 +1,7 @@
 ---
-title: Infinitic Client
+title: Others
 description: ""
-position: 2.1
+position: 2.3
 category: "Client"
 ---
 
@@ -11,53 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-## Workflow Execution
 
-Creation of a stub for a new workflow:
-
-<code-group><code-block label="Java" active>
-
-```java
-HelloWorld helloWorld = infiniticClient.workflow(HelloWorld.class, options, meta);
-```
-</code-block><code-block label="Kotlin">
-
-```kotlin
-val helloWorld: HelloWorld = infiniticClient.workflow<HelloWorld>(options, meta);
-```
-</code-block></code-group>
-
-### Asynchrounsly
-
-<code-group><code-block label="Java" active>
-
-```java
-infiniticClient.async(helloWorld, w -> w.greet("Infinitic"))
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-infiniticClient.async(helloWorld) { greet("Infinitic" }
-```
-
-</code-block></code-group>
-
-### Synchronously
-
-<code-group><code-block label="Java" active>
-
-```java
-helloWorld.greet("Infinitic");
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-helloWorld.greet("Infinitic");
-```
-
-</code-block></code-group>
 
 ## Run Method On Running workflow
 

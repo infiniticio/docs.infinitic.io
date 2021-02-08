@@ -13,35 +13,57 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 Let's dive deeper into Infinitic [event-based 's architecture](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c):
 
-<img src="/concept-architecture@2x.png" class="img" width="1280" height="640" alt=""/>
+<img src="/overview-architecture@2x.png" class="img" width="1280" height="640" alt=""/>
 
-## Clients
+## Infinitic Client
 
-Infinitic Client let us start and cancel tasks or workflows, usually from your Web App controllers.
+[Infinitic Client](/clients/infinitic-client) let us start and cancel tasks or workflows, usually from your Web App controllers.
 
-## State Storage
+## Infinitic Workers
 
-The tasks and workflows' states are stored on Redis* by the task engines and the workflow engines. This storage is mainly used as a backup in case of failure of those engines. 
+Infinitic provides a worker that can have 4 different roles, depending on its configuration:
 
-<alert type="info">
-* To minimize the infrastructure overhead, we envision using Pulsar function states (powered by Bookkeeper Table Service) as a primary option for states' storage, instead of Redis. Unfortunately, this feature is not yet production-ready in Pulsar.
+- task executor
+- workflow executor
+- task engine
+- workflow engine
+
+Those workers can be run separately or on the same binary (as for our [hello world app](/overview/hello-world)), depending on the configuration you choose. 
+
+
+<alert type="warning">
+
+At least a task executor and a task engine must be running to be able to process tasks. Add at least a workflow executor and a workflow engine to be able to run workflows.
+
 </alert>
 
-## Task Executors
+### Task Executor
 
-Task executors are stateless workers. Their role is to process tasks. 
+[Task executors](/task-executor/introduction) are stateless workers. Their role is to process our tasks.
 
-## Task Engine
+### Workflow Executor
 
-Task engines are stateful workers. Their role are:
-- to maintain the state of each task request, up to completion or cancellation, 
+[Workflow executors](/workflow-executor/introduction) are stateless workers. Their role is to process [workflowTasks](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c) (special tasks using our workflows to decide what should be done next, based on current workflow history).
+
+### Task Engine
+
+[Task engines](/task-engine/introduction) are stateful workers. Their roles are:
+
+- to maintain the state of each task request, up to completion or cancellation,
 - to manage retries and timeouts.
 
-## Workflow Executors
+The state of tasks are stored on Redis* by the task engines. This storage is mainly used as a backup in case of failure of those engines.
 
-Workflow executors are stateless workers. Their role is to process [workflowTasks](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c), that are special tasks deciding what should be done next for a given workflow instance
+### Workflow Engine
 
-## Workflow Engine
-Workflow engines are stateful workers. Its role is to maintain the state of each workflow instance up to its completion or cancellation
+[Workflow engines](/workflow-engine/introduction) are stateful workers. their role are:
+
+- to maintain the state of each workflow instance, up to its completion or cancellation,
+- to manage retries and timeouts.
+
+The state of workflows are stored on Redis* by the workflow engines. This storage is mainly used as a backup in case of failure of those engines.
 
 
+<alert type="info">
+*We envision using Pulsar function states as a primary option for states' storage, instead of Redis. Unfortunately, this feature is not yet production-ready in Pulsar.
+</alert>

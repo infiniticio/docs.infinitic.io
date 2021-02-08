@@ -1,8 +1,8 @@
 ---
 title: Task Failure
 description: ""
-position: 2.3
-category: "Tasks"
+position: 3.3
+category: "Task Executor"
 ---
 
 <alert type="info">
@@ -63,7 +63,7 @@ class CarRentalServiceFake : CarRentalService {
   </code-block>
 </code-group>
 
-Of course, more sophisticated policy can be implemented using [task context](/tasks/task-context). For exemple, implementing an exponential backoff strategy - widely used when calling APIs - can be done with:
+Of course, more sophisticated policy can be implemented using [task context](/task-executor/task-context). For exemple, implementing an exponential backoff strategy - widely used when calling APIs - can be done with:
 
 <code-group>
   <code-block label="Java" active>
