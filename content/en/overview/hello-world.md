@@ -21,8 +21,8 @@ We'll show here how to build an "Hello World" app from scratch, with the followi
 
 The workflow `HelloWorld` will take a `name` string as input and return `"Hello $name!"` using sequentially 2 tasks run on distributed workers:
 
-- a `sayHello` task that takes a  `name` string as input and returns `"Hello $name"`
-- an `addEnthusiasm` task that takes a  `str` string as input and returns `"$str!"`
+- a `sayHello` task that takes a `name` string as input and returns `"Hello $name"`
+- an `addEnthusiasm` task that takes a `str` string as input and returns `"$str!"`
 
 ## Prerequisites
 
@@ -115,8 +115,8 @@ repositories {
 
 dependencies {
     // infinitic libraries
-    implementation "io.infinitic:infinitic-pulsar:0.1.+"
-    implementation "io.infinitic:infinitic-client:0.1.+"
+    implementation "io.infinitic:infinitic-pulsar:0.2.+"
+    implementation "io.infinitic:infinitic-client:0.2.+"
 }
 
 java {
@@ -138,8 +138,8 @@ dependencies {
     // needed by infinitic client (suspend functions)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.+")
     // infinitic libraries
-    implementation("io.infinitic:infinitic-pulsar:0.1.+")
-    implementation("io.infinitic:infinitic-client:0.1.+")
+    implementation("io.infinitic:infinitic-pulsar:0.2.+")
+    implementation("io.infinitic:infinitic-client:0.2.+")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -266,7 +266,7 @@ mkdir src/main/kotlin/hello/world/workflows
   </code-block>
 </code-group>
 
-in which, we add `HelloWorld` interface (all workflow interfaces must extend `io.infinitic.workflows.Workflow`):
+in which, we add `HelloWorld` interface:
 
 <code-group>
   <code-block label="Java" active>
@@ -274,11 +274,9 @@ in which, we add `HelloWorld` interface (all workflow interfaces must extend `io
 ```kotlin[src/main/java/hello/world/workflows/HelloWorld.java]
 package hello.world.workflows;
 
-import io.infinitic.workflows.Workflow;
-
 import javax.annotation.Nullable;
 
-public interface HelloWorld extends Workflow {
+public interface HelloWorld {
     String greet(@Nullable String name);
 }
 ```
@@ -289,35 +287,39 @@ public interface HelloWorld extends Workflow {
 ```kotlin[src/main/kotlin/hello/world/workflows/HelloWorld.kt]
 package hello.world.workflows
 
-import io.infinitic.workflows.Workflow
-
-interface HelloWorld : Workflow {
-    fun greet(name: String?) : String
+interface HelloWorld {
+    fun greet(name: String?): String
 }
 ```
 
   </code-block>
 </code-group>
 
-and `HelloWorldImpl` implementation (all workflow implementation must extend io.infinitic.workflows.AbstractWorkflow):
+and `HelloWorldImpl` implementation:
+
+<alert type="warning">
+
+all workflow implementation must extend `io.infinitic.workflows.Workflow`
+
+</alert>
 
 <code-group>
   <code-block label="Java" active>
 
-```kotlin[src/main/java/hello/world/workflows/HelloWorldImpl.java]
+```java[src/main/java/hello/world/workflows/HelloWorldImpl.java]
 package hello.world.workflows;
 
 import hello.world.tasks.HelloWorldService;
-import io.infinitic.workflows.AbstractWorkflow;
+import io.infinitic.workflows.Workflow;
 
-public class HelloWorldImpl extends AbstractWorkflow implements HelloWorld {
+public class HelloWorldImpl extends Workflow implements HelloWorld {
     private final HelloWorldService helloWorldService = task(HelloWorldService.class);
 
     @Override
     public String greet(String name) {
         String str = helloWorldService.sayHello(name);
         String greeting =  helloWorldService.addEnthusiasm(str);
-        System.out.println(greeting);
+        inline(() -> { System.out.println(greeting); return null; });
 
         return greeting;
     }
@@ -331,16 +333,15 @@ public class HelloWorldImpl extends AbstractWorkflow implements HelloWorld {
 package hello.world.workflows
 
 import hello.world.tasks.HelloWorldService
-import io.infinitic.workflows.AbstractWorkflow
-import io.infinitic.workflows.task
+import io.infinitic.workflows.Workflow
 
-class HelloWorldImpl : AbstractWorkflow(), HelloWorld {
+class HelloWorldImpl : Workflow(), HelloWorld {
     private val helloWorldService = task<HelloWorldService>()
 
     override fun greet(name: String?): String {
         val str = helloWorldService.sayHello(name)
         val greeting =  helloWorldService.addEnthusiasm(str)
-        println(greeting)
+        inline { println(greeting) }
 
         return  greeting
     }
@@ -350,7 +351,7 @@ class HelloWorldImpl : AbstractWorkflow(), HelloWorld {
   </code-block>
 </code-group>
 
-Note the `task` function that creates a proxy from `HelloWorldService` interface. From a syntax point of view, this proxy can be used as `HelloWorldService` implementation. But instead of executing its methods, it sends the message to the workflow engine that a task execution is requested. That execution will be processed on task-executor workers. That's why nothing happens if we run a workflow without having deployed any worker.
+Note the `task` function that creates a stub from the `HelloWorldService` interface. From a syntax point of view, this stub can be used as an implementation of `HelloWorldService` . But instead of executing a method, it sends a message to Infinitic requesting this execution. That's why nothing happens if we run a workflow without having deployed any worker.
 
 ## Pulsar Configuration
 
@@ -550,7 +551,7 @@ SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further detail
 
 <alert type="info">
 
-The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example <nuxt-link to="#simple-logger">Simple Logger</nuxt-link>) as a dependency in our Gradle build file. 
+The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example <nuxt-link to="#simple-logger">Simple Logger</nuxt-link>) as a dependency in our Gradle build file.
 
 </alert>
 
@@ -571,24 +572,26 @@ Here, we already have the `infinitic.yml` file that we can reuse in a new `Clien
 ```kotlin[src/main/java/hello/world/Client.java]
 package hello.world;
 
+import hello.world.tasks.HelloWorldService;
 import hello.world.workflows.HelloWorld;
-        import io.infinitic.pulsar.InfiniticClient;
-
-        import javax.annotation.Nullable;
+import io.infinitic.pulsar.InfiniticClient;
+import javax.annotation.Nullable;
 
 public class Client {
     public static void main(String[] args) {
         InfiniticClient client = InfiniticClient.fromFile("infinitic.yml");
         @Nullable String name = args.length>0 ? args[0] : null;
-        client.startWorkflowAsync(
-                HelloWorld.class,
-                w -> w.greet(name)
-        ).join();
+
+        // create a stub from HelloWorld interface
+        HelloWorld helloWorld = client.workflow(HelloWorld.class);
+        // dispatch a workflow
+        client.async(helloWorld, w -> w.greet(name));
 
         client.close();
     }
 }
 ```
+
   </code-block>
   <code-block label="Kotlin">
 
@@ -602,11 +605,15 @@ import kotlinx.coroutines.runBlocking
 fun main(args: Array<String>) = runBlocking {
     val client = InfiniticClient.fromFile("infinitic.yml")
 
-    client.startWorkflow<HelloWorld> { greet(args.firstOrNull()) }
+    // create a stub from HelloWorld interface
+    val helloWorld = client.workflow<HelloWorld>()
+    // dispatch a workflow
+    client.async(helloWorld) { greet(args.firstOrNull()) }
 
     client.close()
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -667,7 +674,7 @@ Here is a check-list when encountering issues:
   - should expose correct values to access Pulsar and Redis
   - should have `name` and `class` that match interface names and implementation full names respectively of our task and workflows
   - should have at least 1 taskEngine consumer, 1 workflowEngine consumer
--  at least one worker should be running
+- at least one worker should be running
 
 <alert type="warning">
 
@@ -675,8 +682,8 @@ If nothing happens when it should not, remember that workers won't quit if an ex
 
 </alert>
 
-
 ### Simple Logger
+
 To use `SimpleLogger` as logger in this app, just add the dependency in our Gradle build file:
 
 <code-group>
@@ -700,6 +707,7 @@ dependencies {
     ...
 }
 ```
+
   </code-block>
 </code-group>
 

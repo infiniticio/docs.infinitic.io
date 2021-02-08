@@ -1,7 +1,7 @@
 ---
-title: Running Workflow Engine
+title: Workflow Engine
 description: ""
-position: 5.2
+position: 6.2
 category: "Workflow Engine"
 ---
 
@@ -11,34 +11,36 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Infinitic provides a worker that can have [4 different roles](/overview/architecture), depending on its configuration:
+<img src="/overview-workflow-engine@2x.png" class="img" width="1280" height="640" alt=""/>
 
-- task engine
-- task executor
-- **workflow engine**
-- workflow executor
 
-## Implementation
+Workflow engines are stateful workers. their role are:
+- to maintain the state of each workflow instance, up to its completion or cancellation,
+- to manage retries and timeouts.
+
+## Create a workflow engine
 
 Use `io.infinitic.pulsar.InfiniticWorker` to start a task executor:
 
 <code-group><code-block label="Java" active>
 
 ```java
-InfiniticWorker.fromFile("infinitic.yml").start()
+InfiniticWorker workflowEngine = InfiniticWorker.fromConfigFile("infinitic.yml");
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-InfiniticWorker.fromFile("infinitic.yml").start()
+val workflowEngine = InfiniticWorker.fromConfigFile("infinitic.yml")
 ```
 
 </code-block></code-group>
 
-Here is an example of a valid `infinitic.yml` file for running task engines:
+Here is an example of a valid `infinitic.yml` file for workflow engines:
 
 ```yml
+name: devWorkflowEngine
+
 pulsar:
   serviceUrl: pulsar://localhost:6650
   serviceHttpUrl: http://localhost:8080
@@ -59,15 +61,30 @@ workflowEngine:
 
 The configuration file is straight-forward. The `consumers` number describes how many Pulsar consumers will be created. Each of these consumers will have a dedicated thread to handle receiving messages. They are using a [key-shared](https://pulsar.apache.org/docs/en/concepts-messaging/#key_shared) subscription based on the workflow's id. This key-shared subscription guarantees that the state of a given workflow is always managed by the same thread, avoiding potential race conditions and allowing in-memory cache management.
 
-## Recommandations
-
-- Launching multiple workflow engines on the same machine is useless (increase the `consumers` settings instead).
-- Launching a workflow engine on multiple machines is useful if you need to increase the throughput and the resilience
-
-When deploying a workflow engine on multiple machines, it is convenient to add a name attribute on the `infinitic.yml` configuration file.
-
 <alert type="warning">
 
 When providing a name in the configuration file, this name MUST be unique among your different machines.
 
 </alert>
+
+## Start a workflow engine
+
+<code-group><code-block label="Java" active>
+
+```java
+workflowEngine.start();
+```
+</code-block><code-block label="Kotlin">
+
+```kotlin
+workflowEngine.start()
+```
+</code-block></code-group>
+
+Notes:
+- Do not start multiple workflow engines on the same machine, but increase the consumers settings instead.
+- Starting a workflow engine on multiple machines increases throughput and resilience
+
+## References: topics map
+
+<img src="/workflow-engine@2x.png" class="img" width="1280" height="640" alt=""/>
