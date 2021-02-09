@@ -89,5 +89,5 @@ val id = client.async(helloWorldService) { sayHello("Infinitic") }
 
 <img src="/client-async-task@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Here, the returned value is an internal unique `id` for the task. This `id` can be used, for example, to [manually retry a failed task](/tasks/task-failures#retry-task-manually).
+Here, the returned value is an internal unique `id` for the task. This `id` can be used, for example, to [manually retry a failed task](/task-executor/task-failures#retry-task-manually).
 

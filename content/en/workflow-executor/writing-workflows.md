@@ -22,7 +22,7 @@ Workflow's class must be public and have an empty constructor.
 
 <alert type="warning">
 
-Workflow's methods parameters and return value must be <nuxt-link to="/workflows/serializability"> serializable and deserializable</nuxt-link>
+Workflow's methods parameters and return value must be <nuxt-link to="/workflow-executor/serializability"> serializable and deserializable</nuxt-link>
 
 </alert>
 

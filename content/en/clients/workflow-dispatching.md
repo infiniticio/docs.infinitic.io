@@ -86,4 +86,4 @@ val id = client.async(helloWorldService) { sayHello("Infinitic") }
 
 <img src="/client-async-workflow@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Here, the returned value is an internal unique `id` for the workflow. This `id` can be used, for example, to [manually cancel a workflow](/tasks/task-failures#retry-task-manually).
+Here, the returned value is an internal unique `id` for the workflow. This `id` can be used, for example, to [manually cancel a workflow](/task-executor/task-failures#retry-task-manually).

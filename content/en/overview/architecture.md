@@ -17,7 +17,7 @@ Let's dive deeper into Infinitic [event-based 's architecture](https://medium.co
 
 ## Infinitic Client
 
-[Infinitic Client](/clients/infinitic-client) let us start and cancel tasks or workflows, usually from your Web App controllers.
+[Infinitic Client](/clients/introduction) let us start and cancel tasks or workflows, usually from your Web App controllers.
 
 ## Infinitic Workers
 

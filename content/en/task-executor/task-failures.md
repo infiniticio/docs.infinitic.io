@@ -119,7 +119,7 @@ class CarRentalServiceFake : CarRentalService {
 
 <alert type="info">
 
-[Task context](/tasks/task-context) contains more info that can be useful to fine-tune your retry strategy, such as the thrown exception or if the task was already manually retried.
+[Task context](/task-executor/task-context) contains more info that can be useful to fine-tune your retry strategy, such as the thrown exception or if the task was already manually retried.
 
 </alert>
 
