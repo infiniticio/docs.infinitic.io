@@ -32,7 +32,7 @@ Make sure we have a running Pulsar cluster and a Redis database available (see [
 
 Create a new project within a new directory:
 
-```bash
+```sh
 mkdir hello-world && cd hello-world && gradle init
 ```
 
@@ -135,8 +135,6 @@ repositories {
 }
 
 dependencies {
-    // needed by infinitic client (suspend functions)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.+")
     // infinitic libraries
     implementation("io.infinitic:infinitic-pulsar:0.2.+")
     implementation("io.infinitic:infinitic-client:0.2.+")
@@ -163,14 +161,14 @@ Let's create a `tasks` directory:
 <code-group>
   <code-block label="Java" active>
 
-```bash
+```sh
 mkdir src/main/java/hello/world/tasks
 ```
 
   </code-block>
   <code-block label="Kotlin">
 
-```bash
+```sh
 mkdir src/main/kotlin/hello/world/tasks
 ```
 
@@ -252,14 +250,14 @@ Let's create a `workflows` directory:
 <code-group>
   <code-block label="Java" active>
 
-```bash
+```sh
 mkdir src/main/java/hello/world/workflows
 ```
 
   </code-block>
   <code-block label="Kotlin">
 
-```bash
+```sh
 mkdir src/main/kotlin/hello/world/workflows
 ```
 
@@ -382,7 +380,7 @@ public class Setup {
                 "dev",
                 null
         );
-        infiniticAdmin.init();
+        infiniticAdmin.setupPulsar();
         infiniticAdmin.close();
     }
 }
@@ -405,7 +403,7 @@ fun main() {
 
     val infiniticAdmin = InfiniticAdmin(pulsarAdmin, "infinitic", "dev")
 
-    infiniticAdmin.init()
+    infiniticAdmin.setupPulsar()
     infiniticAdmin.close()
 }
 ```
@@ -442,7 +440,7 @@ task("setupPulsar", JavaExec::class) {
 
 and run it from the command line:
 
-```bash
+```sh
 ./gradlew setupPulsar
 ```
 
@@ -536,13 +534,13 @@ fun main(args: Array<String>) {
 
 Our app is ready to run as a worker:
 
-```bash
+```sh
 ./gradlew run
 ```
 
 We have a working worker listening Pulsar and waiting for instructions:
 
-```bash
+```sh
 > Task :run
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
@@ -572,20 +570,24 @@ Here, we already have the `infinitic.yml` file that we can reuse in a new `Clien
 ```kotlin[src/main/java/hello/world/Client.java]
 package hello.world;
 
-import hello.world.tasks.HelloWorldService;
 import hello.world.workflows.HelloWorld;
 import io.infinitic.pulsar.InfiniticClient;
-import javax.annotation.Nullable;
 
 public class Client {
     public static void main(String[] args) {
-        InfiniticClient client = InfiniticClient.fromFile("infinitic.yml");
-        @Nullable String name = args.length>0 ? args[0] : null;
+        InfiniticClient client = InfiniticClient.fromConfigFile("infinitic.yml");
+        String name = args.length>0 ? args[0] : "World";
 
         // create a stub from HelloWorld interface
         HelloWorld helloWorld = client.workflow(HelloWorld.class);
+
         // dispatch a workflow
-        client.async(helloWorld, w -> w.greet(name));
+        client.async(helloWorld, w -> w.greet("async " + name));
+
+        // dispatch a workflow and get result
+        String greetings = helloWorld.greet("sync " + name);
+
+        System.out.println(greetings);
 
         client.close();
     }
@@ -600,15 +602,21 @@ package hello.world
 
 import hello.world.workflows.HelloWorld
 import io.infinitic.pulsar.InfiniticClient
-import kotlinx.coroutines.runBlocking
 
-fun main(args: Array<String>) = runBlocking {
-    val client = InfiniticClient.fromFile("infinitic.yml")
+fun main(args: Array<String>) {
+    val client = InfiniticClient.fromConfigFile("infinitic.yml")
+    val name = args.firstOrNull() ?: "World"
 
     // create a stub from HelloWorld interface
     val helloWorld = client.workflow<HelloWorld>()
+
     // dispatch a workflow
-    client.async(helloWorld) { greet(args.firstOrNull()) }
+    client.async(helloWorld) { greet("async $name") }
+
+    // dispatch a workflow and get result
+    val greetings = helloWorld.greet("sync $name")
+
+    println(greetings)
 
     client.close()
 }
@@ -646,21 +654,22 @@ task("startWorkflow", JavaExec::class) {
 
 and run it from the command line:
 
-```bash
+```sh
 ./gradlew startWorkflow --args Infinitic
 ```
 
 Where our app/worker is running, we should see:
 
-```bash
+```sh
 > Task :run
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-Hello Infinitic!
+Hello async Infinitic!
+Hello sync Infinitic!
 ```
 
-Congrats! We have run our first Infinitic workflow.
+Congrats! We have run our first Infinitic workflows.
 
 ## Debugging
 
@@ -746,14 +755,14 @@ If we fail to chase a bug, we still can copy this working repository and look fo
 <code-group>
   <code-block label="Java" active>
 
-```bash
+```sh
 git clone https://github.com/infiniticio/infinitic-example-java-hello-world
 ```
 
   </code-block>
   <code-block label="Kotlin">
 
-```bash
+```sh
 git clone https://github.com/infiniticio/infinitic-example-kotlin-hello-world
 ```
 

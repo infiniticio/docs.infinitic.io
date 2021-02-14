@@ -1,7 +1,7 @@
 ---
 title: Infinitic Client
 description: ""
-position: 2.1
+position: 3.1
 category: "Client"
 ---
 
@@ -16,6 +16,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 Infinitic client let us start and cancel task and workflows, usually from our Web App controllers.
 
 We can instantiate a client using
+
 - a [Pulsar Client](https://pulsar.apache.org/docs/en/client-libraries-java/) ,
 - the tenant / namespace dedicated to Infinitic,
 - a name (optional):
@@ -24,22 +25,24 @@ We can instantiate a client using
 
 ```java
 InfiniticClient client = InfiniticClient.from(
-    pulsarClient, 
-    pulsarTenant, 
-    pulsarNamespace, 
+    pulsarClient,
+    pulsarTenant,
+    pulsarNamespace,
     clientName
 );
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 var client = InfiniticClient.from(
-    pulsarClient, 
-    pulsarTenant, 
-    pulsarNamespace, 
+    pulsarClient,
+    pulsarTenant,
+    pulsarNamespace,
     clientName
 )
 ```
+
 </code-block></code-group>
 
 <alert type="warning">
@@ -55,11 +58,13 @@ We can also create a client from a configuration file:
 ```java
 InfiniticClient client = InfiniticClient.fromConfigFile("infinitic.yml");
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 var client = InfiniticClient.fromConfigFile("infinitic.yml")
 ```
+
 </code-block></code-group>
 
 with:
@@ -73,4 +78,3 @@ pulsar:
   tenant: infinitic
   namespace: dev
 ```
-
