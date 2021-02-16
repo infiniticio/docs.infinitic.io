@@ -1,7 +1,7 @@
 ---
 title: Workflow Dispatching
 description: ""
-position: 2.2
+position: 3.2
 category: "Client"
 ---
 
@@ -10,9 +10,6 @@ category: "Client"
 Infinitic is still in active development. Subscribe [here](https://infinitic.substack.com) to follow the progress.
 
 </alert>
-
-
-## Workflow Stub
 
 Infinitic client let us start and cancel workflows, usually from your Web App controllers.
 
@@ -25,6 +22,7 @@ public interface HelloWorld {
     String greet(@Nullable String name);
 }
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
@@ -32,6 +30,7 @@ interface HelloWorld {
     fun greet(name: String?): String
 }
 ```
+
 </code-block></code-group>
 
 Using this interface, an Infinitic client can create a stub that behaves syntactically as an instance of this workflow:
@@ -41,11 +40,13 @@ Using this interface, an Infinitic client can create a stub that behaves syntact
 ```java
 HelloWorld helloWorld = client.workflow(HelloWorld.class);
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 val helloWorld = client.workflow<HelloWorld>()
 ```
+
 </code-block></code-group>
 
 ## Synchronous Dispatch
@@ -57,11 +58,13 @@ This stub can be used as an actual implementation to trigger a synchronous execu
 ```java
 String greeting = helloWorld.greet("Infinitic");
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 val greeting = helloWorld.greet("Infinitic")
 ```
+
 </code-block></code-group>
 
 When dispatching a workflow, the client serializes parameters and send them through Pulsar to the [workflow engine](/overview/architecture#workflow-engine), that will orchestrate the workflow. Eventually, the return value will be serialized and sent back to the client through Pulsar:
@@ -77,11 +80,13 @@ Of course, the client can also trigger an asynchronous execution:
 ```java
 String id = client.async(helloWorldService, t -> t.sayHello("Infinitic"));
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```java
 val id = client.async(helloWorldService) { sayHello("Infinitic") }
 ```
+
 </code-block></code-group>
 
 <img src="/client-async-workflow@2x.png" class="img" width="1280" height="640" alt=""/>

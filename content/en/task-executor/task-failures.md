@@ -1,7 +1,7 @@
 ---
 title: Task Failure
 description: ""
-position: 3.3
+position: 4.3
 category: "Task Executor"
 ---
 
@@ -131,7 +131,7 @@ using its `id`:
 <code-group><code-block label="Java" active>
 
 ```java
-CarRentalService carRentalService = 
+CarRentalService carRentalService =
     infiniticClient.task(CarRentalService.class, id);
 ```
 
@@ -167,7 +167,7 @@ using its `id`:
 <code-group><code-block label="Java" active>
 
 ```java
-CarRentalService carRentalService = 
+CarRentalService carRentalService =
     infiniticClient.task(CarRentalService.class, id);
 ```
 

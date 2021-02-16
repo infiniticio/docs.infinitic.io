@@ -49,6 +49,7 @@ interface HotelBookingService {
     fun cancel(cart: HotelBookingCart)
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -112,6 +113,7 @@ public class BookingWorkflowImpl extends Workflow implements BookingWorkflow {
     }
 }
 ```
+
   </code-block>
   <code-block label="Kotlin">
 
@@ -162,6 +164,7 @@ class BookingWorkflowImpl : Workflow(), BookingWorkflow {
     }
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -191,14 +194,14 @@ Clone the example repository locally:
 <code-group>
   <code-block label="Java" active>
 
-```bash
+```sh
 git clone https://github.com/infiniticio/infinitic-example-java-booking.git && cd infinitic-example-java-booking
 ```
 
   </code-block>
   <code-block label="Kotlin">
 
-```bash
+```sh
 git clone https://github.com/infiniticio/infinitic-example-kotlin-booking.git && cd infinitic-example-kotlin-booking
 ```
 
@@ -249,6 +252,7 @@ public class Worker {
     }
 }
 ```
+
   </code-block>
   <code-block label="Kotlin">
 
@@ -265,6 +269,7 @@ fun main(args: Array<String>) {
     InfiniticWorker.fromFile(file, "configs/infinitic.yml").start()
 }
 ```
+
   </code-block>
 </code-group>
 
@@ -349,7 +354,7 @@ public class Client {
         BookingWorkflow bookingWorkflow = client.workflow(BookingWorkflow.class);
         // dispatch a workflow
         client.async(
-                bookingWorkflow, 
+                bookingWorkflow,
                 w -> w.book(carRentalCart, flightCart, hotelCart)
         );
 
@@ -482,6 +487,7 @@ public class HotelBookingServiceFake implements HotelBookingService {
     }
 }
 ```
+
   </code-block>
   <code-block label="Kotlin">
 
@@ -522,6 +528,7 @@ class HotelBookingServiceFake : HotelBookingService {
     fun getRetryDelay() = 5F
 }
 ```
+
   </code-block>
 </code-group>
 

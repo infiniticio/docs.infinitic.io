@@ -1,7 +1,7 @@
 ---
 title: Workflow Engine
 description: ""
-position: 6.2
+position: 7.1
 category: "Workflow Engine"
 ---
 
@@ -13,8 +13,8 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/overview-workflow-engine@2x.png" class="img" width="1280" height="640" alt=""/>
 
-
 Workflow engines are stateful workers. their role are:
+
 - to maintain the state of each workflow instance, up to its completion or cancellation,
 - to manage retries and timeouts.
 
@@ -74,14 +74,17 @@ When providing a name in the configuration file, this name MUST be unique among 
 ```java
 workflowEngine.start();
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 workflowEngine.start()
 ```
+
 </code-block></code-group>
 
 Notes:
+
 - Do not start multiple workflow engines on the same machine, but increase the consumers settings instead.
 - Starting a workflow engine on multiple machines increases throughput and resilience
 

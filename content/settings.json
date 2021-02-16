@@ -5,7 +5,7 @@
     "light": "/logo-light.svg",
     "dark": "/logo-dark.svg"
   },
-  "github": "infiniticio/docs.infinitic.io",
+  "github": "infiniticio/infinitic",
   "twitter": "@infiniticio",
-  "defaultDir": ""
+  "defaultDir": "docs"
 }

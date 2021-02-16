@@ -1,7 +1,7 @@
 ---
 title: Task Executor
 description: ""
-position: 3.1
+position: 4.1
 category: "Task Executor"
 ---
 
@@ -13,9 +13,10 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/overview-task-executor@2x.png" class="img" width="1280" height="640" alt=""/>
 
-A task executor is in charge of processing tasks: 
+A task executor is in charge of processing tasks:
+
 - it listens to Pulsar for messages from the task engine,
-- when receiving a message, it processes the task according to its parameters, 
+- when receiving a message, it processes the task according to its parameters,
 - and sends serialized return value back to a task engine through Pulsar.
 
 ## Create a task executor
@@ -27,11 +28,13 @@ Use `io.infinitic.pulsar.InfiniticWorker` to start a task executor:
 ```java
 InfiniticWorker taskExecutor = InfiniticWorker.fromConfigFile("infinitic.yml");
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 val taskExecutor = InfiniticWorker.fromConfigFile("infinitic.yml")
 ```
+
 </code-block></code-group>
 
 Here is an example of a valid `infinitic.yml` file for a task executor:
@@ -57,13 +60,14 @@ tasks:
     class: example.booking.tasks.hotel.HotelBookingServiceFake
     concurrency: 5
 ```
+
 This configuration contains a worker name (optional), the Pulsar settings, and for each task:
-| Name                       | Type      | Description                                                                              |
+| Name | Type | Description |
 | -------------------------- | --------- | ---------------------------------------------------------------------------------------- |
-| `name  `                   | string    |  the name of the task (its interface)  |
-| `class`                    | string    |  the name of the class to instantiate |
-| `concurrency`              | integer   | the number of threads available to process this task   |
-| `shared`                   | boolean   | (default true) if false, a new instance of `class` is created for each task execution |
+| `name` | string | the name of the task (its interface) |
+| `class` | string | the name of the class to instantiate |
+| `concurrency` | integer | the number of threads available to process this task |
+| `shared` | boolean | (default true) if false, a new instance of `class` is created for each task execution |
 
 <alert type="warning">
 
@@ -78,11 +82,13 @@ When providing a worker name, this name MUST be unique among our workers and cli
 ```java
 taskExecutor.start();
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 taskExecutor.start()
 ```
+
 </code-block></code-group>
 
 For each entry under the `tasks` section of the configuration, a task executor will:
@@ -108,5 +114,3 @@ Notes:
   Task executors are stateless. We can scale them horizontally.
 
   </alert>
-
-

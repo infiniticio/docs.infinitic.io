@@ -1,7 +1,7 @@
 ---
 title: Writing Workflows
 description: ""
-position: 4.2
+position: 5.2
 category: "Workflow Executor"
 ---
 
@@ -10,7 +10,6 @@ category: "Workflow Executor"
 Infinitic is still in active development. Subscribe [here](https://infinitic.substack.com) to follow the progress.
 
 </alert>
-
 
 When a workflow is dispatched, the values of the method's parameters are serialized to be transported by Pulsar up to the [workflow executors](references/architecture). There, they will be deserialized to execute the method. Finally, the return value will be serialized and sent back to Pulsar. For this reason:
 

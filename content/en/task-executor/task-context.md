@@ -1,7 +1,7 @@
 ---
 title: Task Context
 description: ""
-position: 3.4
+position: 4.4
 category: "Task Executor"
 ---
 
@@ -23,7 +23,7 @@ Infinitic lets us inject a `TaskAttemptcontext` object in task implementation. T
   ```java[build.gradle]
   dependencies {
       ...
-      implementation "io.infinitic:infinitic-task-executor:0.2.0"
+      implementation "io.infinitic:infinitic-task-executor:0.2.1"
       ...
   }
   ```
@@ -34,7 +34,7 @@ Infinitic lets us inject a `TaskAttemptcontext` object in task implementation. T
   ```kts[build.gradle.kts]
   dependencies {
       ...
-      implementation("io.infinitic:infinitic-task-executor:0.2.0")
+      implementation("io.infinitic:infinitic-task-executor:0.2.1")
       ...
   }
   ```
