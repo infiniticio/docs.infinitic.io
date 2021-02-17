@@ -7,5 +7,9 @@
   },
   "github": "infiniticio/infinitic",
   "twitter": "@infiniticio",
-  "defaultDir": "docs"
+  "defaultDir": "",
+  "algolia": {
+    "apiKey": "bfdd73eabfe0aa609a33a0ec45d86f55",
+    "indexName": "infinitic"
+  }
 }
