@@ -337,7 +337,7 @@ Deferred<Instant> timer = timer(Duration.ofSeconds(60));
 
 helloWorldService.sayHello(name);
 
-timer.await();
+Instant now = timer.await();
 ```
 </code-block><code-block label="Kotlin">
 
@@ -346,8 +346,11 @@ val timer = timer(Duration.ofHours(48))
 
 helloWorldService.sayHello(name)
 
-timer.await()
+val now = timer.await()
 ```
 </code-block></code-group>
 
-The result of the `await()` method is an Instant object representing the moment this timer was completed according to the workflow engine (so when the workflow resumes from the `await()` the output is basically the current time).
+<img src="/timer-example@2x.png" class="img" width="640" height="640" alt=""/>
+
+
+The result of the `await()` method is an Instant object representing the moment this timer was completed according to the workflow engine (so when the workflow resumes from the `await()` the `Instant` returned is basically the current time).
