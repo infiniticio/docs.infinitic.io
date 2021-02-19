@@ -324,7 +324,7 @@ The `timer` function can receive:
 
 <alert type="warning">
 
-If the provided duration is negative or the provided Instant is in the past, the `await()` method will return immediatly.
+If the provided duration is negative or the provided Instant is in the past, the `await()` method returns immediatly.
 
 </alert>
 
