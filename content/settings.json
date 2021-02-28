@@ -5,7 +5,8 @@
     "light": "/logo-light.svg",
     "dark": "/logo-dark.svg"
   },
-  "github": "infiniticio/infinitic",
+  "githubApi": "https://api.github.com/repos/infiniticio/infinitic",
+  "github": "https://github.com/infiniticio/docs.infinitic.io",
   "twitter": "@infiniticio",
-  "defaultDir": "docs"
+  "defaultDir": ""
 }
