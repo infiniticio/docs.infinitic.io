@@ -11,7 +11,19 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-When a workflow is dispatched, the values of the method's parameters are serialized to be transported by Pulsar up to the [workflow executors](references/architecture). There, they will be deserialized to execute the method. Finally, the return value will be serialized and sent back to Pulsar. For this reason:
+A workflow is described by a class extending `io.infinitic.workflows.Workflow`.
+
+<alert type="warning">
+
+Workflow's class must extend `io.infinitic.workflows.Workflow`.
+
+</alert>
+
+This class must follow a few constraints described below.
+
+## Constraints
+
+When we dispatch a workflow, the method's parameters are serialized to be transported by Pulsar up to the [workflow executors](references/architecture). There, they will be deserialized to execute the method. Finally, the return value will be serialized and sent back to Pulsar. For this reason:
 
 <alert type="warning">
 
@@ -22,14 +34,6 @@ Workflow's class must be public and have an empty constructor.
 <alert type="warning">
 
 Workflow's methods parameters and return value must be <nuxt-link to="/workflow-executor/serializability"> serializable and deserializable</nuxt-link>
-
-</alert>
-
-Moreover,
-
-<alert type="warning">
-
-Workflow's class must extend `io.infinitic.workflows.Workflow`.
 
 </alert>
 
@@ -94,7 +98,7 @@ Workflows must NOT contain any action with side-effects or potentially changing 
 - use of random values
 - use of Thread or any asynchronous coding style
 
-**Those actions belong to tasks**, where they are perfectly fine.
+**Those actions can and must be done in tasks**.
 
 </alert>
 
@@ -102,16 +106,23 @@ If we encounter a `WorkflowUpdatedWhileRunning` exception, without having update
 
 </alert>
 
-You should avoid also infinite loop, as it increases the history size of the workflow indefinitely.
+And finally
 
-## Workflow Functions
+<alert type="warning">
 
-`Workflow` provides a few functions, useful to implement the logic of our workflows:
+We must avoid infinite loop, as it increases the history size of the workflow indefinitely.
 
-- `task`
-- `workflow`
-- `inline`
-- `async`
+</alert>
+
+## Functions
+
+The `Workflow` abstract class provides functions that we can use to code our workflows:
+
+- [`task`](#task)
+- [`workflow`](#workflow)
+- [`inline`](#inline)
+- [`async`](#async)
+- [`timer`](#timer)
 
 ### `task`
 
@@ -289,3 +300,72 @@ task.a4(o);
 </code-block></code-group>
 
 <img src="/async-example-2@2x.png" class="img" width="640" height="640" alt=""/>
+
+### `timer`
+
+The `timer` function provides a way to suspend the execution of a workflow during a duration or up to a chosen date:
+
+<code-group><code-block label="Java" active>
+
+```java
+...
+Instant now = timer(Duration.ofHours(48)).await()
+...
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+...
+val now = timer(Duration.ofHours(48)).await()
+...
+```
+
+</code-block></code-group>
+
+<img src="/timer-function@2x.png" class="img" width="640" height="640" alt=""/>
+
+<alert type="info">
+
+No ressource dedicated to this workflow is kept running during this waiting time.
+
+</alert>
+
+The `timer` function can receive:
+
+- a `java.time.Duration` object for waiting for a specific duration (for example: 2 days)
+- a `java.time.Instant` object for waiting up to a specific instant (for example: the 3rd of April 2021 at 9pm). The time must be provided according to UTC.
+
+<alert type="warning">
+
+If the provided duration is negative or the provided Instant is in the past, the `await()` method returns immediatly.
+
+</alert>
+
+The `timer` function immediately starts and returns a `Deferred<Instant>`. The workflow is blocked only by the `await()` method. In the example below, if the `sayHello` method lasts for 40 seconds, then the `wait` method will last for 20 seconds.
+
+<code-group><code-block label="Java" active>
+
+```java
+Deferred<Instant> timer = timer(Duration.ofSeconds(60));
+
+helloWorldService.sayHello(name);
+
+Instant now = timer.await();
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val timer = timer(Duration.ofHours(48))
+
+helloWorldService.sayHello(name)
+
+val now = timer.await()
+```
+
+</code-block></code-group>
+
+<img src="/timer-example@2x.png" class="img" width="640" height="640" alt=""/>
+
+The result of the `await()` method is an Instant object representing the moment this timer was completed according to the workflow engine (so when the workflow resumes from the `await()` the `Instant` returned is basically the current time).
