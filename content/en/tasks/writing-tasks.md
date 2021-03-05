@@ -2,7 +2,7 @@
 title: Writing Tasks
 description: ""
 position: 4.2
-category: "Task Executor"
+category: "Tasks"
 ---
 
 <alert type="info">

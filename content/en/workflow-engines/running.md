@@ -1,8 +1,8 @@
 ---
-title: Workflow Engine
+title: Running Workflow Engines
 description: ""
 position: 7.1
-category: "Workflow Engine"
+category: "Workflow Engines"
 ---
 
 <alert type="info">
@@ -13,7 +13,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/overview-workflow-engine@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Workflow engines are stateful workers. their role are:
+Workflow engines are stateful workers. Their role are:
 
 - to maintain the state of each workflow instance, up to its completion or cancellation,
 - to manage retries and timeouts.

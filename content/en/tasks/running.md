@@ -1,8 +1,8 @@
 ---
-title: Task Executor
+title: Running Tasks
 description: ""
 position: 4.1
-category: "Task Executor"
+category: "Tasks"
 ---
 
 <alert type="info">
@@ -13,9 +13,9 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/overview-task-executor@2x.png" class="img" width="1280" height="640" alt=""/>
 
-A task executor is in charge of processing tasks:
+Tasks are processed by task executors. Their role is to process tasks. A task executor:
 
-- it listens to Pulsar for messages from the task engine,
+- listens to Pulsar for messages from the task engine,
 - when receiving a message, it processes the task according to its parameters,
 - and sends serialized return value back to a task engine through Pulsar.
 

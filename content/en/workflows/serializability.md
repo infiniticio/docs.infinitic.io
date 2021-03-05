@@ -2,7 +2,7 @@
 title: Serializability
 description: ""
 position: 5.4
-category: "Workflow Executor"
+category: "Workflows"
 ---
 
 <alert type="info">
