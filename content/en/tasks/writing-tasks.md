@@ -21,7 +21,7 @@ Task's class must be public and have an empty constructor.
 
 <alert type="warning">
 
-Task's methods parameters and return value must be <nuxt-link to="/task-executor/serializability"> serializable and deserializable</nuxt-link>
+Task's methods parameters and return value must be <nuxt-link to="/tasks/serializability"> serializable and deserializable</nuxt-link>
 
 </alert>
 

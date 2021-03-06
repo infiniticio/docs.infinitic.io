@@ -105,7 +105,7 @@ A task executor must contain the implementation of all `class` described in its 
 
 Notes:
 
-- The task executor catches any exception sent by the `class` during its execution (see [task failure](/task-executor/task-failures)).
+- The task executor catches any exception sent by the `class` during its execution (see [task failure](/tasks/task-failures)).
 - Do not start multiple task executors on the same machine, but increase the `concurrency` settings instead.
 - Starting task executor on multiple machines increases throughput and resilience:
 

@@ -63,7 +63,7 @@ class CarRentalServiceFake : CarRentalService {
   </code-block>
 </code-group>
 
-Of course, more sophisticated policy can be implemented using [task context](/task-executor/task-context). For exemple, implementing an exponential backoff strategy - widely used when calling APIs - can be done with:
+Of course, more sophisticated policy can be implemented using [task context](/tasks/task-context). For exemple, implementing an exponential backoff strategy - widely used when calling APIs - can be done with:
 
 <code-group>
   <code-block label="Java" active>
@@ -119,7 +119,7 @@ class CarRentalServiceFake : CarRentalService {
 
 <alert type="info">
 
-[Task context](/task-executor/task-context) contains more info that can be useful to fine-tune your retry strategy, such as the thrown exception or if the task was already manually retried.
+[Task context](/tasks/task-context) contains more info that can be useful to fine-tune your retry strategy, such as the thrown exception or if the task was already manually retried.
 
 </alert>
 

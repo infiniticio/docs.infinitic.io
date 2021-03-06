@@ -33,7 +33,7 @@ Workflow's class must be public and have an empty constructor.
 
 <alert type="warning">
 
-Workflow's methods parameters and return value must be <nuxt-link to="/workflow-executor/serializability"> serializable and deserializable</nuxt-link>
+Workflow's methods parameters and return value must be <nuxt-link to="/workflows/serializability"> serializable and deserializable</nuxt-link>
 
 </alert>
 
@@ -102,7 +102,7 @@ Workflows must NOT contain any action with side-effects or potentially changing 
 
 </alert>
 
-We likely have the issue above if we encounter a `WorkflowUpdatedWhileRunning` exception without updating the workflow implementation. 
+We likely have the issue above if we encounter a `WorkflowUpdatedWhileRunning` exception without updating the workflow implementation.
 
 </alert>
 
@@ -144,6 +144,7 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
     }
 }
 ```
+
 </code-block> <code-block label="Kotlin">
 
 ```kotlin
@@ -159,6 +160,7 @@ class HelloWorldImpl : Workflow(), HelloWorld {
     }
 }
 ```
+
 </code-block></code-group>
 
 Syntaxicly, this stub can be used as an implementation of the task. Functionally, this stub dispatches the task or provides its return value, depending on the current workflow history. For example, let's consider this line (from the `HelloWorldImpl` workflow above).
@@ -168,11 +170,13 @@ Syntaxicly, this stub can be used as an implementation of the task. Functionally
 ```java
 String str = helloWorldService.sayHello(name);
 ```
+
 </code-block> <code-block label="Kotlin">
 
 ```kotlin
 val str = helloWorldService.sayHello(name)
 ```
+
 </code-block></code-group>
 
 Here `helloWorldService` is a stub of the `HelloWorldService` task. When a workflow executor processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
@@ -209,7 +213,7 @@ The illustration below illustrates this, with a workflow of 3 sequential tasks:
 
 <img src="/workflow-function@2x.png" class="img" width="640" height="640" alt=""/>
 
-For example, a distributed (and inefficient) way to calculate `n!` is shown below, using n workflows, each of them  - excepted the last one - dispatching a child-workflow.
+For example, a distributed (and inefficient) way to calculate `n!` is shown below, using n workflows, each of them - excepted the last one - dispatching a child-workflow.
 
 <code-group><code-block label="Java" active>
 
@@ -226,6 +230,7 @@ public class Calculate extends Workflow implements CalculateInterface {
     }
 }
 ```
+
 </code-block> <code-block label="Kotlin">
 
 ```kotlin
@@ -235,9 +240,10 @@ class Calculate() : Workflow(), CalculateInterface {
     override fun factorial(n: Long) = when {
         n > 1 -> n * workflow.factorial(n - 1)
         else -> 1
-    } 
+    }
 }
 ```
+
 </code-block></code-group>
 
 ### `inline`
@@ -431,7 +437,7 @@ The result of the `await()` method is an Instant object representing the moment 
 
 ### `channel`
 
-Channels introduce a way to communicate to a running workflow from "outside". A typical use of Channels is for example to pause a workflow, waiting for the result of a human action. Once this action completed, an object containing this result can be [sent to the running workflow through a channel](/clients/managing-workflows#send-an-object-to-a-running-workflow). 
+Channels introduce a way to communicate to a running workflow from "outside". A typical use of Channels is for example to pause a workflow, waiting for the result of a human action. Once this action completed, an object containing this result can be [sent to the running workflow through a channel](/clients/managing-workflows#send-an-object-to-a-running-workflow).
 
 <alert type="info">
 
@@ -440,7 +446,6 @@ In the examples below, `Channel<String>` is used as an example. But `Channel` su
 </alert>
 
 To create a channel, just add it to the workflow interface using the `channel` function. For example,
-
 
 <code-group><code-block label="Java" active>
 
@@ -451,6 +456,7 @@ public interface HelloWorld {
     ...
 }
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
@@ -460,25 +466,26 @@ interface HelloWorld {
     ...
 }
 ```
+
 </code-block></code-group>
 
 And in your implementation:
-
 
 <code-group><code-block label="Java" active>
 
 ```java
 public class HelloWorldImpl extends Workflow implements HelloWorld {
-    private final Channel<String> _notificationChannel = channel<String>();
+    private final Channel<String> notificationChannel = channel();
 
     @Override
     public Channel<String> getNotificationChannel() {
-        return _notificationChannel;
+        return notificationChannel;
     }
 
    ...
 }
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
@@ -488,9 +495,10 @@ class HelloWorldImpl : Workflow(), HelloWorld {
     ...
 }
 ```
+
 </code-block></code-group>
 
-By itself, a channel does nothing, and if we send an object to a channel, it will be lost per default. The workflow needs to explicitly wait for an object:
+By itself, a channel does nothing, and if we send an object to a channel, it will be ignored per default. The workflow needs to explicitly wait for an object:
 
 <code-group><code-block label="Java" active>
 
@@ -499,6 +507,7 @@ By itself, a channel does nothing, and if we send an object to a channel, it wil
 String result = getNotificationChannel().receive().await();
 ...
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
@@ -506,15 +515,17 @@ String result = getNotificationChannel().receive().await();
 val result: String = notificationChannel.receive().await()
 ...
 ```
+
 </code-block></code-group>
 
-When the workflow reaches the line above, it waits indefinitely up to receiving a String through this channel. 
+When the workflow reaches the line above, it waits indefinitely up to receiving a String through this channel.
 
 <img src="/channel-function@2x.png" class="img" width="640" height="640" alt=""/>
 
 Once received, it resumes and the `result` variable contains "success" in the above example.
 
 Note that the `receive()` and the `await()` methods can be called at different time:
+
 - when the `receive()` is called, the workflow is ready to receive an object
 - when the `await()` is called, the workflow pauses up to having received this object
 
@@ -527,6 +538,7 @@ Deferred<String> deferredNotification = getNotificationChannel().receive();
 ...
 String result = deferredNotification.await();
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
@@ -534,6 +546,7 @@ val deferredNotification: Deferred<String> = notificationChannel.receive()
 ...
 val result: String = deferredNotification.await()
 ```
+
 </code-block></code-group>
 
 <img src="/deferred-channel-function@2x.png" class="img" width="640" height="640" alt=""/>
