@@ -1,8 +1,8 @@
 ---
-title: Workflow Executor
+title: Running Workflows
 description: ""
 position: 5.1
-category: "Workflow Executor"
+category: "Workflows"
 ---
 
 <alert type="info">
@@ -13,9 +13,9 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/overview-workflow-executor@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Workflow executors are stateless workers. Their role is to process [workflowTasks](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c) (special tasks using our workflows to decide what should be done next, based on current workflow history):
+Workflow are orchestrated by workflow executors. Their role is to process [workflowTasks](https://medium.com/@gillesbarbier/under-the-hood-of-a-workflow-as-code-event-driven-engine-6107dab9b87c) (special tasks using our workflows to decide what should be done next, based on current workflow history). A workflow executor:
 
-- it listens to Pulsar for messages from the task engine,
+- listens to Pulsar for messages from the task engine,
 - when receiving a message, it processes the workflowTask according to its parameters,
 - and sends serialized return value back to a task engine through Pulsar.
 

@@ -1,8 +1,8 @@
 ---
-title: Task Engine
+title: Running Task Engines
 description: ""
 position: 6.1
-category: "Task Engine"
+category: "Task Engines"
 ---
 
 <alert type="info">
@@ -13,7 +13,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/overview-task-engine@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Task engines'role are:
+The roles of task engines are:
 
 - to maintain the state of each task request, up to completion or cancellation,
 - to manage retries and timeouts.

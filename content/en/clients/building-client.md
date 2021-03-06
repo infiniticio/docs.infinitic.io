@@ -1,5 +1,5 @@
 ---
-title: Infinitic Client
+title: Building Client
 description: ""
 position: 3.1
 category: "Client"

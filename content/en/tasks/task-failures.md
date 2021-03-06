@@ -2,7 +2,7 @@
 title: Task Failure
 description: ""
 position: 4.3
-category: "Task Executor"
+category: "Tasks"
 ---
 
 <alert type="info">
@@ -24,7 +24,7 @@ For an example, see our [Hello World](/overview/hello-world#simple-logger) app.
 
 </alert>
 
-## Retry Task Automatically
+## Automatic Retry
 
 When an error occurs during task processing, the [task executor](/overview/architecture) will catch it and check the existence of a `getRetryDelay` method. If it exists, Infinitic will retry the task after the delay provided.
 
@@ -63,7 +63,7 @@ class CarRentalServiceFake : CarRentalService {
   </code-block>
 </code-group>
 
-Of course, more sophisticated policy can be implemented using [task context](/task-executor/task-context). For exemple, implementing an exponential backoff strategy - widely used when calling APIs - can be done with:
+Of course, more sophisticated policy can be implemented using [task context](/tasks/task-context). For exemple, implementing an exponential backoff strategy - widely used when calling APIs - can be done with:
 
 <code-group>
   <code-block label="Java" active>
@@ -119,86 +119,14 @@ class CarRentalServiceFake : CarRentalService {
 
 <alert type="info">
 
-[Task context](/task-executor/task-context) contains more info that can be useful to fine-tune your retry strategy, such as the thrown exception or if the task was already manually retried.
+[Task context](/tasks/task-context) contains more info that can be useful to fine-tune your retry strategy, such as the thrown exception or if the task was already manually retried.
 
 </alert>
 
-## Retry Task Manually
+## Manual Retry
 
-To retry a task, we first need to create a stub for this existing task,
-using its `id`:
+We can [manually retry a task](/clients/managing-tasks#retry-a-running-task) using an Infinitic client.
 
-<code-group><code-block label="Java" active>
+## Manual Cancel
 
-```java
-CarRentalService carRentalService =
-    infiniticClient.task(CarRentalService.class, id);
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-val carRentalService = infiniticClient.task<CarRentalService>(id)
-```
-
-</code-block></code-group>
-
-From there, we can retry this task:
-
-<code-group><code-block label="Java" active>
-
-```java
-infiniticClient.retry(carRentalService);
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-infiniticClient.retry(carRentalService)
-```
-
-</code-block></code-group>
-
-## Cancel Task Manually
-
-To cancel a task, we first need to create a stub for this existing task,
-using its `id`:
-
-<code-group><code-block label="Java" active>
-
-```java
-CarRentalService carRentalService =
-    infiniticClient.task(CarRentalService.class, id);
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-val carRentalService = infiniticClient.task<CarRentalService>(id)
-```
-
-</code-block></code-group>
-
-From there, we can cancel this task:
-
-<code-group><code-block label="Java" active>
-
-```java
-infiniticClient.cancel(carRentalService, output);
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-infiniticClient.cancel(carRentalService, output)
-```
-
-</code-block></code-group>
-
-`output` can be null, and is useful only for task in workflows. `output` will be the return value of this task inside the workflow.
-
-<alert type="danger">
-
-Be careful to provide a value of the correct return type for this task - there is no type checking here. A wrong value type will trigger an exception in the workflow.
-
-</alert>
+We can [manually cancel a task](/clients/managing-tasks#cancel-a-running-task) using an Infinitic client.
