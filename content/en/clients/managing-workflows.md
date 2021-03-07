@@ -141,7 +141,7 @@ infiniticClient.cancel(helloWorld, returnValue)
 
 ### Send an object to a running workflow
 
-If the running workflow contains one or more SendChannel, it's possible to send an object to this workflow. Those channels should be described in the interface, for example:
+If the running workflow contains one or more SendChannel, it's possible to send an object to this workflow. Those [channels](/workflows/writing-workflows#channel) should be described in the interface, for example:
 
 <code-group><code-block label="Java" active>
 

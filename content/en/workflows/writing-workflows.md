@@ -437,7 +437,7 @@ The result of the `await()` method is an Instant object representing the moment 
 
 ### `channel`
 
-Channels introduce a way to communicate to a running workflow from "outside". A typical use of Channels is for example to pause a workflow, waiting for the result of a human action. Once this action completed, an object containing this result can be [sent to the running workflow through a channel](/clients/managing-workflows#send-an-object-to-a-running-workflow).
+Channels introduce a way to communicate to a running workflow from "outside". A typical use of Channels is to wait for the result of human action. An InfiniticClient can [send this result through the channels](/clients/managing-workflows#send-an-object-to-a-running-workflow) of a running workflow.
 
 <alert type="info">
 

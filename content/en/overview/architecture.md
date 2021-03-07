@@ -21,7 +21,7 @@ Let's dive deeper into Infinitic [event-based 's architecture](https://medium.co
 
 ## Infinitic Workers
 
-Infinitic provides a worker that can have 4 different roles, depending on its configuration:
+Infinitic provides a worker that can have four different roles, depending on its configuration:
 
 - task executor
 - workflow executor
@@ -51,7 +51,9 @@ At least a task executor and a task engine must be running to be able to process
 - to maintain the state of each task request, up to completion or cancellation,
 - to manage retries and timeouts.
 
-The state of tasks are stored on Redis\* by the task engines. This storage is mainly used as a backup in case of failure of those engines.
+The states of running tasks are stored on Redis\* by the task engines. As Infinitic implements an in-memory cache, we use this storage:
+- as a backup in case of failure of those engines, 
+- for retrieving states of long-running tasks.
 
 ### Workflow Engine
 
@@ -60,8 +62,10 @@ The state of tasks are stored on Redis\* by the task engines. This storage is ma
 - to maintain the state of each workflow instance, up to its completion or cancellation,
 - to manage retries and timeouts.
 
-The state of workflows are stored on Redis\* by the workflow engines. This storage is mainly used as a backup in case of failure of those engines.
+The states of running workflows are stored on Redis\* by the workflow engines. As Infinitic implements an in-memory cache, we use this storage:
+- as a backup in case of failure of those engines, 
+- for retrieving states of long-running workflows.
 
 <alert type="info">
-*We envision using Pulsar function states as a primary option for states' storage, instead of Redis. Unfortunately, this feature is not yet production-ready in Pulsar.
+*We envision using Pulsar function states as a primary option for states' storage instead of Redis. Unfortunately, this feature is not yet production-ready in Pulsar.
 </alert>
