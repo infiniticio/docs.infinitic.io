@@ -318,10 +318,12 @@ task.a3()
 
 The return value of a `async` function is a `io.infinitic.workflows.Deferred<T>`, `T` being the type of the return value of the provided lambda.
 
-A `Deferred` has 2 useful methods in a workflow:
+A `Deferred` has some useful methods:
 
 - `await()`: waits for the completion (or cancellation) of the deferred and returns its result
-- `status()`: gets the current status of the deferred (`ONGOING`, `COMPLETED`, `CANCELED`)
+- `isCompleted()`: boolean indicating if this `Deferred` is completed by now
+- `isCanceled()`: boolean indicating if this `Deferred` is canceled by now
+- `isOngoing()`: boolean indicating if this `Deferred` is still ongoing
 
 For example:
 
@@ -336,7 +338,10 @@ Deferred<String> deferred = async(() -> {
 });
 
 task.a2();
-task.a3();
+
+if (deferred.isOngoing()) {
+    task.a3();
+}
 
 String o = deferred.await()
 
@@ -354,7 +359,10 @@ val deferred = async {
 }
 
 task.a2()
-task.a3()
+
+if (deferred.isOngoing()) {
+    task.a3()
+}
 
 val o = deferred.await()
 
@@ -475,7 +483,7 @@ And in your implementation:
 
 ```java
 public class HelloWorldImpl extends Workflow implements HelloWorld {
-    private final Channel<String> notificationChannel = channel();
+    final Channel<String> notificationChannel = channel();
 
     @Override
     public Channel<String> getNotificationChannel() {
@@ -490,7 +498,7 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
 
 ```kotlin
 class HelloWorldImpl : Workflow(), HelloWorld {
-    private val notificationChannel = channel<String>()
+    val notificationChannel = channel<String>()
 
     ...
 }
@@ -498,7 +506,7 @@ class HelloWorldImpl : Workflow(), HelloWorld {
 
 </code-block></code-group>
 
-By itself, a channel does nothing, and if we send an object to a channel, it will be ignored per default. The workflow needs to explicitly wait for an object:
+By itself, a channel does nothing, and if we send an object to a channel, it will be ignored per default. The workflow needs to wait for an object explicitly:
 
 <code-group><code-block label="Java" active>
 

@@ -163,16 +163,30 @@ interface HelloWorld {
 ```
 </code-block></code-group>
 
-Here, we have a SendChannel of type `String`, but it can be of any (serializable) type. To send an object to a running instance, we can do:
+Here, we have a SendChannel of type `String`, but it can be of any (serializable) type. We can send an object to a running instance using its stub:
 
 <code-group><code-block label="Java" active>
 
 ```java
-helloWorld.getNotificationChannel().send("foobar")
+helloWorld.getNotificationChannel().send("foobar");
 ```
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 helloWorld.notificationChannel.send("foobar")
+```
+</code-block></code-group>
+
+If the targeted workflow does not exist or is already terminated, this command will throw a `SendToChannelFailed` exception. If it's not the desired behavior, we should use an asynchronous syntax:
+
+<code-group><code-block label="Java" active>
+
+```java
+client.async(helloWorld.getNotificationChannel()) { send("foobar"); }
+```
+</code-block><code-block label="Kotlin">
+
+```kotlin
+client.async(helloWorld.notificationChannel) { send("foobar") }
 ```
 </code-block></code-group>
