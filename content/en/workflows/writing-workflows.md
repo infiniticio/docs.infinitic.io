@@ -445,7 +445,9 @@ The result of the `await()` method is an Instant object representing the moment 
 
 ### `channel`
 
-Channels introduce a way to communicate to a running workflow from "outside". A typical use of Channels is to wait for the result of human action. An InfiniticClient can [send this result through the channels](/clients/managing-workflows#send-an-object-to-a-running-workflow) of a running workflow.
+Channels introduce a way to send "events" (any serializable object actually) to a running workflow from the "outside." A typical use of Channels is to wait for human actions, such as opening an email.
+
+In the Client section, we have described [how to send events](/clients/managing-workflows#send-an-object-to-a-running-workflow) to a running workflow. Here, we will describe how to handle them.
 
 <alert type="info">
 
@@ -453,7 +455,9 @@ In the examples below, `Channel<String>` is used as an example. But `Channel` su
 
 </alert>
 
-To create a channel, just add it to the workflow interface using the `channel` function. For example,
+#### Channel definition
+
+To use a channel, just add it to the workflow interface using the `channel` workflow's method. For example,
 
 <code-group><code-block label="Java" active>
 
@@ -477,7 +481,7 @@ interface HelloWorld {
 
 </code-block></code-group>
 
-And in your implementation:
+And in our workflow implementation:
 
 <code-group><code-block label="Java" active>
 
@@ -506,13 +510,15 @@ class HelloWorldImpl : Workflow(), HelloWorld {
 
 </code-block></code-group>
 
-By itself, a channel does nothing, and if we send an object to a channel, it will be ignored per default. The workflow needs to wait for an object explicitly:
+#### Channel usage
+
+We receive only the events that we are waiting for. Per default, events sent to a workflow are discarded. To receive an event, we need to explicitly ask for it, using the `receive` method:
 
 <code-group><code-block label="Java" active>
 
 ```java
 ...
-String result = getNotificationChannel().receive().await();
+Deferred<String> deferred = getNotificationChannel().receive();
 ...
 ```
 
@@ -520,24 +526,21 @@ String result = getNotificationChannel().receive().await();
 
 ```kotlin
 ...
-val result: String = notificationChannel.receive().await()
+val result: Deferred<String> = notificationChannel.receive()
 ...
 ```
 
 </code-block></code-group>
 
-When the workflow reaches the line above, it waits indefinitely up to receiving a String through this channel.
+All events sent to the workflow before it reaches the above line will be discarded. The first event sent to the workflow after it reaches this line will be caught. The following events will be rejected unless the receive method is used again.
+
+As all `Deferred` we use the `await()` method if we want to pause the workflow up to actually receiving an event:
 
 <img src="/channel-function@2x.png" class="img" width="640" height="640" alt=""/>
 
-Once received, it resumes and the `result` variable contains "success" in the above example.
+Once received, the workflow will resume and the `result` variable will contain "success" in the above example.
 
-Note that the `receive()` and the `await()` methods can be called at different time:
-
-- when the `receive()` is called, the workflow is ready to receive an object
-- when the `await()` is called, the workflow pauses up to having received this object
-
-This can be useful if we want a persistent notification:
+If we do not care when an event has been received but only if it was received, then we can apply the `receive` method earlier, for example at workflow start:
 
 <code-group><code-block label="Java" active>
 
@@ -560,3 +563,123 @@ val result: String = deferredNotification.await()
 <img src="/deferred-channel-function@2x.png" class="img" width="640" height="640" alt=""/>
 
 The first String received during the period represented by the brace will be the `await()` method result.
+
+#### Filtering events by type
+
+Let's say we have a `Channel<Event>` channel receiving objects of type `Event`. If we want our workflow to wait only for a sub-type `ValidationEvent`:
+
+<code-group><code-block label="Java" active>
+
+```java
+Deferred<ValidationEvent> deferred = getEventChannel().receive(ValidationEvent.class);
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val deferred: Deferred<ValidationEvent> = eventChannel.receive(ValidationEvent::class)
+```
+
+</code-block></code-group>
+
+#### Filtering events by attributes
+
+If we want our workflow to wait only for an `Event` with specific attributes, we can write a requirement using a [JSONPath predicate](https://github.com/json-path/JsonPath#predicates) that will be applied on the serialized event. For example, if we want to receive an `Event` with a specific `ef20b7a9-849b-41f8-89e9-9c5492efb098` userId, we can do:
+
+<code-group><code-block label="Java" active>
+
+```java
+Deferred<Event> deferred =
+    getEventChannel().receive("[?(\$.userId == \"ef20b7a9-849b-41f8-89e9-9c5492efb098\")]");
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val deferred: Deferred<Event> =
+    eventChannel.receive("[?(\$.userId == \"ef20b7a9-849b-41f8-89e9-9c5492efb098\")]")
+```
+
+</code-block></code-group>
+
+or using a [filter predicate](https://github.com/json-path/JsonPath#filter-predicates) (after adding `com.jayway.jsonpath:json-path:2.5.0` to our project)
+
+<code-group><code-block label="Java" active>
+
+```java
+Deferred<Event> deferred =
+    getEventChannel().receive("[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"));
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val deferred: Deferred<Event> =
+    eventChannel.receive("[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
+```
+
+</code-block></code-group>
+
+#### Filtering events by type and attributes
+
+At last, if we want to receive an event having both a specific type and specific attributes:
+
+<code-group><code-block label="Java" active>
+
+```java
+Deferred<ValidationEvent> deferred =
+    getEventChannel().receive(ValidationEvent.class, "[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"));
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val deferred: Deferred<ValidationEvent> =
+    eventChannel.receive(ValidationEvent::class, "[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
+```
+
+</code-block></code-group>
+
+#### Unit testing predicates
+
+In our unit tests, we would like to check if an `event` is correctly filtered by a JSONPath predicate - below is an example of statements that should be true if `event` has the right `userId`:
+
+<code-group><code-block label="Java" active>
+
+```java
+import io.infinitic.common.workflows.data.channels.ChannelEventFilter;
+import io.infinitic.common.workflows.data.channels.ChannelEvent;
+import com.jayway.jsonpath.Criteria.where;
+...
+
+ChannelEventFilter
+  .from("[?(\$.userId == \"ef20b7a9-849b-41f8-89e9-9c5492efb098\")]")
+  .check(ChannelEvent.from(event));
+
+// or
+
+ChannelEventFilter
+  .from("[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
+  .check(ChannelEvent.from(event));
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+import io.infinitic.common.workflows.data.channels.ChannelEventFilter
+import io.infinitic.common.workflows.data.channels.ChannelEvent
+import com.jayway.jsonpath.Criteria.where
+...
+
+ChannelEventFilter
+  .from("[?(\$.userId == \"ef20b7a9-849b-41f8-89e9-9c5492efb098\")]")
+  .check(ChannelEvent.from(event))
+
+// or
+
+ChannelEventFilter
+  .from("[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
+  .check(ChannelEvent.from(event))
+```
+
+</code-block></code-group>
