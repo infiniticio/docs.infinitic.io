@@ -318,10 +318,12 @@ task.a3()
 
 The return value of a `async` function is a `io.infinitic.workflows.Deferred<T>`, `T` being the type of the return value of the provided lambda.
 
-A `Deferred` has 2 useful methods in a workflow:
+A `Deferred` has some useful methods:
 
 - `await()`: waits for the completion (or cancellation) of the deferred and returns its result
-- `status()`: gets the current status of the deferred (`ONGOING`, `COMPLETED`, `CANCELED`)
+- `isCompleted()`: boolean indicating if this `Deferred` is completed by now
+- `isCanceled()`: boolean indicating if this `Deferred` is canceled by now
+- `isOngoing()`: boolean indicating if this `Deferred` is still ongoing
 
 For example:
 
@@ -336,7 +338,10 @@ Deferred<String> deferred = async(() -> {
 });
 
 task.a2();
-task.a3();
+
+if (deferred.isOngoing()) {
+    task.a3();
+}
 
 String o = deferred.await()
 
@@ -354,7 +359,10 @@ val deferred = async {
 }
 
 task.a2()
-task.a3()
+
+if (deferred.isOngoing()) {
+    task.a3()
+}
 
 val o = deferred.await()
 
@@ -479,7 +487,7 @@ And in our workflow implementation:
 
 ```java
 public class HelloWorldImpl extends Workflow implements HelloWorld {
-    private final Channel<String> notificationChannel = channel();
+    final Channel<String> notificationChannel = channel();
 
     @Override
     public Channel<String> getNotificationChannel() {
@@ -494,7 +502,7 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
 
 ```kotlin
 class HelloWorldImpl : Workflow(), HelloWorld {
-    private val notificationChannel = channel<String>()
+    val notificationChannel = channel<String>()
 
     ...
 }
@@ -612,7 +620,29 @@ val deferred: Deferred<Event> =
 
 </code-block></code-group>
 
-To check that an `event` is correctly filtered by a JSONPath predicate - for example in unit tests - the following statement should be `true`:
+#### Filtering events by type and attributes
+
+At last, if we want to receive an event having both a specific type and specific attributes:
+
+<code-group><code-block label="Java" active>
+
+```java
+Deferred<ValidationEvent> deferred =
+    getEventChannel().receive(ValidationEvent.class, "[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"));
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val deferred: Deferred<ValidationEvent> =
+    eventChannel.receive(ValidationEvent::class, "[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
+```
+
+</code-block></code-group>
+
+#### Unit testing predicates
+
+In our unit tests, we would like to check if an `event` is correctly filtered by a JSONPath predicate - below is an example of statements that should be true if `event` has the right `userId`:
 
 <code-group><code-block label="Java" active>
 
@@ -650,31 +680,6 @@ ChannelEventFilter
 ChannelEventFilter
   .from("[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
   .check(ChannelEvent.from(event))
-```
-</code-block></code-group>
-
-<alert type="info">
-
-It can be convenient also to use a [JSONPath Online Evaluator](https://jsonpath.com/)
-
-</alert>
-
-#### Filtering events by type and attributes
-
-At last, if we want to receive an event having both a specific type and specific attributes:
-
-<code-group><code-block label="Java" active>
-
-```java
-Deferred<ValidationEvent> deferred =
-    getEventChannel().receive(ValidationEvent.class, "[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"));
-```
-
-</code-block><code-block label="Kotlin">
-
-```kotlin
-val deferred: Deferred<ValidationEvent> =
-    eventChannel.receive(ValidationEvent::class, "[?]", where("userId").eq("ef20b7a9-849b-41f8-89e9-9c5492efb098"))
 ```
 
 </code-block></code-group>
