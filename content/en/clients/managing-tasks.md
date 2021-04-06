@@ -46,15 +46,31 @@ Using this interface, an Infinitic client can create a stub that behaves syntact
 <code-group><code-block label="Java" active>
 
 ```java
-HelloWorldService helloWorldService = client.task(HelloWorldService.class);
+HelloWorldService helloWorldService = client.newTask(HelloWorldService.class);
 ```
-
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-val helloWorldService = client.task<HelloWorldService>()
+val helloWorldService = client.newTask<HelloWorldService>()
 ```
+</code-block></code-group>
 
+We can also add tags to this instance. It can be very useful to target later this instance by tag:
+
+<code-group><code-block label="Java" active>
+
+```java
+Set<String> tags = new HashSet<>();
+tags.add("foo");
+tags.add("bar");
+
+HelloWorldService helloWorldService = client.newTask(HelloWorldService.class, tags);
+```
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val helloWorldService = client.newTask<HelloWorldService>(tags = setOf("foo", "bar"))
+```
 </code-block></code-group>
 
 ### Synchronous start
@@ -86,20 +102,58 @@ Of course, we can also trigger an asynchronous execution:
 <code-group><code-block label="Java" active>
 
 ```java
-String id = client.async(helloWorldService, t -> t.sayHello("Infinitic"));
+Deferred<String> deferred = client.async(helloWorldService, t -> t.sayHello("Infinitic"));
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```java
-val id = client.async(helloWorldService) { sayHello("Infinitic") }
+val deferred = client.async(helloWorldService) { sayHello("Infinitic") }
 ```
 
 </code-block></code-group>
 
 <img src="/client-async-task@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Here, the returned value is an internal unique `id` for the task. We can use this `id` later to manage this task while not yet completed or canceled.
+Here, the returned value is a `Deferred<T>`.
+
+To wait for the synchronous completion:
+
+<code-group><code-block label="Java" active>
+
+```java
+T result = deferred.await();
+```
+</code-block><code-block label="Kotlin">
+
+```java
+val result: T = deferred.await()
+```
+</code-block></code-group>
+
+where `T` is the actual return type.
+
+<alert type="warning">
+
+The `await()` method blocks the current thread of the client - up to the task termination. It will throw an `UnknownTask` exception if the task is already terminated.
+
+</alert>
+
+To retrieve the underlying task's `id`:
+
+<code-group><code-block label="Java" active>
+
+```java
+java.util.UUID id = deferred.id;
+```
+</code-block><code-block label="Kotlin">
+
+```java
+val id: java.util.UUID = deferred.id
+```
+</code-block></code-group>
+
+ We can use this id later to manage this task while not yet completed or canceled.
 
 ## Managing Running Tasks
 
@@ -107,20 +161,32 @@ A task is said running, as long as it is neither completed neither canceled.
 
 ### Running task stub
 
-An Infinitic client can create the stub of a running task from its `id`:
+We can create the stub of a running task from its id:
 
 <code-group><code-block label="Java" active>
 
 ```java
-HelloWorldService helloWorldService = client.task(HelloWorldService.class, id);
+HelloWorldService helloWorldService = client.getTask(HelloWorldService.class, id);
 ```
-
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-val helloWorldService = client.task<HelloWorldService>(id)
+val helloWorldService = client.getTask<HelloWorldService>(id)
 ```
+</code-block></code-group>
 
+Alternatively, we can create a stub targeting all running tasks having a tag "foo":
+
+<code-group><code-block label="Java" active>
+
+```java
+HelloWorldService helloWorldService = client.getTask(HelloWorldService.class, "foo");
+```
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val helloWorldService = client.getTask<HelloWorldService>(tag = "foo")
+```
 </code-block></code-group>
 
 ### Retry a running task

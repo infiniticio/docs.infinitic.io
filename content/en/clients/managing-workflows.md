@@ -13,6 +13,9 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 Infinitic client let us start and cancel workflows, usually from our Web App controllers.
 
+
+
+
 ## Starting New Workflows
 
 ### New workflow stub
@@ -42,16 +45,33 @@ Using this interface, an Infinitic client can create a stub that behaves syntact
 <code-group><code-block label="Java" active>
 
 ```java
-HelloWorld helloWorld = client.workflow(HelloWorld.class);
+HelloWorld helloWorld = client.newWorkflow(HelloWorld.class);
 ```
-
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-val helloWorld = client.workflow<HelloWorld>()
+val helloWorld = client.newWorkflow<HelloWorld>()
 ```
-
 </code-block></code-group>
+
+We can also add tags to this instance. It can be very useful to target later this instance by tag:
+
+<code-group><code-block label="Java" active>
+
+```java
+Set<String> tags = new HashSet<>();
+tags.add("foo");
+tags.add("bar");
+
+HelloWorld helloWorld = client.newWorkflow(HelloWorld.class, tags);
+```
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val helloWorld = client.newWorkflow<HelloWorld>(tags = setOf("foo", "bar"))
+```
+</code-block></code-group>
+
 
 ### Synchronous start
 
@@ -82,20 +102,61 @@ Of course, the client can also trigger an asynchronous execution:
 <code-group><code-block label="Java" active>
 
 ```java
-String id = client.async(helloWorldService, t -> t.sayHello("Infinitic"));
+Deferred<String> deferred = client.async(helloWorldService, t -> t.sayHello("Infinitic"));
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```java
-val id = client.async(helloWorldService) { sayHello("Infinitic") }
+val deferred: Deferred<String> = client.async(helloWorldService) { sayHello("Infinitic") }
 ```
 
 </code-block></code-group>
 
 <img src="/client-async-workflow@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Here, the returned value is an internal unique `id` for the workflow. We can use this id later to manage this workflow while not yet completed or canceled.
+Here, the returned value is a `Deferred<T>`.
+
+To wait for the synchronous completion:
+
+<code-group><code-block label="Java" active>
+
+```java
+T result = deferred.await();
+```
+</code-block><code-block label="Kotlin">
+
+```java
+val result: T = deferred.await()
+```
+</code-block></code-group>
+
+where `T` is the actual return type.
+
+<alert type="warning">
+
+The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `UnknownWorkflow` exception if the workflow is already terminated.
+
+</alert>
+
+To retrieve the underlying workflow's `id`:
+
+<code-group><code-block label="Java" active>
+
+```java
+java.util.UUID id = deferred.id;
+```
+</code-block><code-block label="Kotlin">
+
+```java
+val id: java.util.UUID = deferred.id
+```
+</code-block></code-group>
+
+ We can use this id later to manage this workflow while not yet completed or canceled.
+
+
+
 
 ## Managing Running Workflows
 
@@ -103,45 +164,57 @@ A workflow is said running, as long as it is neither completed neither canceled.
 
 ### Running workflow stub
 
-An Infinitic client can create the stub of a running workflow from its `id`:
+We can create the stub of a running workflow from its `id`:
 
 <code-group><code-block label="Java" active>
 
 ```java
-HelloWorld helloWorld = client.workflow(HelloWorld.class, id);
+HelloWorld helloworld = client.getWorkflow(HelloWorld.class, id);
 ```
-
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-val helloWorld = client.workflow<HelloWorld>(id)
+val helloworld: HelloWorld = client.getWorkflow<HelloWorld>(id)
 ```
+</code-block></code-group>
 
+Alternatively, we can create a stub targeting all running workflow having a given tag:
+
+<code-group><code-block label="Java" active>
+
+```java
+HelloWorld helloworld = client.getWorkflow(HelloWorld.class, "foo");
+```
+</code-block><code-block label="Kotlin">
+
+```kotlin
+val helloworld: HelloWorld = client.getWorkflow<HelloWorld>(tag = "foo")
+```
 </code-block></code-group>
 
 ### Cancel a running workflow
 
-Using this stub, we can cancel this workflow:
+Using this stub, we can cancel the targeted workflow(s):
 
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.cancel(helloWorld, returnValue);
+client.cancel(helloworld, returnValue);
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.cancel(helloWorld, returnValue)
+client.cancel(helloworld, returnValue)
 ```
 
 </code-block></code-group>
 
-`returnValue` can be `null`, and is useful only for a workflow in another workflow. `returnValue` will be the return value of this workflow inside the parent workflow.
+`returnValue` is optional ,`null` per default, and is useful only for a workflow in another workflow. `returnValue` will be the return value of this workflow inside the parent workflow.
 
 ### Send an object to a running workflow
 
-If the running workflow contains one or more SendChannel, it's possible to send an object to this workflow. Those [channels](/workflows/writing-workflows#channel) should be described in the interface, for example:
+If the running workflow(s) contains one or more SendChannel, it's possible to send an object to this workflow. Those [channels](/workflows/writing-workflows#channel) should be described in the interface, for example:
 
 <code-group><code-block label="Java" active>
 
@@ -163,30 +236,16 @@ interface HelloWorld {
 ```
 </code-block></code-group>
 
-Here, we have a SendChannel of type `String`, but it can be of any (serializable) type. We can send an object to a running instance using its stub:
+Here, we have a SendChannel of type `String`, but it can be of any (serializable) type. We can send an object to a running instance like this:
 
 <code-group><code-block label="Java" active>
 
 ```java
-helloWorld.getNotificationChannel().send("foobar");
+helloworld.getNotificationChannel().send("foobar");
 ```
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-helloWorld.notificationChannel.send("foobar")
-```
-</code-block></code-group>
-
-If the targeted workflow does not exist or is already terminated, this command will throw a `SendToChannelFailed` exception. If it's not the desired behavior, we should use an asynchronous syntax:
-
-<code-group><code-block label="Java" active>
-
-```java
-client.async(helloWorld.getNotificationChannel()) { send("foobar"); }
-```
-</code-block><code-block label="Kotlin">
-
-```kotlin
-client.async(helloWorld.notificationChannel) { send("foobar") }
+helloworld.notificationChannel.send("foobar")
 ```
 </code-block></code-group>

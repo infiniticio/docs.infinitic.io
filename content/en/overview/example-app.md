@@ -67,9 +67,9 @@ import example.booking.tasks.hotel.*;
 import io.infinitic.workflows.*;
 
 public class BookingWorkflowImpl extends Workflow implements BookingWorkflow {
-    private final CarRentalService carRentalService = task(CarRentalService.class);
-    private final FlightBookingService flightService = task(FlightBookingService.class);
-    private final HotelBookingService hotelService = task(HotelBookingService.class);
+    private final CarRentalService carRentalService = newTask(CarRentalService.class);
+    private final FlightBookingService flightService = newTask(FlightBookingService.class);
+    private final HotelBookingService hotelService = newTask(HotelBookingService.class);
 
     @Override
     public BookingResult book(
@@ -78,7 +78,6 @@ public class BookingWorkflowImpl extends Workflow implements BookingWorkflow {
             HotelBookingCart hotelCart
     ) {
         // parallel bookings using car rental, flight and hotel services
-
         Deferred<CarRentalResult> carRental = async(carRentalService, t -> t.book(carRentalCart));
         Deferred<FlightBookingResult> flight = async(flightService, t -> t.book(flightCart));
         Deferred<HotelBookingResult> hotel = async(hotelService, t -> t.book(hotelCart));
@@ -126,9 +125,9 @@ import example.booking.tasks.hotel.*
 import io.infinitic.workflows.*
 
 class BookingWorkflowImpl : Workflow(), BookingWorkflow {
-    private val carRentalService = task<CarRentalService>()
-    private val flightService = task<FlightBookingService>()
-    private val hotelService = task<HotelBookingService>()
+    private val carRentalService = newTask<CarRentalService>()
+    private val flightService = newTask<FlightBookingService>()
+    private val hotelService = newTask<HotelBookingService>()
 
     override fun book(
         carRentalCart: CarRentalCart,
@@ -351,7 +350,7 @@ public class Client {
         HotelBookingCart hotelCart = new HotelBookingCart(getId());
 
         // create a stub from BookingWorkflow interface
-        BookingWorkflow bookingWorkflow = client.workflow(BookingWorkflow.class);
+        BookingWorkflow bookingWorkflow = client.newWorkflow(BookingWorkflow.class);
         // dispatch a workflow
         client.async(
                 bookingWorkflow,
@@ -392,7 +391,7 @@ fun main() = runBlocking {
     val hotelCart = HotelBookingCart(getId())
 
     // create a stub from BookingWorkflow interface
-    val bookingWorkflow = client.workflow<BookingWorkflow>()
+    val bookingWorkflow = client.newWorkflow<BookingWorkflow>()
     // dispatch a workflow
     client.async(bookingWorkflow) { book(carRentalCart, flightCart, hotelCart) }
 

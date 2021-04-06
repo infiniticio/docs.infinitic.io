@@ -311,7 +311,7 @@ import hello.world.tasks.HelloWorldService;
 import io.infinitic.workflows.Workflow;
 
 public class HelloWorldImpl extends Workflow implements HelloWorld {
-    private final HelloWorldService helloWorldService = task(HelloWorldService.class);
+    private final HelloWorldService helloWorldService = newTask(HelloWorldService.class);
 
     @Override
     public String greet(String name) {
@@ -334,7 +334,7 @@ import hello.world.tasks.HelloWorldService
 import io.infinitic.workflows.Workflow
 
 class HelloWorldImpl : Workflow(), HelloWorld {
-    private val helloWorldService = task<HelloWorldService>()
+    private val helloWorldService = newTask<HelloWorldService>()
 
     override fun greet(name: String?): String {
         val str = helloWorldService.sayHello(name)
@@ -475,6 +475,9 @@ pulsar:
   tenant: infinitic
   namespace: dev
 
+tagEngine:
+  consumers: 1
+
 taskEngine:
   consumers: 1
 
@@ -579,7 +582,7 @@ public class Client {
         String name = args.length>0 ? args[0] : "World";
 
         // create a stub from HelloWorld interface
-        HelloWorld helloWorld = client.workflow(HelloWorld.class);
+        HelloWorld helloWorld = client.newWorkflow(HelloWorld.class);
 
         // dispatch a workflow
         client.async(helloWorld, w -> w.greet("async " + name));
@@ -608,7 +611,7 @@ fun main(args: Array<String>) {
     val name = args.firstOrNull() ?: "World"
 
     // create a stub from HelloWorld interface
-    val helloWorld = client.workflow<HelloWorld>()
+    val helloWorld = client.newWorkflow<HelloWorld>()
 
     // dispatch a workflow
     client.async(helloWorld) { greet("async $name") }
