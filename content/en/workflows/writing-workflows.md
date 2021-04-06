@@ -39,8 +39,7 @@ Workflow's methods parameters and return value must be <nuxt-link to="/workflows
 
 Here are an example of workflow implementation, from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app:
 
-<code-group>
-  <code-block label="Java" active>
+<code-group><code-block label="Java" active>
 
 ```java
 import hello.world.tasks.HelloWorldService;
@@ -59,9 +58,7 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
     }
 }
 ```
-
-  </code-block> 
-  <code-block label="Kotlin">
+</code-block><code-block label="Kotlin">
 
 ```kotlin
 import hello.world.tasks.HelloWorldService
@@ -80,9 +77,7 @@ class HelloWorldImpl : Workflow(), HelloWorld {
     }
 }
 ```
-
-  </code-block>
-</code-group>
+</code-block></code-group>
 
 Because workflows are processed multiple times (see `task` below), they must implement only a logical flow. In particular:
 
@@ -118,13 +113,13 @@ We must avoid infinite loop, as it increases the history size of the workflow in
 
 The `Workflow` abstract class provides functions that we can use to code our workflows:
 
-- [`task`](#task)
-- [`workflow`](#workflow)
+- [`newTask`](#newTask)
+- [`newWorkflow`](#newWorkflow)
 - [`inline`](#inline)
 - [`async`](#async)
 - [`timer`](#timer)
 
-### `task`
+### `newTask`
 
 When applied on a task interface, this function provides a [stub](https://en.wikipedia.org/wiki/Method_stub) for this task:
 
@@ -132,7 +127,7 @@ When applied on a task interface, this function provides a [stub](https://en.wik
 
 ```java
 public class HelloWorldImpl extends Workflow implements HelloWorld {
-    private final HelloWorldService helloWorldService = task(HelloWorldService.class);
+    private final HelloWorldService helloWorldService = newTask(HelloWorldService.class);
 
     @Override
     public String greet(String name) {
@@ -149,7 +144,7 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
 
 ```kotlin
 class HelloWorldImpl : Workflow(), HelloWorld {
-    private val helloWorldService = task<HelloWorldService>()
+    private val helloWorldService = newTask<HelloWorldService>()
 
     override fun greet(name: String): String {
         val str = helloWorldService.sayHello(name)
@@ -170,13 +165,11 @@ Syntaxicly, this stub can be used as an implementation of the task. Functionally
 ```java
 String str = helloWorldService.sayHello(name);
 ```
-
 </code-block> <code-block label="Kotlin">
 
 ```kotlin
 val str = helloWorldService.sayHello(name)
 ```
-
 </code-block></code-group>
 
 Here `helloWorldService` is a stub of the `HelloWorldService` task. When a workflow executor processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
@@ -205,9 +198,9 @@ val greeting =  helloWorldService.addEnthusiasm(str)
 
 <img src="/hello-world@2x.png" class="img" width="1280" height="640" alt=""/>
 
-### `workflow`
+### `newWorkflow`
 
-The `workflow` function behaves as the `task` function but dispatches a (sub)workflow, instead of a task. When the (sub)workflow completes, the return value is sent back to the parent workflow.
+The `newWorkflow` function behaves as the `newTask` function but dispatches a (sub)workflow, instead of a task. When the (sub)workflow completes, the return value is sent back to the parent workflow.
 
 The illustration below illustrates this, with a workflow of 3 sequential tasks:
 
@@ -219,7 +212,7 @@ For example, a distributed (and inefficient) way to calculate `n!` is shown belo
 
 ```java
 public class Calculate extends Workflow implements CalculateInterface {
-    private final Calculate calculate = workflow(CalculateInterface.class);
+    private final Calculate calculate = newWorkflow(CalculateInterface.class);
 
     @Override
     public Long factorial(Long n) {

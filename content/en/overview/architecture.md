@@ -27,6 +27,7 @@ Infinitic provides a worker that can have four different roles, depending on its
 - workflow executor
 - task engine
 - workflow engine
+- tag engine
 
 Those workers can be run separately or on the same binary (as for our [hello world app](/overview/hello-world)), depending on the configuration you choose.
 
@@ -69,3 +70,9 @@ The states of running workflows are stored on Redis\* by the workflow engines. A
 <alert type="info">
 *We envision using Pulsar function states as a primary option for states' storage instead of Redis. Unfortunately, this feature is not yet production-ready in Pulsar.
 </alert>
+
+### Tag Engine
+
+The role of tag engines is to maintain the list of *running* tasks and *running* workflows associated to each tag.
+
+This relation is currently stored on Redis\* as a Set data structure.
