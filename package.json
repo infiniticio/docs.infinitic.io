@@ -1,6 +1,6 @@
 {
   "name": "docs.infinitic.io",
-  "version": "0.4.3",
+  "version": "0.6.0",
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",

@@ -1,8 +1,8 @@
 ---
 title: Serializability
 description: ""
-position: 4.5
-category: "Tasks"
+position: 7.1
+category: "References"
 ---
 
 <alert type="info">
@@ -11,14 +11,14 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-_Why must task parameters and return value be serializable/deserializable?_
+_Why must task and workflow parameters and return value be serializable/deserializable?_
 
-- when a [client](/overview/architecture) (or a [workflow executor](/overview/architecture)) dispatches a task, it serializes parameters before sending them (along with class name and method name)
-- when a [task executor](/overview/architecture) receives a task to execute, it deserializes those parameters
-- when a [task executor](/overview/architecture) completes a task, it serializes the output and sent it back
-- when a [workflow executor](/overview/architecture) uses a task output in a workflow, it deserializes it
+- when a [client](/components/architecture) dispatches a task / workflow, it serializes parameters before sending them (along with class name and method name)
+- when a [task worker](/components/architecture) receives a task to execute, it deserializes those parameters
+- when a [workflow worker](/components/architecture) uses a task output in a workflow, it deserializes it
 
 Primitives (number, string, etc...) being natively serializable/deserializable, this requirement must be checked only for objects contained in tasks parameters or return value.
+
 
 ## Checking Serializability In Java
 

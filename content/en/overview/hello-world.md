@@ -110,13 +110,12 @@ in our build gradle file, we add:
 ```java[build.gradle]
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
     // infinitic libraries
-    implementation "io.infinitic:infinitic-pulsar:0.2.+"
-    implementation "io.infinitic:infinitic-client:0.2.+"
+    implementation "io.infinitic:infinitic-pulsar:0.6.+"
+    implementation "io.infinitic:infinitic-client:0.6.+"
 }
 
 java {
@@ -131,13 +130,12 @@ java {
 ```kts[build.gradle.kts]
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
     // infinitic libraries
-    implementation("io.infinitic:infinitic-pulsar:0.2.+")
-    implementation("io.infinitic:infinitic-client:0.2.+")
+    implementation("io.infinitic:infinitic-pulsar:0.6.+")
+    implementation("io.infinitic:infinitic-client:0.6.+")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -208,40 +206,47 @@ interface HelloWorldService {
 
 and `HelloWorldServiceImpl` implementation:
 
-<code-group>
-  <code-block label="Java" active>
+<code-group><code-block label="Java" active>
 
 ```kotlin[src/main/java/hello/world/tasks/HelloWorldServiceImpl.java]
 package hello.world.tasks;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+import io.infinitic.tasks.Task;
+
+public class HelloWorldServiceImpl extends Task implements HelloWorldService {
     @Override
     public String sayHello(String name) {
+
         return "Hello " + ((name == null) ? "World" : name);
     }
 
     @Override
     public String addEnthusiasm(String str) {
+
         return str + "!";
     }
 }
 ```
-
-  </code-block> 
-  <code-block label="Kotlin">
+</code-block><code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/tasks/HelloWorldServiceImpl.kt]
 package hello.world.tasks
 
-class HelloWorldServiceImpl : HelloWorldService {
-    override fun sayHello(name: String?) = "Hello ${name ?: "World"}"
+import io.infinitic.tasks.Task
+
+class HelloWorldServiceImpl : Task(), HelloWorldService {
+    override fun sayHello(name: String) = "Hello $name"
 
     override fun addEnthusiasm(str: String) = "$str!"
 }
 ```
+</code-block></code-group>
 
-  </code-block>
-</code-group>
+<alert type="warning">
+
+Task implementation must extend `io.infinitic.task.Task`
+
+</alert>
 
 ## Writing Workflow
 
@@ -297,7 +302,7 @@ and `HelloWorldImpl` implementation:
 
 <alert type="warning">
 
-all workflow implementation must extend `io.infinitic.workflows.Workflow`
+Workflow implementation must extend `io.infinitic.workflows.Workflow`
 
 </alert>
 
@@ -349,7 +354,7 @@ class HelloWorldImpl : Workflow(), HelloWorld {
   </code-block>
 </code-group>
 
-Note the `task` function that creates a stub from the `HelloWorldService` interface. From a syntax point of view, this stub can be used as an implementation of `HelloWorldService` . But instead of executing a method, it sends a message to Infinitic requesting this execution. That's why nothing happens if we run a workflow without having deployed any worker.
+Note the `task` function creating a stub from the `HelloWorldService` interface. From a syntax point of view, this stub can be used as an implementation of `HelloWorldService` . But instead of executing a method, it sends a message to Infinitic requesting this execution. That's why nothing happens if we run a workflow without having deployed any worker.
 
 ## Pulsar Configuration
 
@@ -460,7 +465,6 @@ This procedure must be done each time we need to run Infinitic on a new Pulsar t
 The easiest way to build workers is from an `infinitic.yml` config file:
 
 ```yaml[infinitic.yml]
-mode: worker
 stateStorage: redis
 
 redis:
@@ -475,18 +479,6 @@ pulsar:
   tenant: infinitic
   namespace: dev
 
-tagEngine:
-  consumers: 1
-
-taskEngine:
-  consumers: 1
-
-workflowEngine:
-  consumers: 1
-
-monitoring:
-  consumers: 1
-
 tasks:
   - name: hello.world.tasks.HelloWorldService
     class: hello.world.tasks.HelloWorldServiceImpl
@@ -498,14 +490,13 @@ workflows:
 
 <alert type="warning">
 
-The configuration file `infinitic.yml` should contain correct values for Redis and Pulsar connections. Please update them if necessary.
+Please update values for Redis and Pulsar connections if necessary.
 
 </alert>
 
-Then, to create a worker, just replace the App file:
+Then, to create a worker, just replace the App file with:
 
-<code-group>
-  <code-block label="Java" active>
+<code-group><code-block label="Java" active>
 
 ```java[src/main/java/hello/world/App.java]
 package hello.world;
@@ -514,13 +505,11 @@ import io.infinitic.pulsar.InfiniticWorker;
 
 public class App {
     public static void main(String[] args) {
-        InfiniticWorker.fromFile("infinitic.yml").start();
+        InfiniticWorker.fromConfigFile("infinitic.yml").start();
     }
 }
 ```
-
-  </code-block>
-  <code-block label="Kotlin">
+</code-block><code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/App.kt]
 package hello.world
@@ -528,12 +517,10 @@ package hello.world
 import io.infinitic.pulsar.InfiniticWorker
 
 fun main(args: Array<String>) {
-    InfiniticWorker.fromFile("infinitic.yml").start()
+    InfiniticWorker.fromConfigFile("infinitic.yml").start()
 }
 ```
-
-  </code-block>
-</code-group>
+</code-block></code-group>
 
 Our app is ready to run as a worker:
 
@@ -567,8 +554,7 @@ When coding, workers need to be restarted to account for any change.
 The easiest way to instantiate an InfiniticClient is to use a config file exposing a `pulsar` configuration.
 Here, we already have the `infinitic.yml` file that we can reuse in a new `Client` file:
 
-<code-group>
-  <code-block label="Java" active>
+<code-group><code-block label="Java" active>
 
 ```kotlin[src/main/java/hello/world/Client.java]
 package hello.world;
@@ -578,32 +564,28 @@ import io.infinitic.pulsar.InfiniticClient;
 
 public class Client {
     public static void main(String[] args) {
-        InfiniticClient client = InfiniticClient.fromConfigFile("infinitic.yml");
+        io.infinitic.client.Client client = InfiniticClient.fromConfigFile("infinitic.yml");
         String name = args.length>0 ? args[0] : "World";
 
         // create a stub from HelloWorld interface
         HelloWorld helloWorld = client.newWorkflow(HelloWorld.class);
 
-        // dispatch a workflow
+        // asynchronous dispatch of a workflow
         client.async(helloWorld, w -> w.greet("async " + name));
 
-        // dispatch a workflow and get result
-        String greetings = helloWorld.greet("sync " + name);
-
-        System.out.println(greetings);
+        System.out.println("workflow " + HelloWorld.class.getName() + " dispatched!");
 
         client.close();
     }
 }
 ```
-
-  </code-block>
-  <code-block label="Kotlin">
+</code-block><code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/Client.kt]
 package hello.world
 
 import hello.world.workflows.HelloWorld
+import io.infinitic.clients.newWorkflow
 import io.infinitic.pulsar.InfiniticClient
 
 fun main(args: Array<String>) {
@@ -612,21 +594,13 @@ fun main(args: Array<String>) {
 
     // create a stub from HelloWorld interface
     val helloWorld = client.newWorkflow<HelloWorld>()
-
     // dispatch a workflow
-    client.async(helloWorld) { greet("async $name") }
+    client.async(helloWorld) { greet(name) }
 
-    // dispatch a workflow and get result
-    val greetings = helloWorld.greet("sync $name")
-
-    println(greetings)
-
-    client.close()
+    println("workflow ${HelloWorld::class} dispatched!")
 }
 ```
-
-  </code-block>
-</code-group>
+</code-block></code-group>
 
 We can run it directly from our IDE, or add the `startWorkflow` Gradle task to our build file:
 

@@ -1,8 +1,8 @@
 ---
-title: Building Client
+title: Clients
 description: ""
-position: 3.1
-category: "Client"
+position: 2.3
+category: "Components"
 ---
 
 <alert type="info">
@@ -11,9 +11,11 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-<img src="/overview-client@2x.png" class="img" width="1280" height="640" alt=""/>
+<img src="/architecture-client@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Infinitic client let us start and cancel task and workflows, usually from our Web App controllers.
+## Client Instantiation
+
+An Infinitic client lets us start, retry and cancel tasks or workflows, usually from your Web App controllers.
 
 We can instantiate a client using
 
@@ -24,7 +26,10 @@ We can instantiate a client using
 <code-group><code-block label="Java" active>
 
 ```java
-InfiniticClient client = InfiniticClient.from(
+import io.infinitic.pulsar.InfiniticClient;
+...
+
+InfiniticClient client = InfiniticClient(
     pulsarClient,
     pulsarTenant,
     pulsarNamespace,
@@ -35,7 +40,10 @@ InfiniticClient client = InfiniticClient.from(
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-var client = InfiniticClient.from(
+import io.infinitic.pulsar.InfiniticClient
+...
+
+var client = InfiniticClient(
     pulsarClient,
     pulsarTenant,
     pulsarNamespace,
@@ -51,7 +59,7 @@ When providing a name, this name MUST be unique among your different machines, a
 
 </alert>
 
-We can also create a client from a configuration file:
+We can also create a client from a configuration file in your file system:
 
 <code-group><code-block label="Java" active>
 
@@ -67,6 +75,22 @@ var client = InfiniticClient.fromConfigFile("infinitic.yml")
 
 </code-block></code-group>
 
+or in your resource folder
+
+<code-group><code-block label="Java" active>
+
+```java
+InfiniticClient client = InfiniticClient.fromConfigResource("/infinitic.yml");
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+var client = InfiniticClient.fromConfigResource("/infinitic.yml")
+```
+
+</code-block></code-group>
+
 with:
 
 ```yml[infinitic.yml]
@@ -78,3 +102,5 @@ pulsar:
   tenant: infinitic
   namespace: dev
 ```
+
+## Client Usage

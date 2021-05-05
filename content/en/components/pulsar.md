@@ -1,8 +1,8 @@
 ---
-title: Pulsar Setup
+title: Pulsar
 description: ""
-position: 2.1
-category: "Setup"
+position: 2.2
+category: "Components"
 ---
 
 <alert type="info">
@@ -11,15 +11,17 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-Before using Infinitic on your Pulsar cluster we recommend creating a dedicated [tenant](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/#tenants) and multiple [namespaces](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/#namespaces). 
+<img src="/architecture-pulsar@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Namespaces are useful to isolate messages and avoiding to mix things. For example, you may want to create one namespace per developer, plus one for staging and one for production. 
+## Pulsar Installation 
 
-<alert type="info">
+To install Pulsar, please see the [prerequisistes](/overview/prerequisites) or refer to the [Pulsar](http://pulsar.apache.org/docs/en/standalone/) documentation. 
 
-If in a hurry, we can use the command included in the [example app](/overview/example-app#pulsar-configuration). Just make sure to update the settings in `configs/infinitic.yml` file accordingly.
+## Pulsar Setup
 
-</alert>
+Before using Infinitic on our Pulsar cluster we need to create a dedicated [tenant](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/#tenants) and configure the [namespaces](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/#namespaces) we want to use. 
+
+Namespaces are useful to isolate messages and avoid mixing things up. For example, we may want to create one namespace per developer, plus one for staging and one for production.
 
 To create a `"infinitic"` Pulsar tenant with a `"dev"` Pulsar namespace, just do 
 
@@ -59,7 +61,7 @@ pulsar:
   namespace: dev
 ```
 
-Note: another option is to use our own [PulsarAdmin](https://pulsar.apache.org/api/admin/org/apache/pulsar/client/admin/PulsarAdmin.html) to instantiate an `InfiniticAdmin`:
+If we want to use a custom [PulsarAdmin](https://pulsar.apache.org/api/admin/org/apache/pulsar/client/admin/PulsarAdmin.html) instance, we can instantiate an `InfiniticAdmin` instance through:
 
 <code-group><code-block label="Java" active>
 

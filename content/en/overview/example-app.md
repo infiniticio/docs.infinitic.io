@@ -247,7 +247,7 @@ import io.infinitic.pulsar.InfiniticWorker;
 public class Worker {
     public static void main(String[] args) {
         String file = args.length > 0 ? args[0] :  "configs/all.yml";
-        InfiniticWorker.fromFile(file, "configs/infinitic.yml").start();
+        InfiniticWorker.fromConfigFile(file, "configs/infinitic.yml").start();
     }
 }
 ```
@@ -265,7 +265,7 @@ fun main(args: Array<String>) {
         0 -> "configs/all.yml"
         else -> args[0]
     }
-    InfiniticWorker.fromFile(file, "configs/infinitic.yml").start()
+    InfiniticWorker.fromConfigFile(file, "configs/infinitic.yml").start()
 }
 ```
 
@@ -337,32 +337,27 @@ import example.booking.tasks.flight.FlightBookingCart;
 import example.booking.tasks.hotel.HotelBookingCart;
 import example.booking.workflows.BookingWorkflow;
 import io.infinitic.pulsar.InfiniticClient;
-import java.util.UUID;
 
 public class Client {
     public static void main(String[] args) {
         // instantiate Infinitic client based on infinitic.yml config file
-        InfiniticClient client = InfiniticClient.fromFile("configs/infinitic.yml");
+        io.infinitic.client.Client client = InfiniticClient.fromConfigFile("configs/infinitic.yml");
 
         // faking some carts
-        CarRentalCart carRentalCart = new CarRentalCart(getId());
-        FlightBookingCart flightCart = new FlightBookingCart(getId());
-        HotelBookingCart hotelCart = new HotelBookingCart(getId());
+        CarRentalCart carRentalCart = new CarRentalCart();
+        FlightBookingCart flightCart = new FlightBookingCart();
+        HotelBookingCart hotelCart = new HotelBookingCart();
 
-        // create a stub from BookingWorkflow interface
+        // create a stub for BookingWorkflow
         BookingWorkflow bookingWorkflow = client.newWorkflow(BookingWorkflow.class);
-        // dispatch a workflow
+
+        // dispatch workflow
         client.async(
-                bookingWorkflow,
-                w -> w.book(carRentalCart, flightCart, hotelCart)
+            bookingWorkflow,
+            w -> w.book(carRentalCart, flightCart, hotelCart)
         );
 
-        // closing underlying PulsarClient
-        client.close();
-    }
-
-    private static String getId() {
-        return UUID.randomUUID().toString();
+        System.out.println("workflow " + BookingWorkflow.class.getName() + " dispatched!");
     }
 }
 ```
@@ -377,29 +372,26 @@ import example.booking.tasks.carRental.CarRentalCart
 import example.booking.tasks.flight.FlightBookingCart
 import example.booking.tasks.hotel.HotelBookingCart
 import example.booking.workflows.BookingWorkflow
+import io.infinitic.clients.newWorkflow
 import io.infinitic.pulsar.InfiniticClient
-import kotlinx.coroutines.runBlocking
-import java.util.UUID
 
-fun main() = runBlocking {
+fun main() {
     // instantiate Infinitic client based on infinitic.yml config file
-    val client = InfiniticClient.fromFile("configs/infinitic.yml")
+    val client = InfiniticClient.fromConfigFile("configs/infinitic.yml")
 
     // faking some carts
-    val carRentalCart = CarRentalCart(getId())
-    val flightCart = FlightBookingCart(getId())
-    val hotelCart = HotelBookingCart(getId())
+    val carRentalCart = CarRentalCart()
+    val flightCart = FlightBookingCart()
+    val hotelCart = HotelBookingCart()
 
-    // create a stub from BookingWorkflow interface
+    // create a stub for BookingWorkflow
     val bookingWorkflow = client.newWorkflow<BookingWorkflow>()
+
     // dispatch a workflow
     client.async(bookingWorkflow) { book(carRentalCart, flightCart, hotelCart) }
 
-    // closing underlying PulsarClient
-    client.close()
+    println("workflow ${BookingWorkflow::class} dispatched!")
 }
-
-fun getId() = UUID.randomUUID().toString()
 ```
 
   </code-block>
@@ -408,13 +400,14 @@ fun getId() = UUID.randomUUID().toString()
 Assuming we've launched all services together, we should see something like this, where the services are running:
 
 ```log
-CarRentalServiceFake     (4e00ee6c-0ab9-44b8-ab8c-41614efc8dc8): booking...
-FlightBookingServiceFake (34ffd1d2-bca5-4873-81fc-f79260286ce0): booking...
-HotelBookingServiceFake  (b7f16477-afbb-4dcb-a75a-f165f4dd6a82): booking...
-CarRentalServiceFake     (4e00ee6c-0ab9-44b8-ab8c-41614efc8dc8): succeeded
-FlightBookingServiceFake (34ffd1d2-bca5-4873-81fc-f79260286ce0): failed
-HotelBookingServiceFake  (b7f16477-afbb-4dcb-a75a-f165f4dd6a82): failed
-CarRentalServiceFake     (4e00ee6c-0ab9-44b8-ab8c-41614efc8dc8): canceled
+FlightBookingServiceFake     (bead0653-0d0a-4da3-8a9d-c5198021eb8c): booking ...
+CarRentalServiceFake     (510e5c75-c575-4d4e-812d-f3d58b72905b): booking ...
+HotelBookingServiceFake     (4ccaeecf-69e9-4bc4-b03b-4686428dfde7): booking...
+FlightBookingServiceFake     (bead0653-0d0a-4da3-8a9d-c5198021eb8c): succeeded
+HotelBookingServiceFake     (4ccaeecf-69e9-4bc4-b03b-4686428dfde7): succeeded
+CarRentalServiceFake     (510e5c75-c575-4d4e-812d-f3d58b72905b): failed
+FlightBookingServiceFake     (bead0653-0d0a-4da3-8a9d-c5198021eb8c): canceled
+HotelBookingServiceFake     (4ccaeecf-69e9-4bc4-b03b-4686428dfde7): canceled
 BookingWorkflowImpl: book canceled
 ```
 
@@ -444,13 +437,17 @@ We can also test what happens in tasks when an exception is thrown, by uncomment
 ```java[src/main/java/example/booking/tasks/hotel/HotelBookingServiceFake.java]
 package example.booking.tasks.hotel;
 
-public class HotelBookingServiceFake implements HotelBookingService {
+import io.infinitic.tasks.Task;
+import java.time.Duration;
+
+public class HotelBookingServiceFake extends Task implements HotelBookingService {
     @Override
     public HotelBookingResult book(HotelBookingCart cart) {
         // fake emulation of success/failure
-        println(cart, "booking ...");
+        println(cart, "booking...");
 
         long r = (long) (Math.random() * 5000);
+        
         try {
             Thread.sleep(r);
         } catch (InterruptedException e) {
@@ -477,8 +474,15 @@ public class HotelBookingServiceFake implements HotelBookingService {
         println(cart, "canceled");
     }
 
-    public Float getRetryDelay() {
-        return 5F;
+    // Exponential backoff retry strategy up to 6 attempts
+    @Override
+    public Duration getDurationBeforeRetry(Exception e) {
+        int n = context.getRetryIndex();
+        if (n < 6) {
+            return Duration.ofSeconds((long) (10 * Math.random() * Math.pow(2.0, n)));
+        } else {
+            return null;
+        }
     }
 
     private void println(HotelBookingCart cart, String msg) {
@@ -493,12 +497,15 @@ public class HotelBookingServiceFake implements HotelBookingService {
 ```kotlin[src/main/kotlin/example/booking/tasks/hotel/HotelBookingServiceFake.kt]
 package example.booking.tasks.hotel
 
+import io.infinitic.tasks.Task
+import java.time.Duration
+import kotlin.math.pow
 import kotlin.random.Random
 
-class HotelBookingServiceFake : HotelBookingService {
+class HotelBookingServiceFake: Task(), HotelBookingService {
     override fun book(cart: HotelBookingCart): HotelBookingResult {
         // fake emulation of success/failure
-        println("${this::class.simpleName}  (${cart.cartId}): booking ...")
+        println("${this::class.simpleName}  (${cart.cartId}): booking...")
 
         val r = Random.nextLong(0, 5000)
         Thread.sleep(r)
@@ -524,11 +531,18 @@ class HotelBookingServiceFake : HotelBookingService {
         println("${this::class.simpleName}  (${cart.cartId}): canceled")
     }
 
-    fun getRetryDelay() = 5F
+    // Exponential backoff retry strategy up to 6 attempts
+    override fun getDurationBeforeRetry(e: Exception): Duration? {
+        val n = context.retryIndex
+        return when {
+            n < 6 -> Duration.ofSeconds((10 * Math.random() * 2.0.pow(n)).toLong())
+            else -> null
+        }
+    }
 }
 ```
 
   </code-block>
 </code-group>
 
-Here, the `getRetryDelay` method tells Infinitic to retry that task after 5 seconds in case of exceptions. Once the task eventually completed, the workflow will resume.
+Here, the `getDurationBeforeRetry` method tells Infinitic to retry the task in case of exception, with an exponential backoff startegy.

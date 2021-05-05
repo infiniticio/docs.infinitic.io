@@ -1,7 +1,7 @@
 ---
 title: Writing Tasks
 description: ""
-position: 4.2
+position: 5.1
 category: "Tasks"
 ---
 
@@ -11,19 +11,24 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-When receiving the data to run a task, a task executor instantiates the class from its name, deserializes the parameters, and executes the method with them. So the requirements on tasks are the following:
+A task is a Java/Kotlin class whose only requirement are:
 
 <alert type="warning">
 
-Task's class must be public and have an empty constructor.
+- must extend `io.infinitic.tasks.Task` abstract class
+- must have an empty constructor
+- methods parameters and return value must be [serializable](/references/serializability)
+- must be thread-safe
 
 </alert>
 
-<alert type="warning">
+Beside that, it can contains arbitrary code. The `Task` abstract class is very simple, it contains only:
 
-Task's methods parameters and return value must be <nuxt-link to="/tasks/serializability"> serializable and deserializable</nuxt-link>
+- a [context](/tasks/context) variable (maintained by Infinitic),
+- a `getDurationBeforeRetry` method, we can overide to describe how the task will react in case of [failure](/tasks/failure)
 
-</alert>
+The other constraints are implied by the execution process: when receiving instructions to run a task, a task worker uses the empty constructor to instantiate the class, deserializes the parameters, executes the requested method and returns the serialized result. The class must be thread-safe to be run in parallel if we chose to.    
+
 
 Here is an example of task implementation, from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app:
 
