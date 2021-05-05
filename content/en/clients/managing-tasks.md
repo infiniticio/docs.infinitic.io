@@ -110,50 +110,48 @@ Deferred<String> deferred = client.async(helloWorldService, t -> t.sayHello("Inf
 ```java
 val deferred = client.async(helloWorldService) { sayHello("Infinitic") }
 ```
-
 </code-block></code-group>
 
 <img src="/client-task-async@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Here, the returned value is a `Deferred<T>`.
+We can use the returned `Deferred<T>` to:
 
-To wait for the synchronous completion:
+- wait for the synchronous completion:
 
-<code-group><code-block label="Java" active>
+    <code-group><code-block label="Java" active>
 
-```java
-T result = deferred.await();
-```
-</code-block><code-block label="Kotlin">
+    ```java
+    T result = deferred.await();
+    ```
+    </code-block><code-block label="Kotlin">
 
-```java
-val result: T = deferred.await()
-```
-</code-block></code-group>
+    ```java
+    val result: T = deferred.await()
+    ```
+    </code-block></code-group>
 
-where `T` is the actual return type.
+    where `T` is the actual return type.
 
-<alert type="warning">
+    <alert type="warning">
 
-The `await()` method blocks the current thread of the client - up to the task termination. It will throw an `UnknownTask` exception if the task is already terminated.
+    The `await()` method blocks the current thread of the client - up to the task termination. It will throw an `UnknownTask` exception if the task is already terminated.
 
-</alert>
+    </alert>
 
-To retrieve the underlying task's `id`:
+- retrieve the underlying task's `id`:
 
-<code-group><code-block label="Java" active>
+    <code-group><code-block label="Java" active>
 
-```java
-java.util.UUID id = deferred.id;
-```
-</code-block><code-block label="Kotlin">
+    ```java
+    java.util.UUID id = deferred.id;
+    ```
+    </code-block><code-block label="Kotlin">
 
-```java
-val id: java.util.UUID = deferred.id
-```
-</code-block></code-group>
+    ```java
+    val id: java.util.UUID = deferred.id
+    ```
+    </code-block></code-group>
 
- We can use this id later to manage this task while not yet completed or canceled.
 
 ## Managing Running Tasks
 

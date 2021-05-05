@@ -594,6 +594,7 @@ fun main(args: Array<String>) {
 
     // create a stub from HelloWorld interface
     val helloWorld = client.newWorkflow<HelloWorld>()
+    // dispatch a workflow
     client.async(helloWorld) { greet(name) }
 
     println("workflow ${HelloWorld::class} dispatched!")

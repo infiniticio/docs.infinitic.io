@@ -115,47 +115,44 @@ val deferred: Deferred<String> = client.async(helloWorldService) { sayHello("Inf
 
 <img src="/client-workflow-async@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Here, the returned value is a `Deferred<T>`.
 
-To wait for the synchronous completion:
+We can use the returned `Deferred<T>` to:
 
-<code-group><code-block label="Java" active>
+- wait for the synchronous completion:
 
-```java
-T result = deferred.await();
-```
-</code-block><code-block label="Kotlin">
+    <code-group><code-block label="Java" active>
 
-```java
-val result: T = deferred.await()
-```
-</code-block></code-group>
+    ```java
+    T result = deferred.await();
+    ```
+    </code-block><code-block label="Kotlin">
 
-where `T` is the actual return type.
+    ```java
+    val result: T = deferred.await()
+    ```
+    </code-block></code-group>
 
-<alert type="warning">
+    where `T` is the actual return type.
 
-The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `UnknownWorkflow` exception if the workflow is already terminated.
+    <alert type="warning">
 
-</alert>
+    The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `UnknownWorkflow` exception if the workflow is already terminated.
 
-To retrieve the underlying workflow's `id`:
+    </alert>
 
-<code-group><code-block label="Java" active>
+- retrieve the underlying workflow's `id`:
 
-```java
-java.util.UUID id = deferred.id;
-```
-</code-block><code-block label="Kotlin">
+    <code-group><code-block label="Java" active>
 
-```java
-val id: java.util.UUID = deferred.id
-```
-</code-block></code-group>
+    ```java
+    java.util.UUID id = deferred.id;
+    ```
+    </code-block><code-block label="Kotlin">
 
- We can use this id later to manage this workflow while not yet completed or canceled.
-
-
+    ```java
+    val id: java.util.UUID = deferred.id
+    ```
+    </code-block></code-group>
 
 
 ## Managing Running Workflows
