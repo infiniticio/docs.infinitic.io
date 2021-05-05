@@ -91,9 +91,9 @@ val greeting = helloWorld.greet("Infinitic")
 
 </code-block></code-group>
 
-When dispatching a workflow, the client serializes parameters and send them through Pulsar to the [workflow engine](/overview/architecture#workflow-engine), that will orchestrate the workflow. Eventually, the return value will be serialized and sent back to the client through Pulsar:
+When dispatching a workflow, the client serializes parameters and send them through Pulsar to the [workflow engine](/components/architecture#workflow-engine), that will orchestrate the workflow. Eventually, the return value will be serialized and sent back to the client through Pulsar:
 
-<img src="/client-sync-workflow@2x.png" class="img" width="1280" height="640" alt=""/>
+<img src="/client-workflow-sync@2x.png" class="img" width="1280" height="640" alt=""/>
 
 ### Asynchronous start
 
@@ -113,7 +113,7 @@ val deferred: Deferred<String> = client.async(helloWorldService) { sayHello("Inf
 
 </code-block></code-group>
 
-<img src="/client-async-workflow@2x.png" class="img" width="1280" height="640" alt=""/>
+<img src="/client-workflow-async@2x.png" class="img" width="1280" height="640" alt=""/>
 
 Here, the returned value is a `Deferred<T>`.
 
@@ -214,7 +214,7 @@ client.cancel(helloworld, returnValue)
 
 ### Send an object to a running workflow
 
-If the running workflow(s) contains one or more SendChannel, it's possible to send an object to this workflow. Those [channels](/workflows/writing-workflows#channel) should be described in the interface, for example:
+If the running workflow(s) contains one or more SendChannel, it's possible to send an object to this workflow. Those [channels](/workflows/events) should be described in the interface, for example:
 
 <code-group><code-block label="Java" active>
 

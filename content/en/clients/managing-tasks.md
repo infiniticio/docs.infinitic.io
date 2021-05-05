@@ -91,9 +91,9 @@ val hello = helloWorldService.sayHello("Infinitic")
 
 </code-block></code-group>
 
-When dispatching a task, the client serializes parameters and send them through Pulsar to the [task engine](/overview/architecture#task-engine), that will make sure the task is processed, managing retries if needed. Eventually, the return value will be serialized and sent back to the client through Pulsar:
+When dispatching a task, the client serializes parameters and send them through Pulsar to the [task engine](/components/architecture#task-engine), that will make sure the task is processed, managing retries if needed. Eventually, the return value will be serialized and sent back to the client through Pulsar:
 
-<img src="/client-sync-task@2x.png" class="img" width="1280" height="640" alt=""/>
+<img src="/client-task-sync@2x.png" class="img" width="1280" height="640" alt=""/>
 
 ### Asynchronous start
 
@@ -113,7 +113,7 @@ val deferred = client.async(helloWorldService) { sayHello("Infinitic") }
 
 </code-block></code-group>
 
-<img src="/client-async-task@2x.png" class="img" width="1280" height="640" alt=""/>
+<img src="/client-task-async@2x.png" class="img" width="1280" height="640" alt=""/>
 
 Here, the returned value is a `Deferred<T>`.
 
@@ -214,21 +214,13 @@ Or cancel this task:
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.cancel(carRentalService, returnValue);
+infiniticClient.cancel(carRentalService);
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.cancel(carRentalService, returnValue)
+infiniticClient.cancel(carRentalService)
 ```
 
 </code-block></code-group>
-
-`returnValue` can be `null`, and is useful only for a task in a workflow. `returnValue` will be the return value of this task inside the workflow.
-
-<alert type="danger">
-
-Be careful to provide a value of the correct return type for this task - there is no type checking here. A wrong value type will trigger an exception in the workflow.
-
-</alert>

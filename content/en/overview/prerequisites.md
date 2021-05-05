@@ -26,7 +26,7 @@ If you have Docker on your computer, you can simply run `docker-compose up` on t
 services:
   # Pulsar settings
   pulsar-standalone:
-    image: apachepulsar/pulsar:2.7.0
+    image: apachepulsar/pulsar:2.7.1
     environment:
       - BOOKIE_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
     command: >
