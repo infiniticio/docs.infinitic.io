@@ -1,5 +1,5 @@
 ---
-title: Inline tasks
+title: Inline Tasks
 description: ""
 position: 4.4
 category: "Workflows"
@@ -30,6 +30,7 @@ For example, we can use the current date in a workflow like this:
 Date now = inline(() -> new Date());
 ...
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
@@ -37,7 +38,7 @@ Date now = inline(() -> new Date());
 val now = inline { Date() }
 ...
 ```
+
 </code-block></code-group>
 
 <img src="/inline-function@2x.png" class="img" width="640" height="640" alt=""/>
-

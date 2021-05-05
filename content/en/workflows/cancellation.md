@@ -11,7 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-**What happens if a task dispatched by a workflow is canceled?**
+_What happens if a task dispatched by a workflow is canceled?_
 
 - if the task was dispatched asynchronously (using `async` function), it won't impact the workflow processing
 - if the task was dispatched synchronously, then an `CanceledDeferredException` will throw in the workflow. Then:

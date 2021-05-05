@@ -11,17 +11,12 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-## Tasks and Workflows
-
-In Infinitic terminology, functions in services are called "tasks" . A task is a function that "does something". The actual implementation of a task can be limited to a single call to a database or an API, or can be a complex domain-driven action. Tasks are invoked asynchronously through queues (Pulsar topics).
+In Infinitic terminology, a task is a function that "does something". The actual implementation of a task can be limited to a single call to a database or an API, or can be a complex domain-driven action. Tasks are invoked asynchronously through queues (Pulsar topics).
 
 Infinitic lets you add orchestrator services with "workflow" functions, whose mission is to orchestrate task execution, according to any scenario.
 
 <img src="/concept-introduction.png" class="light-img" width="1280" height="640" alt=""/>
 <img src="/concept-introduction.png" class="dark-img" width="1280" height="640" alt=""/>
-
-
-## Workflow As Code
 
 Infinitic follows a [_workflow as code_](https://medium.com/swlh/code-is-the-best-dsl-for-building-workflows-548d6824f549) pattern. It means that you can describe your workflow using Java or Kotlin instead of using JSON or Yaml files for example.
 
@@ -48,7 +43,7 @@ public interface ImageUtil {
 
 // workflow description
 public class ImageCropping extends WorkflowBase {
-    private final ImageUtil imageUtil = task(ImageUtil.class);
+    private final ImageUtil imageUtil = newTask(ImageUtil.class);
 
     String handle(String email, String imageUrl) {
         // 1st task: download image as a binary
@@ -77,7 +72,7 @@ interface ImageUtil {
 
 // workflow description
 class ImageCropping: WorkflowBase() {
-    private val imageUtil = task<ImageUtil>()
+    private val imageUtil = newTask<ImageUtil>()
 
     fun handle(email: String, imageUrl: String) {
         // 1st task: download image as a binary
@@ -101,4 +96,3 @@ Writing workflows with Infinitic brings a lot of benefits:
 - **maintainability**: your workflows are easy to understand, located defined at one place, and are versioned like any other piece of code
 - **observability**: everything is closely monitored and exposed on dashboards
 - **reliability**: workflows are immune to service / worker failures
-

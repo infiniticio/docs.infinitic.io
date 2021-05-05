@@ -11,7 +11,7 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-**What happens if an exception throws during the processing of a task dispatched by a workflow?**
+_What happens if an exception throws during the processing of a task dispatched by a workflow?_
 
 - this exception is caught by the task worker, and the the task will automaticaly be retried based on the policy described in its [`getDurationBeforeRetry`](/tasks/failure#automatic-retry) method
 - when the `getDurationBeforeRetry` returns `null`, the retries stop and the task is now failed for the workflow.

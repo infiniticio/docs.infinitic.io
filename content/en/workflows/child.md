@@ -1,5 +1,5 @@
 ---
-title: Child workflows
+title: Child Workflows
 description: ""
 position: 4.3
 category: "Workflows"
@@ -49,4 +49,3 @@ class Calculate() : Workflow(), CalculateInterface {
 ```
 
 </code-block></code-group>
-

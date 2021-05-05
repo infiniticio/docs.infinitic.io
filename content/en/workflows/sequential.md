@@ -1,5 +1,5 @@
 ---
-title: Sequential tasks
+title: Sequential Tasks
 description: ""
 position: 4.2
 category: "Workflows"
@@ -55,11 +55,13 @@ Syntaxicly, this stub can be used as an implementation of the task. Functionally
 ```java
 String str = helloWorldService.sayHello(name);
 ```
+
 </code-block> <code-block label="Kotlin">
 
 ```kotlin
 val str = helloWorldService.sayHello(name)
 ```
+
 </code-block></code-group>
 
 Here `helloWorldService` is a stub of the `HelloWorldService` task. When a workflow executor processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
@@ -87,4 +89,3 @@ val greeting =  helloWorldService.addEnthusiasm(str)
 </code-block></code-group>
 
 <img src="/hello-world@2x.png" class="img" width="1280" height="640" alt=""/>
-

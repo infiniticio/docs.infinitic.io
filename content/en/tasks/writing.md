@@ -11,13 +11,13 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-A task is a Java/Kotlin class whose only requirement are:
+A task is a Java/Kotlin class that:
 
 <alert type="warning">
 
 - must extend `io.infinitic.tasks.Task` abstract class
 - must have an empty constructor
-- methods parameters and return value must be [serializable](/references/serializability)
+- have [serializable](/references/serializability) methods parameters and return value
 - must be thread-safe
 
 </alert>
@@ -32,33 +32,34 @@ The other constraints are implied by the execution process: when receiving instr
 
 Here is an example of task implementation, from our <nuxt-link to="/overview/hello-world"> Hello World</nuxt-link> app:
 
-<code-group>
-  <code-block label="Java" active>
+<code-group><code-block label="Java" active>
 
 ```java
-public class HelloWorldServiceImpl implements HelloWorldService {
+import io.infinitic.tasks.Task;
+
+public class HelloWorldServiceImpl extends Task implements HelloWorldService {
     @Override
     public String sayHello(String name) {
+
         return "Hello " + ((name == null) ? "World" : name);
     }
 
     @Override
     public String addEnthusiasm(String str) {
+
         return str + "!";
     }
 }
 ```
-
-  </code-block> 
-  <code-block label="Kotlin">
+</code-block><code-block label="Kotlin">
 
 ```kotlin
-class HelloWorldServiceImpl : HelloWorldService {
-    override fun sayHello(name: String?) = "Hello ${name ?: "World"}"
+import io.infinitic.tasks.Task
+
+class HelloWorldServiceImpl: Task(), HelloWorldService {
+    override fun sayHello(name: String) = "Hello $name"
 
     override fun addEnthusiasm(str: String) = "$str!"
 }
 ```
-
-  </code-block>
-</code-group>
+</code-block></code-group>

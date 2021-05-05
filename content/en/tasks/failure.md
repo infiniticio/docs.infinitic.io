@@ -34,7 +34,7 @@ When an error occurs during task processing, the [task worker](/components/archi
 <code-group><code-block label="Java" active>
 
 ```java
-public class CarRentalServiceImpl implements CarRentalService {
+public class CarRentalServiceImpl extends Task implements CarRentalService {
     @Override
     public CarRentalResult book(CarRentalCart cart) {
         ...
@@ -56,7 +56,7 @@ public class CarRentalServiceImpl implements CarRentalService {
   <code-block label="Kotlin">
 
 ```kotlin
-class CarRentalServiceFake : CarRentalService {
+class CarRentalServiceFake: Task(), CarRentalService {
     override fun book(cart: CarRentalCart): CarRentalResult {
         ...
     }
