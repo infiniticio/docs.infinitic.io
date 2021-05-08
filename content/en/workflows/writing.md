@@ -79,13 +79,3 @@ and be deterministic, without side effects, so:
 must not be used in workflows, but can and must be implemented in tasks.
 
 </alert>
-
-Infinitic lets us manage a lot:
-- sequential tasks
-- asynchronous tasks
-- inlined tasks
-- child branch
-- child workflows
-- handling external events
-- waiting for completion
-- error management

@@ -11,7 +11,10 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 </alert>
 
-A workflow only need to know tasks signature. it uses an internal `newTask` function to create a [stub](https://en.wikipedia.org/wiki/Method_stub) from the task interface:
+A workflow only need to know tasks signature to dispatch tasks.
+
+We use an internal `newTask` function to create a [stub](https://en.wikipedia.org/wiki/Method_stub) from a task interface.
+Syntaxicly, this stub can be used as an implementation of the task:
 
 <code-group><code-block label="Java" active>
 
@@ -48,7 +51,7 @@ class HelloWorldImpl : Workflow(), HelloWorld {
 
 </code-block></code-group>
 
-Syntaxicly, this stub can be used as an implementation of the task. Functionally, this stub dispatches the task or provides its return value, depending on the current workflow history. For example, let's consider this line (from the `HelloWorldImpl` workflow above).
+Functionally, this stub dispatches the task or provides its return value, depending on the current workflow history. For example, let's consider this line (from the `HelloWorldImpl` workflow above).
 
 <code-group><code-block label="Java" active>
 
