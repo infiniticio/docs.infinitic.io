@@ -227,6 +227,7 @@ public class HelloWorldServiceImpl extends Task implements HelloWorldService {
     }
 }
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/tasks/HelloWorldServiceImpl.kt]
@@ -240,6 +241,7 @@ class HelloWorldServiceImpl : Task(), HelloWorldService {
     override fun addEnthusiasm(str: String) = "$str!"
 }
 ```
+
 </code-block></code-group>
 
 <alert type="warning">
@@ -368,7 +370,7 @@ This can be done through this Setup file:
 ```kotlin[src/main/java/hello/world/Setup.java]
 package hello.world;
 
-import io.infinitic.pulsar.InfiniticAdmin;
+import io.infinitic.pulsar.PulsarInfiniticAdmin;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.api.PulsarClientException;
 
@@ -379,7 +381,7 @@ public class Setup {
                 .serviceHttpUrl("http://localhost:8080")
                 .build();
 
-        InfiniticAdmin infiniticAdmin = new InfiniticAdmin(
+        PulsarInfiniticAdmin infiniticAdmin = new PulsarInfiniticAdmin(
                 pulsarAdmin,
                 "infinitic",
                 "dev",
@@ -397,7 +399,7 @@ public class Setup {
 ```kotlin[src/main/kotlin/hello/world/Setup.kt]
 package hello.world
 
-import io.infinitic.pulsar.InfiniticAdmin
+import io.infinitic.pulsar.PulsarInfiniticAdmin
 import org.apache.pulsar.client.admin.PulsarAdmin
 
 fun main() {
@@ -406,7 +408,7 @@ fun main() {
         .serviceHttpUrl("http://localhost:8080")
         .build()
 
-    val infiniticAdmin = InfiniticAdmin(pulsarAdmin, "infinitic", "dev")
+    val admin = PulsarInfiniticAdmin(pulsarAdmin, "infinitic", "dev")
 
     infiniticAdmin.setupPulsar()
     infiniticAdmin.close()
@@ -501,25 +503,27 @@ Then, to create a worker, just replace the App file with:
 ```java[src/main/java/hello/world/App.java]
 package hello.world;
 
-import io.infinitic.pulsar.InfiniticWorker;
+import io.infinitic.pulsar.PulsarInfiniticWorker;
 
 public class App {
     public static void main(String[] args) {
-        InfiniticWorker.fromConfigFile("infinitic.yml").start();
+        PulsarInfiniticWorker.fromConfigFile("infinitic.yml").start();
     }
 }
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/App.kt]
 package hello.world
 
-import io.infinitic.pulsar.InfiniticWorker
+import io.infinitic.pulsar.PulsarInfiniticWorker
 
 fun main(args: Array<String>) {
-    InfiniticWorker.fromConfigFile("infinitic.yml").start()
+    PulsarInfiniticWorker.fromConfigFile("infinitic.yml").start()
 }
 ```
+
 </code-block></code-group>
 
 Our app is ready to run as a worker:
@@ -551,7 +555,7 @@ When coding, workers need to be restarted to account for any change.
 
 ## Start A Workflow
 
-The easiest way to instantiate an InfiniticClient is to use a config file exposing a `pulsar` configuration.
+The easiest way to instantiate an PulsarInfiniticClient is to use a config file exposing a `pulsar` configuration.
 Here, we already have the `infinitic.yml` file that we can reuse in a new `Client` file:
 
 <code-group><code-block label="Java" active>
@@ -560,11 +564,11 @@ Here, we already have the `infinitic.yml` file that we can reuse in a new `Clien
 package hello.world;
 
 import hello.world.workflows.HelloWorld;
-import io.infinitic.pulsar.InfiniticClient;
+import io.infinitic.pulsar.PulsarInfiniticClient;
 
 public class Client {
     public static void main(String[] args) {
-        io.infinitic.client.Client client = InfiniticClient.fromConfigFile("infinitic.yml");
+        io.infinitic.client.Client client = PulsarInfiniticClient.fromConfigFile("infinitic.yml");
         String name = args.length>0 ? args[0] : "World";
 
         // create a stub from HelloWorld interface
@@ -579,6 +583,7 @@ public class Client {
     }
 }
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin[src/main/kotlin/hello/world/Client.kt]
@@ -586,10 +591,10 @@ package hello.world
 
 import hello.world.workflows.HelloWorld
 import io.infinitic.clients.newWorkflow
-import io.infinitic.pulsar.InfiniticClient
+import io.infinitic.pulsar.PulsarInfiniticClient
 
 fun main(args: Array<String>) {
-    val client = InfiniticClient.fromConfigFile("infinitic.yml")
+    val client = PulsarInfiniticClient.fromConfigFile("infinitic.yml")
     val name = args.firstOrNull() ?: "World"
 
     // create a stub from HelloWorld interface
@@ -600,6 +605,7 @@ fun main(args: Array<String>) {
     println("workflow ${HelloWorld::class} dispatched!")
 }
 ```
+
 </code-block></code-group>
 
 We can run it directly from our IDE, or add the `startWorkflow` Gradle task to our build file:
