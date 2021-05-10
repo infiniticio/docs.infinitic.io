@@ -22,6 +22,6 @@ In some cases, we want to know more about the context of the execution of a task
 | `retrySequence` | int             | the number of times the task was manually retried                                        |
 | `retryIndex`    | int             | the number of times the task was automatically retried (reset to 0 after a manual retry) |
 | `lastError`     | Error           | if any, the error during the previous attempt                                            |
-| `client`        | InfiniticClient | An InfiniticClient we may use inside the task                                            |
+| `client`        | InfiniticClient | An PulsarInfiniticClient we may use inside the task                                            |
 
 <img src="/task-retries@2x.png" class="img" width="1280" height="640" alt=""/>

@@ -234,7 +234,7 @@ This command will:
 
 ## Run workers
 
-Now, we'll launch different services. The commands below just set up and start an `InfiniticWorker` from the provided configuration files (both the one provided with the command line and `infinitic.yml`):
+Now, we'll launch different services. The commands below just set up and start an `PulsarInfiniticWorker` from the provided configuration files (both the one provided with the command line and `infinitic.yml`):
 
 <code-group>
   <code-block label="Java" active>
@@ -242,12 +242,12 @@ Now, we'll launch different services. The commands below just set up and start a
 ```java[src/main/java/example/booking/Worker.java]
 package example.booking;
 
-import io.infinitic.pulsar.InfiniticWorker;
+import io.infinitic.pulsar.PulsarInfiniticWorker;
 
 public class Worker {
     public static void main(String[] args) {
         String file = args.length > 0 ? args[0] :  "configs/all.yml";
-        InfiniticWorker.fromConfigFile(file, "configs/infinitic.yml").start();
+        PulsarInfiniticWorker.fromConfigFile(file, "configs/infinitic.yml").start();
     }
 }
 ```
@@ -258,14 +258,14 @@ public class Worker {
 ```kotlin[src/main/kotlin/example/booking/Worker.kt]
 package example.booking
 
-import io.infinitic.pulsar.InfiniticWorker
+import io.infinitic.pulsar.PulsarInfiniticWorker
 
 fun main(args: Array<String>) {
     val file = when (args.size) {
         0 -> "configs/all.yml"
         else -> args[0]
     }
-    InfiniticWorker.fromConfigFile(file, "configs/infinitic.yml").start()
+    PulsarInfiniticWorker.fromConfigFile(file, "configs/infinitic.yml").start()
 }
 ```
 
@@ -336,12 +336,12 @@ import example.booking.tasks.carRental.CarRentalCart;
 import example.booking.tasks.flight.FlightBookingCart;
 import example.booking.tasks.hotel.HotelBookingCart;
 import example.booking.workflows.BookingWorkflow;
-import io.infinitic.pulsar.InfiniticClient;
+import io.infinitic.pulsar.PulsarInfiniticClient;
 
 public class Client {
     public static void main(String[] args) {
         // instantiate Infinitic client based on infinitic.yml config file
-        io.infinitic.client.Client client = InfiniticClient.fromConfigFile("configs/infinitic.yml");
+        io.infinitic.client.Client client = PulsarInfiniticClient.fromConfigFile("configs/infinitic.yml");
 
         // faking some carts
         CarRentalCart carRentalCart = new CarRentalCart();
@@ -373,11 +373,11 @@ import example.booking.tasks.flight.FlightBookingCart
 import example.booking.tasks.hotel.HotelBookingCart
 import example.booking.workflows.BookingWorkflow
 import io.infinitic.clients.newWorkflow
-import io.infinitic.pulsar.InfiniticClient
+import io.infinitic.pulsar.PulsarInfiniticClient
 
 fun main() {
     // instantiate Infinitic client based on infinitic.yml config file
-    val client = InfiniticClient.fromConfigFile("configs/infinitic.yml")
+    val client = PulsarInfiniticClient.fromConfigFile("configs/infinitic.yml")
 
     // faking some carts
     val carRentalCart = CarRentalCart()
@@ -447,7 +447,7 @@ public class HotelBookingServiceFake extends Task implements HotelBookingService
         println(cart, "booking...");
 
         long r = (long) (Math.random() * 5000);
-        
+
         try {
             Thread.sleep(r);
         } catch (InterruptedException e) {

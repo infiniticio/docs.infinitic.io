@@ -13,25 +13,27 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 
 <img src="/architecture-worker@2x.png" class="img" width="1280" height="640" alt=""/>
 
-Infinitic provides a generic worker in charge of task or workflow execution based on its configuration. 
+Infinitic provides a generic worker in charge of task or workflow execution based on its configuration.
 The roles of workers are:
+
 - to listen to Pulsar for messages
 - to process task or workflow accordingly and send back the return value
 - to maintain the state of task or workflow.
 
-### Worker Instantiation 
+### Worker Instantiation
 
 A worker can be instantiate through a configuration file (or resource by using `fromConfigResource("/infinitic.yml")`):
 
 <code-group><code-block label="Java" active>
 
 ```java
-InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml");
+PulsarInfiniticWorker worker = PulsarInfiniticWorker.fromConfigFile("infinitic.yml");
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-val worker = InfiniticWorker.fromConfigFile("infinitic.yml")
+val worker = PulsarInfiniticWorker.fromConfigFile("infinitic.yml")
 ```
 
 </code-block></code-group>
@@ -83,7 +85,6 @@ A worker must contain the code of all `class` described in its configuration fil
 
 As illustrated above, a worker can handle multiple task or workflow, but we can also specialize a worker per task or per workflow. We just have to update to `infinitic.yml` file accordingly, for example:
 
-
 ```yml
 pulsar:
   serviceUrl: pulsar://localhost:6650
@@ -106,11 +107,13 @@ Just use the `start()`method to start listening Pulsar:
 ```java
 worker.start();
 ```
+
 </code-block><code-block label="Kotlin">
 
 ```kotlin
 worker.start()
 ```
+
 </code-block></code-group>
 
 Notes:
@@ -124,4 +127,3 @@ Notes:
   Workers can be scaled horizontally.
 
   </alert>
-

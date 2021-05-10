@@ -194,13 +194,13 @@ Using this stub, we can force the retry of this task:
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.retry(carRentalService);
+client.retry(carRentalService);
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.retry(carRentalService)
+client.retry(carRentalService)
 ```
 
 </code-block></code-group>
@@ -212,13 +212,13 @@ Or cancel this task:
 <code-group><code-block label="Java" active>
 
 ```java
-infiniticClient.cancel(carRentalService);
+client.cancel(carRentalService);
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-infiniticClient.cancel(carRentalService)
+client.cancel(carRentalService)
 ```
 
 </code-block></code-group>
