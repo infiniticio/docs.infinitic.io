@@ -196,18 +196,22 @@ Using this stub, we can cancel the targeted workflow(s):
 <code-group><code-block label="Java" active>
 
 ```java
-client.cancel(helloworld, returnValue);
+client.cancel(helloworld);
 ```
 
 </code-block><code-block label="Kotlin">
 
 ```kotlin
-client.cancel(helloworld, returnValue)
+client.cancel(helloworld)
 ```
 
 </code-block></code-group>
 
-`returnValue` is optional ,`null` per default, and is useful only for a workflow in another workflow. `returnValue` will be the return value of this workflow inside the parent workflow.
+<alert type="info">
+
+Cancelling a workflow will cancel its child workflows as well.
+
+</alert>
 
 ### Send an object to a running workflow
 
