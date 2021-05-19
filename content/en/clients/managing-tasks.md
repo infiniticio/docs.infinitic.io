@@ -237,7 +237,7 @@ Infinitic provides a `@Name` annotation that let us declare explicitly the names
 ```java
 package hello.world.tasks;
 
-import io.infinitic.annotation.Name;
+import io.infinitic.annotations.Name;
 
 @Name("HelloService")
 public interface HelloWorldService {
@@ -254,7 +254,7 @@ public interface HelloWorldService {
 ```kotlin
 package hello.world.tasks
 
-import io.infinitic.annotation.Name
+import io.infinitic.annotations.Name
 
 @Name('HelloService')
 interface HelloWorldService {

@@ -263,7 +263,7 @@ Infinitic provides a `@Name` annotation that let us declare explicitly the names
 ```java
 package hello.world.workflows;
 
-import io.infinitic.annotation.Name;
+import io.infinitic.annotations.Name;
 
 @Name("HelloWorkflow")
 public interface HelloWorld {
@@ -278,7 +278,7 @@ public interface HelloWorld {
 ```kotlin
 package hello.world.workflows
 
-import io.infinitic.annotation.Name
+import io.infinitic.annotations.Name
 
 @Name('HelloWorkflow')
 interface HelloWorld {
