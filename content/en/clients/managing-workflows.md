@@ -14,8 +14,6 @@ Infinitic is still in active development. Subscribe [here](https://infinitic.sub
 Infinitic client let us start and cancel workflows, usually from our Web App controllers.
 
 
-
-
 ## Starting New Workflows
 
 ### New workflow stub
@@ -250,3 +248,52 @@ helloworld.getNotificationChannel().send("foobar");
 helloworld.notificationChannel.send("foobar")
 ```
 </code-block></code-group>
+
+## @Name annotation
+
+A workflow instance is internally described by both its full java name (including its package) and the name of the method called.
+
+In some situations we may want to avoid coupling those names with the underlying implementation, for example if we want to rename the class or method, or if we mix programming languages.
+
+Infinitic provides a `@Name` annotation that let us declare explicitly the names that Infinitic should use internally. For example:
+
+<code-group><code-block label="Java" active>
+
+
+```java
+package hello.world.workflows;
+
+import io.infinitic.annotation.Name;
+
+@Name("HelloWorkflow")
+public interface HelloWorld {
+
+    @Name("welcome")
+    String greet(@Nullable String name);
+}
+```
+
+</code-block><code-block label="Kotlin">
+
+```kotlin
+package hello.world.workflows
+
+import io.infinitic.annotation.Name
+
+@Name('HelloWorkflow')
+interface HelloWorld {
+
+    @Name('welcome')
+    fun greet(name: String?): String
+}
+```
+
+</code-block></code-group>
+
+When using this annotation, the `name` setting in [workflow worker](/components/workers) configuration file should be the one provided by the annotation:
+
+```yml
+workflows:
+  - name: HelloWorkflow
+    class: hello.world.workflows.HelloWorldImpl
+```

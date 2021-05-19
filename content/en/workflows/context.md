@@ -15,6 +15,6 @@ When running, a workflow instance has a `context` property containing the follow
 
 | Name            | Type            | Description                                                                              |
 | --------------- | --------------- | ---------------------------------------------------------------------------------------- |
-| `id`            | UUID            | the id of the workflow                                                                   |
-| `tags`          | Set<String>     | workflow's tags                                                                          |
+| `id`            | UUID            | id of the workflow                                                                       |
+| `tags`          | Set\<String\>   | tags of the workflow                                                                     |
 
