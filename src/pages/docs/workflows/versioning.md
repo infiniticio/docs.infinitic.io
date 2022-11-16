@@ -7,8 +7,8 @@ description: ""
 
 ### Class name
 
-As a workflow is internally named through its interface's class name (including package), you need to keep it stable.
-You can change it, as long as you use the [`@Name`](/docs/workflows/syntax#name-annotation) annotation to ensure that the internal name does not change.
+As a workflow is internally named through its interface's class name (including package), we need to keep it stable.
+We can change it, as long as we use the [`@Name`](/docs/workflows/syntax#name-annotation) annotation to ensure that the internal name does not change.
 For example,
 
 {% codes %}
@@ -63,8 +63,8 @@ We recommend always using a `@Name` annotation - with a simple name - for all wo
 
 ### Method name
 
-As a workflow is started through its interface's method name, you need to keep it stable.
-You can change also it, as long as you use the `@Name` annotation to ensure that the internal name does not change.
+As a workflow is started through its interface's method name, we need to keep it stable.
+We can change also it, as long as we use the `@Name` annotation to ensure that the internal name does not change.
 For example,
 
 {% codes %}

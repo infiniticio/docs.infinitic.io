@@ -105,7 +105,7 @@ A workflow class must be deterministic and without side effects. As a consequenc
 
 {% callout type="warning"  %}
 
-the history of a workflow should not grow indefinitely, so we should avoid having more than a few thousand tasks in a workflow. If you need more, consider using child workflows to distribute your work.
+the history of a workflow should not grow indefinitely, so we should avoid having more than a few thousand tasks in a workflow. If we need more, we should consider using child workflows to distribute our work.
 
 For example, to manage 1 million tasks, we may have a workflow dispatching 1000 child-workflows managing 1000 tasks each)
 
@@ -225,7 +225,7 @@ class MyWorkflow : Workflow(), MyWorkflowInterface {
 
 {% callout type="note"  %}
 
-`newService` stubs can to be defined only once. You can use it multiple times to dispatch multiple new tasks.
+`newService` stubs can to be defined only once. We can use it multiple times to dispatch multiple new tasks.
 
 {% /callout  %}
 
@@ -306,7 +306,7 @@ class MyWorkflowImpl : Workflow(), MyWorkflowInterface {
 
 {% callout type="note"  %}
 
-`newWorkflow` stubs can be defined only once. You can use it multiple times to dispatch multiple new workflows.
+`newWorkflow` stubs can be defined only once. We can use it multiple times to dispatch multiple new workflows.
 
 {% /callout  %}
 
@@ -557,7 +557,7 @@ Using this stub, we can:
 
 ### Sending a signal to another workflow
 
-Once you have the stub of a running workflow, we can easily send a typed signal to it:
+Once we have the stub of a running workflow, we can easily send a typed signal to it:
 
 {% codes %}
 

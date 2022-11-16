@@ -105,7 +105,7 @@ pulsar:
 
 ## Default producer settings
 
-You can provide default settings for all producers. All are optional. Pulsar default will be used if not provided.
+We can provide default settings for all producers. All are optional. Pulsar default will be used if not provided.
 
 ```yml
 pulsar:
@@ -134,7 +134,7 @@ pulsar:
 
 ## Default consumer settings
 
-You can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
+We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
 
 ```yml
 pulsar:

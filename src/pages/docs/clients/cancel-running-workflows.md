@@ -51,7 +51,7 @@ client.cancel(w)
 
 Cancelling a workflow cancels its child workflows as well.
 
-If you do not want this behavior, you should dispatch your child workflow from a task.
+If we do not want this behavior, we should dispatch our child workflow from a task.
 
 {% /callout  %}
 

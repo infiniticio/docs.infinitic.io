@@ -7,8 +7,8 @@ description: ""
 
 ### Class name
 
-As a service is internally named through its interface's class name (including package), you need to keep it stable.
-You can change it, as long as you use the [`@Name`](/docs/services/syntax#name-annotation) annotation to ensure that the internal name does not change.
+As a service is internally named through its interface's class name (including package), we need to keep it stable.
+We can change it, as long as we use the [`@Name`](/docs/services/syntax#name-annotation) annotation to ensure that the internal name does not change.
 For example,
 
 {% codes %}
@@ -72,8 +72,8 @@ to avoid keeping legacy names like here.
 
 ### Method name
 
-As a task is named through its interface's method name, you need to keep it stable.
-You can change also it, as long as you use the `@Name` annotation to ensure that the internal name does not change.
+As a task is named through its interface's method name, we need to keep it stable.
+We can change also it, as long as we use the `@Name` annotation to ensure that the internal name does not change.
 For example:
 
 {% codes %}

@@ -71,9 +71,9 @@ val str = helloWorldService.sayHello(name)
 
 {% /codes %}
 
-Here `helloWorldService` is a stub of the `HelloWorldService` interface. When a workflow executor processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
+Here `helloWorldService` is a stub of the `HelloWorldService` interface. When a workflow worker processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
 
-After completion of this task, a workflow executor will process the workflow again, but with an updated workflow history. When reaching this line, the stub will - this time - provide the deserialized return value of the task, and the workflow will continue its execution.
+After completion of this task, a workflow worker will process the workflow again, but with an updated workflow history. When reaching this line, the stub will - this time - provide the deserialized return value of the task, and the workflow will continue its execution.
 
 And so on.
 

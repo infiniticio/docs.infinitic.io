@@ -21,7 +21,7 @@ Workflow workers are horizontally scalable: to increase throughput and resilienc
 
 ## Starting a Workflow worker
 
-First, add the `infinitic-worker` dependency into your project:
+First, let's add the `infinitic-worker` dependency into our project:
 
 {% codes %}
 
@@ -242,7 +242,7 @@ cache:
 
 ## Workflow registration
 
-You can register a service directly with a worker. It can be useful if you need to inject some dependencies in your service:
+We can register a service directly with a worker. It can be useful if we need to inject some dependencies in our service:
 
 {% codes %}
 
@@ -302,7 +302,7 @@ fun main(args: Array<String>) {
 
 {% callout type="warning"  %}
 
-Exceptions are caught within workflow workers. Do not forget to add a Log4J implementation to your project to be able to see errors.
+Exceptions are caught within workflow workers. Let's not forget to add a Log4J implementation to our project to be able to see errors.
 
 {% /callout  %}
 

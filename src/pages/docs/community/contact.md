@@ -6,8 +6,8 @@ description: ""
 
 There are multiple ways to stay in touch:
 
-- Substack: subscribe [here](https://infinitic.substack.com/) to receive our news (about every 2/3 weeks)
-- Twitter: [@infiniticio](https://twitter.com/Infiniticio) (just launched)
+- Substack: subscribe [here](https://infinitic.substack.com/) to receive our news (about every month)
+- Twitter: [@infiniticio](https://twitter.com/infiniticio) (just launched)
 - Slack: join the [#Infinitic](https://apache-pulsar.slack.com/app_redirect?channel=infinitic) channel in the [Apache Pulsar Slack](https://apache-pulsar.herokuapp.com/)
 - Github: please ⭐️ the repo https://github.com/infiniticio/infinitic!
 

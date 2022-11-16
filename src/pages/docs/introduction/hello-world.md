@@ -23,7 +23,7 @@ We need to have [Gradle](https://gradle.org/install/) installed, with:
 - an Apache Pulsar cluster ([install](https://pulsar.apache.org/docs/en/standalone-docker/))
 - a Redis ([install](https://redis.io/topics/introduction)) or MySQL database, to store workflow states.
 
-If you have Docker on your computer, you can simply run `docker-compose up` on this `docker-compose.yml` file:
+If we have Docker on our computer, we can simply run `docker-compose up` on this `docker-compose.yml` file:
 
 ```yml
 services:
@@ -66,7 +66,7 @@ mkdir hello-world && cd hello-world && gradle init
 
 Configure this project:
 
-{% codeJava %}
+{% code-java %}
 
 ```sh
 Select type of project to generate:
@@ -98,9 +98,9 @@ Project name (default: hello-world):
 Source package (default: hello.world):
 ```
 
-{% /codeJava %}
+{% /code-java %}
 
-{% codeKotlin %}
+{% code-kotlin %}
 
 ```sh
 Select type of project to generate:
@@ -139,7 +139,7 @@ Project name (default: hello-world):
 Source package (default: hello.world):
 ```
 
-{% /codeKotlin %}
+{% /code-kotlin %}
 
 in our build gradle file, we add:
 
@@ -538,7 +538,7 @@ fun main(args: Array<String>) {
 
 {% /codes %}
 
-We can run it directly from our IDE (you may need to change the working directory on the Run configuration), or add the `startWorkflow` Gradle task to our build file:
+We can run it directly from our IDE (we may need to change the working directory on the Run configuration), or add the `startWorkflow` Gradle task to our build file:
 
 {% codes %}
 
@@ -654,19 +654,19 @@ org.slf4j.simpleLogger.showShortLogName=true
 
 If we fail to chase a bug, we still can copy this working repository and look for the differences:
 
-{% codeJava %}
+{% code-java %}
 
 ```sh
 git clone https://github.com/infiniticio/infinitic-example-java-hello-world
 ```
 
-{% /codeJava %}
+{% /code-java %}
 
-{% codeKotlin %}
+{% code-kotlin %}
 
 ```sh
 git clone https://github.com/infiniticio/infinitic-example-kotlin-hello-world
 ```
 
-{% /codeKotlin %}
+{% /code-kotlin %}
 

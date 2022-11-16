@@ -5,7 +5,7 @@ description: Quidem magni aut exercitationem maxime rerum eos.
 
 ## Service
 
-**Services** are domain-related classes that implement valuable methods, called [tasks](#task) in Infinitic terminology.
+**Services** are classes that implement domain-driven methods, called [tasks](#task) in Infinitic terminology.
 Typical self-explanatory examples are:
 
 - `EmailService`
@@ -36,12 +36,6 @@ A **task** is a [service](#service)'s method. It can be
 Tasks are processed inside [workers](#worker) and remotely invoked through Apache Pulsar.
 
 ![Tasks](/img/concept-task@2x.png)
-
-{% callout type="note"  %}
-
-Currently, we can write services in Java or Kotlin only. Infinitic could support more programming languages later. It already has some experimental workers running in Node.js.
-
-{% /callout  %}
 
 ## Worker
 

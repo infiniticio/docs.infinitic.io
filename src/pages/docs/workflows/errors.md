@@ -124,7 +124,7 @@ val str = try {
 
 {% callout type="warning"  %}
 
-`DeferredException` and its sub-classes are the only relevant exceptions in workflows. You must not catch any other exception.
+`DeferredException` and its sub-classes are the only relevant exceptions in workflows. We must not catch any other exception.
 
 {% /callout  %}
 

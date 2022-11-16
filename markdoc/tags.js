@@ -3,6 +3,7 @@ import { QuickLink, QuickLinks } from '@/components/QuickLinks'
 import { Codes } from '@/components/Codes'
 import { CodeJava } from '@/components/CodeJava'
 import { CodeKotlin } from '@/components/CodeKotlin'
+import { CodeIcon } from '@/components/CodeIcon'
 
 const tags = {
   callout: {
@@ -48,12 +49,23 @@ const tags = {
   'codes': {
     render: Codes
   },
-  'codeJava': {
+  'code-java': {
     render: CodeJava
   },
-  'codeKotlin': {
+  'code-kotlin': {
     render: CodeKotlin
-  }
+  },
+  'code-icon': {
+    selfClosing: true,
+    render: CodeIcon,
+    attributes: {
+      type: {
+        type: String,
+        default: 'java',
+        matches: ['java', 'kotlin']
+      }
+    },
+  },
 }
 
 export default tags

@@ -5,7 +5,7 @@ description: ""
 
 As stated previously, workflow's code is processed multiple times, so it should not contain non-deterministic instructions either any instruction with side effects. When this is the case, we must put those within a task. For simple instructions (as getting a random number or the current date), it can be tedious to do so.
 
-The `inline` function provides an easy way to "inline" such a task. The provided lambda is processed by the workflow executor only the first time. After that, the returned value will be found directly from the workflow history.
+The `inline` function provides an easy way to "inline" such a task. The provided lambda is processed by the workflow worker only the first time. After that, the returned value will be found directly from the workflow history.
 
 {% callout type="warning"  %}
 

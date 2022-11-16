@@ -30,12 +30,12 @@ export function Logo(props) {
 
 export function LogoLigh(props) {
   return (
-    <Image src={LogoLight.src} alt="Infinitic" {...props} />
+    <Image src={LogoLight.src} alt="Infinitic" height={30} width={30} {...props} />
   )
 }
 
 export function LogoDar(props) {
   return (
-    <Image src={LogoDark.src} alt="Infinitic" {...props} />
+    <Image src={LogoDark.src} alt="Infinitic" height={30} width={30} {...props} />
   )
 }

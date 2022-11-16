@@ -4,7 +4,7 @@ description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 
 Workflows [are able to wait](/docs/workflows/waiting) for a specific time or duration.
-If you want to manually complete the waiting, you can do that through the `completeTimers` method of the client.
+If we want to manually complete the waiting, we can do that through the `completeTimers` method of the client.
 
 After having fixed the workflow definition, the instance can be resume by using:
 
@@ -64,8 +64,7 @@ The `completeTimers` method completes only the timers currently waiting on the m
 
 {% /callout  %}
 
-If you dispatched a [parallel method](/docs/workflows/parallel#parallel-methods), and want to complete timers on this method,
-you can do it with:
+If we dispatched a [parallel method](/docs/workflows/parallel#parallel-methods), and want to complete timers on this method, we can do it with:
 
 {% codes %}
 

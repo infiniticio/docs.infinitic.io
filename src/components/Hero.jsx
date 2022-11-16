@@ -8,18 +8,20 @@ import { HeroBackground } from '@/components/HeroBackground'
 import blurCyanImage from '@/images/blur-cyan.png'
 import blurIndigoImage from '@/images/blur-indigo.png'
 
-const codeLanguage = 'javascript'
-const code = `export default {
-  strategy: 'predictive',
-  engine: {
-    cpus: 12,
-    backups: ['./storage/cache.wtf'],
-  },
+const codeLanguage = 'java'
+const code = `public void start(User user) {
+  // while this user is active
+  while (userService.isActive(user)) {
+      // add points
+      loyaltyService.incrementPoints(140);
+      // wait one week
+      timer(Duration.ofDays(7)).await();
+  }
 }`
 
 const tabs = [
-  { name: 'cache-advance.config.js', isActive: true },
-  { name: 'package.json', isActive: false },
+  { name: 'loyaltyWorkflow', isActive: true },
+  // { name: 'package.json', isActive: false },
 ]
 
 function TrafficLightsIcon(props) {
@@ -49,18 +51,20 @@ export function Hero() {
             />
             <div className="relative">
               <p className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
-                Never miss the cache again.
+              
+              Easily Code Complex Business Processess 
+
               </p>
               <p className="mt-3 text-2xl tracking-tight text-slate-400">
-                Cache every single thing your app could ever do ahead of time,
-                so your code never even has to run at all.
+              Reliably orchestrate distributed services
+              with just a few lines of code, at any scale.
               </p>
-              <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
+              {/* <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
                 <Button href="/">Get started</Button>
                 <Button href="/" variant="secondary">
                   View on GitHub
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="relative lg:static xl:pl-10">

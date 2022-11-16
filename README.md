@@ -1,38 +1,27 @@
-# Syntax
+# docs.infinitic.io
 
-Syntax is a [Tailwind UI](https://tailwindui.com) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+## Setup
 
-## Getting started
+Install dependencies:
 
-To get started with this template, first install the npm dependencies:
-
-```bash
+```sh
 npm install
-cp .env.example .env.local
 ```
 
-Next, run the development server:
+## Development
 
-```bash
+```sh
 npm run dev
 ```
 
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
+## Static Generation
 
-## Customizing
+This will create the `dist/` directory for publishing to static hosting:
 
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+```sh
+npm run build
+```
 
-## License
+To preview the static generated app, run `npm run start`
 
-This site template is a commercial product and is licensed under the [Tailwind UI license](https://tailwindui.com/license).
-
-## Learn more
-
-To learn more about the technologies used in this site template, see the following resources:
-
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [Markdoc](https://markdoc.io) - the official Markdoc documentation
-- [DocSearch](https://docsearch.algolia.com) - the official DocSearch documentation
+For a detailed explanation of how things work, checkout [nextjs](https://nextjs.org/docs/getting-started), [markdoc](https://markdoc.dev/docs/getting-started) and [tailwind](https://tailwindcss.com/docs/installation).

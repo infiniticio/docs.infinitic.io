@@ -22,7 +22,7 @@ Service workers also catch any thrown exception to automatically retry the task 
 
 ## Starting a Service worker
 
-First, add the `infinitic-worker` dependency into your project:
+First, let's add the `infinitic-worker` dependency into our project:
 
 {% codes %}
 
@@ -205,7 +205,7 @@ The retry policy can also be defined directly from the Service, through a [`With
 
 ## Service registration
 
-You can register a service directly with a worker. It can be useful if you need to inject some dependencies in your service:
+We can register a service directly with a worker. It can be useful if you need to inject some dependencies in our service:
 
 {% codes %}
 
@@ -263,7 +263,7 @@ fun main(args: Array<String>) {
 
 {% callout type="warning"  %}
 
-Exceptions are caught within service workers. Do not forget to add a Log4J implementation to your project to be able to see errors.
+Exceptions are caught within service workers. Let's not forget to add a Log4J implementation to our project to be able to see errors.
 
 {% /callout  %}
 

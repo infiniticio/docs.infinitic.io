@@ -3,13 +3,13 @@ title: Client Creation
 description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 
+An Infinitic client lets us start, retry and cancel tasks or workflows, usually from our Web App controllers.
+
 ![Client](/img/concept-client-only@2x.png)
 
-An Infinitic client lets us start, retry and cancel tasks or workflows, usually from your Web App controllers.
-
 First, add the `infinitic-client` dependency into our
-{% codeJava %} build.gradle {% /codeJava %}
-{% codeKotlin %} build.gradle.kts {% /codeKotlin %}
+{% code-java %} build.gradle {% /code-java %}
+{% code-kotlin %} build.gradle.kts {% /code-kotlin %}
 file:
 
 {% codes %}

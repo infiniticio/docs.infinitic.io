@@ -1,16 +1,12 @@
 ---
 title: Getting started
-pageTitle: CacheAdvance - Never miss the cache again.
-description: Cache every single thing your app could ever do ahead of time, so your code never even has to run at all.
+pageTitle: Unbreakable Business Processess.
+description: ""
 ---
 
-Infinitic is a framework that considerably eases building resilient and sophisticated business processes. It does this on top of [Apache Pulsar](https://pulsar.apache.org/) to benefit from its scalability and reliability.
+Infinitic lets us easily orchestrate services distributed on multiple servers - in any complex scenario. With the peace of mind of knowing that a failure somewhere will never break our workflows. {% .lead %}
 
-Infinitic is very good at managing the execution of tasks on distributed servers according to any complex scenario. Moreover, Infinitic ensures that a failure somewhere will never break our workflows. 
-
-At last, Infinitic lets us monitor everything through dashboards.
-
-Possible use cases are:
+It does this on top of [Apache Pulsar](https://pulsar.apache.org/) to benefit from its scalability and reliability. Possible use cases are:
 
 - microservices orchestration
 - distributed transactions
@@ -18,32 +14,30 @@ Possible use cases are:
 - business processes implementation
 - etc.
 
-Infinitic brings a lot of benefits:
+Using Infinitic we get:
 
-- **versatility**: you can use loops, conditions, data manipulations instructions provided by the programming language, without being limited by the capabilities of a DSL
-- **maintainability**: your workflows are easy to understand, defined in one place, and versioned like any other piece of code
+- **versatility**: we can use loops, conditions, data manipulations instructions provided by the programming language, without being limited by the capabilities of a DSL
+- **maintainability**: our workflows are easy to understand, defined in one place, and versioned like any other piece of code
 - **observability**: everything is closely monitored and exposed on dashboards
-- **reliability**: workflows are immune to service/worker failures
+- **reliability**: workflows are immune to services or workers failures
 
-To start, we can:
+{% callout type="note" title="Programming languages" %}
 
-- learn the [terminology](/docs/introduction/terminology) at Infinitic,
-- build our own [hello world app](/docs/introduction/hello-world).
-- see [example apps](/docs/introduction/examples),
-- ⭐️ us on [Github](https://github.com/infiniticio/infinitic)!
+Infinitic is currently available in Java and Kotlin. *Use the {% code-icon type="java" /%} button in the top menu to select the version you want for this documentation*.
 
----
+Infinitic can support more programming languages. [Contact us](/docs/community/contact) if interested.
 
-Learn how to get CacheAdvance set up in your project in under thirty minutes or it's free. {% .lead %}
+{% /callout  %}
+
 
 {% quick-links %}
 
-{% quick-link title="Installation" icon="installation" href="/" description="Step-by-step guides to setting up your system and installing the library." /%}
+{% quick-link title="Terminology" icon="installation" href="/docs/introduction/terminology" description="Learn the different components of Infinitic: Services, Tasks, Workflows, Workers, Clients." /%}
 
-{% quick-link title="Architecture guide" icon="presets" href="/" description="Learn how the internals work and contribute." /%}
+{% quick-link title="Under The Hood" icon="presets" href="/docs/introduction/event-driven-workflows" description="Learn how workflows processed by Infinitic are fully event-driven, horizontally scalable, and immune to errors." /%}
 
-{% quick-link title="Plugins" icon="plugins" href="/" description="Extend the library with third-party plugins or write your own." /%}
+{% quick-link title="Workflow Examples" icon="plugins" href="/docs/introduction/examples" description="Workflow examples showcasing how easy it is to build complex business processes and how powerful Infinitic is." /%}
 
-{% quick-link title="API reference" icon="theming" href="/" description="Learn to easily customize and modify your app's visual design to fit your brand." /%}
+{% quick-link title="Hello World" icon="theming" href="/docs/introduction/hello-world" description="Step-by-type guide to build our first workflow." /%}
 
 {% /quick-links %}
