@@ -11,7 +11,8 @@ After having fixed the workflow definition, the instance can be resume by using:
 
 ```java
 // stub targeting a running HelloWorld workflow with a specific id
-HelloWorldWorkflow w = client.getWorkflowById(HelloWorldWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c");
+HelloWorldWorkflow w =
+    client.getWorkflowById(HelloWorldWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c");
 
 // retry the workflow task for this instance
 client.retryWorkflowTask(w);
@@ -19,7 +20,8 @@ client.retryWorkflowTask(w);
 
 ```kotlin
 // stub targeting a running HelloWorld workflow with a specific id
-val w : HelloWorldWorkflow = client.getWorkflowById(HelloWorldWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
+val w : HelloWorldWorkflow =
+    client.getWorkflowById(HelloWorldWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
 
 // retry the workflow task for this instance
 client.retryWorkflowTask(w)
@@ -34,7 +36,8 @@ We can also target workflows by tag:
 
 ```java
 // stub targeting a running HelloWorld workflow with a specific id
-HelloWorldWorkflow w = client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorldWorkflow w =
+    client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
 
 // retry the workflow task for this instance
 client.retryWorkflowTask(w);
@@ -42,7 +45,8 @@ client.retryWorkflowTask(w);
 
 ```kotlin
 // stub targeting a running HelloWorld workflow with a specific id
-val w : HelloWorldWorkflow = client.getWorkflowByTag(HelloWorldWorkflow::class.java, "foo")
+val w : HelloWorldWorkflow =
+    client.getWorkflowByTag(HelloWorldWorkflow::class.java, "foo")
 
 // retry the workflow task for this instance
 client.retryWorkflowTask(w)

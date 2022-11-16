@@ -74,3 +74,5 @@ export default function Document() {
     </Html>
   )
 }
+
+// prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-slate-800 prose-code:font-thin prose-code:bg-slate-50 dark:prose-code:border-slate-900 prose-code:border-slate-300 prose-code:rounded prose-code:p-1 prose-code:border  

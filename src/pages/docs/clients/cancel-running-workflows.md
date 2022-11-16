@@ -10,13 +10,15 @@ We can cancel running workflows by using a stub that target them by id:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = client.getWorkflowById(HelloWorldWorkflow.class, id);
+HelloWorldWorkflow w = 
+    client.getWorkflowById(HelloWorldWorkflow.class, id);
 
 client.cancel(w);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = client.getWorkflowById(HelloWorldWorkflow::class.java, id)
+val w : HelloWorldWorkflow = 
+    client.getWorkflowById(HelloWorldWorkflow::class.java, id)
 
 client.cancel(w)
 ```
@@ -29,13 +31,15 @@ or by tag:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorldWorkflow w = 
+    client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
 
 client.cancel(w);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = client.getWorkflowByTag(HelloWorldWorkflow::class.java, "foo")
+val w : HelloWorldWorkflow = 
+    client.getWorkflowByTag(HelloWorldWorkflow::class.java, "foo")
 
 client.cancel(w)
 ```
@@ -43,13 +47,13 @@ client.cancel(w)
 {% /codes %}
 
 
-::: tip
+{% callout type="note"  %}
 
 Cancelling a workflow cancels its child workflows as well.
 
 If you do not want this behavior, you should dispatch your child workflow from a task.
 
-:::
+{% /callout  %}
 
 The direct cancellation of a child workflow will trigger a `CanceledWorkflowException` in the parent workflow 
 if waiting for its completion.

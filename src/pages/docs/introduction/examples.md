@@ -3,10 +3,6 @@ title: Workflow Examples
 description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 
-Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum corrupti incidunt. Et aut eligendi ea perferendis.
-
----
-
 We will give here some examples of workflows to illustrate how powerful Infinitic is.
 
 ## Bookings and Saga
@@ -149,14 +145,14 @@ class BookingWorkflowImpl : Workflow(), BookingWorkflow {
 
 This is really all we need to implement this workflow.
 
-::: tip
+{% callout type="note"  %}
 
-Inside a workflow, using the [`dispatch`](/workflows/syntax#dispatch-a-new-task) function triggers the execution of a task _without blocking the flow of the workflow_.
+Inside a workflow, using the [`dispatch`](/docs/workflows/syntax#dispatch-a-new-task) function triggers the execution of a task _without blocking the flow of the workflow_.
 Multiple uses of this function will trigger parallel executions of multiple tasks.
 The `dispatch` function returns a `Deferred` object, which is a reference to the dispatched task.
 By applying the `await()` method to it, we tell the workflow to wait for the task completion and to return its result.
 
-:::
+{% /callout  %}
 
 ## Monthly invoicing
 
@@ -243,23 +239,23 @@ class InvoicingWorkflowImpl : Workflow(), InvoicingWorkflow {
 
 {% /codes %}
 
-::: tip
+{% callout type="note"  %}
 
-Inside a workflow, awaiting a [`timer`](/workflows/waiting) blocks the flow of the workflow up to the desired `Instant` or `Duration` (no resources are used during this waiting time).
+Inside a workflow, awaiting a [`timer`](/docs/workflows/waiting) blocks the flow of the workflow up to the desired `Instant` or `Duration` (no resources are used during this waiting time).
 
-:::
+{% /callout  %}
 
-::: tip
+{% callout type="warning"  %}
 
-Inside a workflow, all instructions [must be deterministic](/workflows/syntax) - that's why the instruction `LocalDate.now()` must be in a task. Here, the [`inline`](/workflows/inline) function creates a pseudo-task inlined in the workflow.
+Inside a workflow, all instructions [must be deterministic](/docs/workflows/syntax#constraints) - that's why the instruction `LocalDate.now()` must be in a task. Here, the [`inline`](/docs/workflows/inline) function creates a pseudo-task inlined in the workflow.
 
-:::
+{% /callout  %}
 
-::: warning
+{% callout type="warning"  %}
 
-A workflow [must not contain a very high number of tasks](/workflows/syntax), that's why loops should be avoided. Here, we have a limited number of possible iterations (running for 10 years will generate only 120 iterations) and 7 tasks per iteration. So we are fine in this case.
+A workflow [must not contain a very high number of tasks](/docs/workflows/syntax#constraints), that's why loops should be avoided. Here, we have a limited number of possible iterations (running for 10 years will generate only 120 iterations) and 7 tasks per iteration. So we are fine in this case.
 
-:::
+{% /callout  %}
 
 ## Loyalty program
 
@@ -359,23 +355,23 @@ class LoyaltyWorkflowImpl : Workflow(), LoyaltyWorkflow {
 
 {% /codes %}
 
-::: tip
+{% callout type="note"  %}
 
-An Infinitic client (or another workflow) can [call methods](/clients/start-method) of a running workflow. Multiple methods of the same workflow instance can run in parallel (but only one is running at a given time - one way to think of it is as an asynchronous but single-threaded execution)
+An Infinitic client (or another workflow) can [call methods](/docs/clients/start-method) of a running workflow. Multiple methods of the same workflow instance can run in parallel (but only one is running at a given time - one way to think of it is as an asynchronous but single-threaded execution)
 
-:::
+{% /callout  %}
 
-::: tip
+{% callout type="note"  %}
 
-[Properties](/workflows/properties) in workflows can be used to store information mutable from multiple methods.
+[Properties](/docs/workflows/properties) in workflows can be used to store information mutable from multiple methods.
 
-:::
+{% /callout  %}
 
-::: warning
+{% callout type="warning"  %}
 
-A workflow [must not contain a very high number of tasks](/workflows/syntax), that's why loops should be avoided. Here we have a limited number of possible iterations (running for 10 years will generate 560 iterations only) and 2 tasks per iteration. So we are fine in this case.
+A workflow [must not contain a very high number of tasks](/docs/workflows/syntax#constraints), that's why loops should be avoided. Here we have a limited number of possible iterations (running for 10 years will generate 560 iterations only) and 2 tasks per iteration. So we are fine in this case.
 
-:::
+{% /callout  %}
 
 ## Location Booking
 
@@ -517,19 +513,19 @@ public class LoyaltyWorkflowImpl: Workflow(), LoyaltyWorkflow {
 
 {% /codes %}
 
-::: tip
+{% callout type="note"  %}
 
-We can send [external signals](/workflows/signals) to a workflow to notify it that something happened. A signal is a [serializable](/references/serializability) object. To receive a signal, a workflow must have a [channel](/workflows/signals#implementing-channels).
+We can send [external signals](/docs/workflows/signals) to a workflow to notify it that something happened. A signal is a [serializable](/docs/references/serializability) object. To receive a signal, a workflow must have a [channel](/docs/workflows/signals#implementing-channels).
 
-:::
+{% /callout  %}
 
-::: tip
+{% callout type="note"  %}
 
 As illustrated here with the `PaymentWorkflow`, a workflow can dispatch (synchronously or asynchronously)
-another [sub-workflow](/workflows/syntax#dispatch-a-child-workflow).
+another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow).
 It opens unlimited possibilities.
 
-:::
+{% /callout  %}
 
 ## Projects examples
 

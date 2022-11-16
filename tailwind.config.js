@@ -28,6 +28,28 @@ module.exports = {
       maxWidth: {
         '8xl': '88rem',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            'code::before': {
+              content: '""'
+            },
+            'code::after': {
+              content: '""'
+            },
+            'code': {
+              'font-family': 'monospace',
+              'font-size': '1rem',
+              'font-weight': '400',
+              // 'background-color': '#f7fafc',
+              // 'padding': '.25rem',
+              // 'border-width': '1px',
+              // 'border-color': '#edf2f7',
+              // 'border-radius': '.25rem',
+            },
+          }
+        }
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],

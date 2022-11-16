@@ -37,11 +37,11 @@ Tasks are processed inside [workers](#worker) and remotely invoked through Apach
 
 ![Tasks](/img/concept-task@2x.png)
 
-::: tip
+{% callout type="note"  %}
 
 Currently, we can write services in Java or Kotlin only. Infinitic could support more programming languages later. It already has some experimental workers running in Node.js.
 
-:::
+{% /callout  %}
 
 ## Worker
 
@@ -54,11 +54,11 @@ Workers are stateless and can be scaled horizontally.
 
 ![Workers](/img/concept-worker@2x.png)
 
-::: tip
+{% callout type="note"  %}
 
 When using Infinitic, we do not need to know anything about the messages exchanged between services and workflows. Infinitic handles that for us. under the hood, workers receive `ExecuteTask` command messages (with task's details) and return `TaskCompleted` (with task's result) or `TaskFailed` (with task's error) event messages. When using a choreography pattern, services need to know the events produced by other services. This is not the case here as we use an orchestration pattern. Services are fully decoupled.
 
-:::
+{% /callout  %}
 
 ## Workflow
 
@@ -71,7 +71,7 @@ Workers running workflows are also stateless and can be scaled horizontally. The
 Today, supported databases are Redis and MySQL. Adding another database is trivial; please [contribute](https://github.com/infiniticio/infinitic).
 Soon, workflow services could be deployed as [Pulsar stateful functions](https://pulsar.apache.org/docs/functions-overview/), removing the need to manage another database.
 
-::: tip
+{% callout type="note" %}
 
 Contrary to "normal" services, each workflow instance has its own message consumer using a [key-shared subscription](https://pulsar.apache.org/docs/concepts-messaging/#key_shared) on workflow's ID to ensure that all messages related to the same workflow instance are handled sequentially. This is needed to:
 
@@ -79,12 +79,10 @@ Contrary to "normal" services, each workflow instance has its own message consum
 - maintain locally a cache of the workflow state
 - avoid race conditions when saving workflow state in the database
 
-:::
+{% /callout  %}
 
 ## Client
 
 We use a _client_ mainly to start new workflow instances. To do so, clients need to know the signature of workflow services and be able to connect to our Apache Pulsar cluster.
 
 ![Clients](/img/concept-client@2x.png)
-
-

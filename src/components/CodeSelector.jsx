@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Listbox } from '@headlessui/react'
+import Image from 'next/image'
 import clsx from 'clsx'
 
 import JavaColor from '@/images/java-color.svg'
@@ -52,8 +53,8 @@ export function CodeSelector(props) {
         className="flex h-6 w-6 items-center justify-center rounded-lg shadow-md shadow-black/5 ring-1 ring-black/5 dark:bg-slate-700 dark:ring-inset dark:ring-white/5"
         aria-label={selectedCode?.name}
       >
-        <img src={JavaColor.src} alt="Java" className="hidden h-4 w-4 fill-sky-400 [[data-code=java]_&]:block" />
-        <img src={KotlinColor.src} alt="Kotlin" className="hidden h-4 w-4 fill-sky-400 [[data-code=kotlin]_&]:block" />
+        <Image src={JavaColor.src} alt="Java" className="hidden h-4 w-4 fill-sky-400 [[data-code=java]_&]:block" />
+        <Image src={KotlinColor.src} alt="Kotlin" className="hidden h-4 w-4 fill-sky-400 [[data-code=kotlin]_&]:block" />
       </Listbox.Button>
       <Listbox.Options className="absolute top-full left-1/2 mt-3 w-36 -translate-x-1/2 space-y-1 rounded-xl bg-white p-3 text-sm font-medium shadow-md shadow-black/5 ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/5">
         {codes.map((code) => (
@@ -75,7 +76,7 @@ export function CodeSelector(props) {
             {({ selected }) => (
               <>
                 <div className="rounded-md bg-white p-1 shadow ring-1 ring-slate-900/5 dark:bg-slate-700 dark:ring-inset dark:ring-white/5">
-                  <img src={code.icon.src} alt={code.value} className={selected
+                  <Image src={code.icon.src} alt={code.value} className={selected
                         ? 'h-4 w-4 fill-sky-400 dark:fill-sky-400'
                         : 'h-4 w-4 fill-slate-400'
                         } />

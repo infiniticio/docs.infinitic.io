@@ -313,11 +313,11 @@ interface HelloWorldWorkflow {
 
 and a `HelloWorldWorkflowImpl` implementation:
 
-::: warning
+{% callout type="warning"  %}
 
 Workflow implementation must extend `io.infinitic.workflows.Workflow`
 
-:::
+{% /callout  %}
 
 {% codes %}
 
@@ -415,11 +415,11 @@ workflows:
     class: hello.world.workflows.HelloWorldImpl
 ```
 
-::: warning
+{% callout type="warning"  %}
 
 Please update values for Redis and Pulsar connections if necessary.
 
-:::
+{% /callout  %}
 
 Then, to create a worker, just replace the App file with:
 
@@ -468,17 +468,17 @@ SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
 ```
 
-::: tip
+{% callout type="note"  %}
 
 The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example [Simple Logger] (#simple-logger) as a dependency in our Gradle build file.
 
-:::
+{% /callout  %}
 
-::: warning
+{% callout type="warning"  %}
 
 When coding, workers need to be restarted to account for any change.
 
-:::
+{% /callout  %}
 
 ## Start a workflow
 
@@ -592,11 +592,11 @@ Here is a check-list when encountering issues:
   - should have at least 1 taskEngine consumer, 1 workflowEngine consumer
 - at least one worker should be running
 
-::: warning
+{% callout type="warning"  %}
 
 If nothing happens when it should not, remember that workers won't quit if an exception is thrown from our tasks or workflows. To see exceptions, we must install a logger and look at the log file.
 
-:::
+{% /callout  %}
 
 ### Simple logger
 

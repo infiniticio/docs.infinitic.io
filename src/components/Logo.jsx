@@ -1,5 +1,6 @@
 import LogoLight from '@/images/logo-light.svg'
 import LogoDark from '@/images/logo-dark.svg'
+import Image from 'next/image'
 
 function LogomarkPaths() {
   return (
@@ -29,12 +30,12 @@ export function Logo(props) {
 
 export function LogoLigh(props) {
   return (
-    <img src={LogoLight.src} alt="Infinitic" {...props} />
+    <Image src={LogoLight.src} alt="Infinitic" {...props} />
   )
 }
 
 export function LogoDar(props) {
   return (
-    <img src={LogoDark.src} alt="Infinitic" {...props} />
+    <Image src={LogoDark.src} alt="Infinitic" {...props} />
   )
 }

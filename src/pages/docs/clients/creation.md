@@ -7,11 +7,14 @@ description: Quidem magni aut exercitationem maxime rerum eos.
 
 An Infinitic client lets us start, retry and cancel tasks or workflows, usually from your Web App controllers.
 
-First, add the `infinitic-client` dependency into your project:
+First, add the `infinitic-client` dependency into our
+{% codeJava %} build.gradle {% /codeJava %}
+{% codeKotlin %} build.gradle.kts {% /codeKotlin %}
+file:
 
 {% codes %}
 
-```java [build.gradle]
+```java
 dependencies {
     ...
     implementation "io.infinitic:infinitic-client:0.11.+"
@@ -19,7 +22,7 @@ dependencies {
 }
 ```
 
-```kotlin [build.gradle.kts]
+```kotlin
 dependencies {
     ...
     implementation("io.infinitic:infinitic-client:0.11.+")
@@ -33,13 +36,13 @@ We can then instantiate a client from a configuration file in the file system:
 
 {% codes %}
 
-```java 
+```java
 import io.infinitic.clients.InfiniticClient;
 ...
 InfiniticClient client = InfiniticClient.fromConfigFile("infinitic.yml");
 ```
 
-```kotlin 
+```kotlin
 import io.infinitic.clients.InfiniticClient
 ...
 val client = InfiniticClient.fromConfigFile("infinitic.yml")
@@ -51,13 +54,13 @@ or in the resource folder:
 
 {% codes %}
 
-```java 
+```java
 import io.infinitic.clients.InfiniticClient;
 ...
 InfiniticClient client = InfiniticClient.fromConfigResource("/infinitic.yml");
 ```
 
-```kotlin 
+```kotlin
 import io.infinitic.clients.InfiniticClient
 ...
 val client = InfiniticClient.fromConfigResource("/infinitic.yml")
@@ -65,20 +68,20 @@ val client = InfiniticClient.fromConfigResource("/infinitic.yml")
 
 {% /codes %}
 
-The configuration file should contain:
+The infinitic.yml configuration file should contain:
 
 - a `name` (optional)
-- a `pulsar` entry describing how to connect to [Pulsar](/references/pulsar)
+- a `pulsar` entry describing how to connect to [Pulsar](/docs/references/pulsar)
 
-```yml [infinitic.yml]
+```yml
 # name is optional
 name: client_name
 
 pulsar: ...
 ```
 
-::: warning
+{% callout type="warning"  %}
 
 When providing a name, it must be unique among all clients connected to Pulsar, as it will be used as Pulsar producer name.
 
-:::
+{% /callout  %}

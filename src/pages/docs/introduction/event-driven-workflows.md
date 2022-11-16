@@ -18,11 +18,11 @@ We consider here a simple transfer `BankWorkflow::wire` workflow with the sequen
 
 We expect the task `BankService::deposit` to be executed only after `BankService::withdraw` is completed. When both are done, then `EmailService::send` is called.
 
-::: tip
+{% callout type="note"  %}
 
 A real-world scenario would take into account the possibility that these tasks fail for business reasons, e.g., the sender does not have enough funds or the receiver's bank details are wrong. For the sake of simplicity, we do not consider these cases here.
 
-:::
+{% /callout  %}
 
 Here is the code of this workflow:
 
@@ -85,14 +85,14 @@ class BankWorkflow: Workflow() {
 {% /codes %}
 
 
-::: tip
+{% callout type="note"  %}
 
 It's not visible from the code, but this workflow is resilient to technical failures:
 
 - if a task fails, it will be automatically retried
 - if a task permanently fails, the workflow will pick up where it left off after manually correcting the faulty task.
 
-:::
+{% /callout  %}
 
 ## Event-based execution
 
@@ -124,11 +124,11 @@ The picture below explains what happens under the hood when Infinitic runs the w
     - When reaching the end of the method, a `WorkflowCompleted` message is sent back to the client, and the workflow history is deleted.
 9. the client catches this message and gets the workflow result from its content.
 
-::: tip
+{% callout type="note"  %}
 
 As illustrated here, we can see that a "running workflow" is not an ongoing thread somewhere, but is composed of multiple events related to the processing of tasks and the ephemeral step-by-step processing of the workflow.
 
-:::
+{% /callout  %}
 
 This event-driven nature of the orchestration makes Infinitic highly scalable. We will see later that it makes also the workflows resilient to failures.
 
@@ -136,7 +136,7 @@ This event-driven nature of the orchestration makes Infinitic highly scalable. W
 
 To be able to replay deterministically a workflow implementation must contain only the logical sequence of tasks and in particular must avoid any element that can change its behavior over time.
 
-Those constraints are described in details [here](/workflows/syntax).
+Those constraints are described in details [here](/docs/workflows/syntax).
 
 ## Possibilities
 
@@ -144,8 +144,8 @@ We have seen how to implement simple sequential tasks, but the possibilities are
 
 - we can easily manipulate the data between tasks
 - we can use the conditional structure of the language (if/then), the loop/functional structure (for/map)
-- we can dispatch tasks [asynchronously](/workflows/parallel)
-- we can dispatch [sub-workflows](/workflows/parallel#child-workflows)
-- we can dispatch [multiple methods](/workflows/parallel#parallel-methods) in parallel
-- we can wait for a [duration](/workflows/waiting), a date or for external [signals](/workflows/signals)
-- we can wait for the completion of any [asynchronous execution](/workflows/deferred)
+- we can dispatch tasks [asynchronously](/docs/workflows/parallel)
+- we can dispatch [sub-workflows](/docs/workflows/parallel#child-workflows)
+- we can dispatch [multiple methods](/docs/workflows/parallel#parallel-methods) in parallel
+- we can wait for a [duration](/docs/workflows/waiting), a date or for external [signals](/docs/workflows/signals)
+- we can wait for the completion of any [asynchronous execution](/docs/workflows/deferred)

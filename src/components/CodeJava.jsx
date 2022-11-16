@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 
 export function CodeJava({ children }) {
-
-  console.log(children)
   useEffect(() => {
     const code = document.documentElement.getAttribute('data-code')
      // display this language

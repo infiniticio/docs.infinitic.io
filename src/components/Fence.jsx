@@ -1,12 +1,13 @@
 import { Fragment } from 'react'
 import Highlight, { defaultProps } from 'prism-react-renderer'
-import theme from 'prism-react-renderer/themes/dracula'
+import theme from 'prism-react-renderer/themes/vsDark'
 import Prism from "prism-react-renderer/prism";
 
 (typeof global !== "undefined" ? global : window).Prism = Prism;
 
 require("prismjs/components/prism-java");
 require("prismjs/components/prism-kotlin");
+require("prismjs/components/prism-bash");
 
 export function Fence({ children, language }) {
   return (

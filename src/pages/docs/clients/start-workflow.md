@@ -36,11 +36,13 @@ The `dispatch` method returns when the ad-hoc message has been received by Pulsa
 {% codes %}
 
 ```java
-CompletableFuture<Deferred<String>> future = client.dispatchAsync(w::greet, "Infinitic");
+CompletableFuture<Deferred<String>> future = 
+    client.dispatchAsync(w::greet, "Infinitic");
 ```
 
 ```kotlin
-val future: CompletableFuture<Deferred<String>> = client.dispatchAsync(w::greet, "Infinitic") }
+val future: CompletableFuture<Deferred<String>> = 
+    client.dispatchAsync(w::greet, "Infinitic") }
 ```
 
 {% /codes %}
@@ -57,7 +59,7 @@ The `Deferred<T>` object can be used to:
   String id = deferred.id;
   ```
 
-  ```java
+  ```kotlin
   val id: String = deferred.id
   ```
 
@@ -71,8 +73,7 @@ The `Deferred<T>` object can be used to:
   T result = deferred.await();
   ```
 
-
-  ```java
+  ```kotlin
   val result: T = deferred.await()
   ```
 
@@ -80,11 +81,11 @@ The `Deferred<T>` object can be used to:
 
   where `T` is the actual return type.
 
-    ::: warning
+    {% callout type="warning"  %}
 
   The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `UnknownWorkflowException` if the workflow is already terminated.
 
-    :::
+    {% /callout  %}
 
 ## Synchronous dispatch
 
@@ -114,6 +115,6 @@ val greeting = w.greet("Infinitic")
 
 {% /codes %}
 
-When dispatching a workflow, the client serializes parameters and sends them through Pulsar to the [workflow [worker](/workflows/workers), which will orchestrate the workflow. Eventually, the return value will be serialized and sent back to the client through Pulsar.
+When dispatching a workflow, the client serializes parameters and sends them through Pulsar to the [workflow [worker](/docs/workflows/workers), which will orchestrate the workflow. Eventually, the return value will be serialized and sent back to the client through Pulsar.
 
 

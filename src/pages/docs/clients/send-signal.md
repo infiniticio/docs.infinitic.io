@@ -4,7 +4,7 @@ description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 
 It is possible to send a signal to running workflows.
-Sending signals is done through [channels](/workflows/signals) that must be described in the workflow interface, for example:
+Sending signals is done through [channels](/docs/workflows/signals) that must be described in the workflow interface, for example:
 
 {% codes %}
 
@@ -26,7 +26,7 @@ interface HelloWorldWorkflow {
 
 {% /codes %}
 
-This signal can be any [serializable](/references/serializability) object of the type described in the workflow interface.
+This signal can be any [serializable](/docs/references/serializability) object of the type described in the workflow interface.
 
 We can send an object to a running instance targeted by id:
 
@@ -34,7 +34,8 @@ We can send an object to a running instance targeted by id:
 
 ```java
 // stub targeting a running HelloWorld workflow with a specific id
-HelloWorldWorkflow w = client.getWorkflowById(HelloWorldWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c");
+HelloWorldWorkflow w = 
+    client.getWorkflowById(HelloWorldWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c");
 
 // send a signal to this instance through a channnel
 w.getNotificationChannel().send("foobar");
@@ -42,7 +43,8 @@ w.getNotificationChannel().send("foobar");
 
 ```kotlin
 // stub targeting a running HelloWorld workflow with a specific id
-val w : HelloWorldWorkflow = client.getWorkflowById(HelloWorldWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
+val w : HelloWorldWorkflow =
+    client.getWorkflowById(HelloWorldWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
 
 // send a signal to this instance through a channnel
 w.notificationChannel.send("foobar")
@@ -56,7 +58,8 @@ or running instances targeted by tag:
 
 ```java
 // stub targeting running HelloWorld workflows with a specific tag
-HelloWorldWorkflow w = client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorldWorkflow w = 
+    client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
 
 // send a signal to those instances through a channnel
 w.getNotificationChannel().send("foobar");
@@ -64,7 +67,8 @@ w.getNotificationChannel().send("foobar");
 
 ```kotlin
 // stub targeting running HelloWorld workflows with a specific tag
-val w : HelloWorldWorkflow = client.getWorkflowByTag(HelloWorldWorkflow::class.java, "tag")
+val w : HelloWorldWorkflow = 
+    client.getWorkflowByTag(HelloWorldWorkflow::class.java, "tag")
 
 // send a signal to those instances through a channnel
 w.notificationChannel.send("foobar")

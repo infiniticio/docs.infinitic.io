@@ -19,14 +19,13 @@ const navigation = [
       { title: 'Getting started', href: '/' },
       { title: 'Terminology', href: '/docs/introduction/terminology' },
       { title: 'Event-Driven', href: '/docs/introduction/event-driven-workflows' },
-      { title: 'Examples', href: '/docs/introduction/workflow-examples' },
+      { title: 'Examples', href: '/docs/introduction/examples' },
       { title: 'Hello World', href: '/docs/introduction/hello-world' },
     ],
   },
   {
     title: 'Clients',
     links: [
-
       { title: 'Creation', href: '/docs/clients/creation' },
       { title: 'Workflow Stubs', href: '/docs/clients/workflow-stubs' },
       { title: 'Start A Workflow', href: '/docs/clients/start-workflow' },
@@ -34,9 +33,54 @@ const navigation = [
       { title: 'Start Parallel Method', href: '/docs/clients/start-method' },
       { title: 'Retry Failed Tasks', href: '/docs/clients/retry-failed-tasks' },
       { title: 'Retry Failed Workflow Task', href: '/docs/clients/retry-failed-workflow-task' },
-      { title: 'Complete Running Timers', href: '/docs/compile-time-caching' },
+      { title: 'Complete Running Timers', href: '/docs/clients/complete-running-timers' },
       { title: 'Cancel Running Workflows', href: '/docs/clients/cancel-running-workflows',
       }, ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { title: 'Service Workers', href: '/docs/services/workers' },
+      { title: 'Service Syntax', href: '/docs/services/syntax' },
+      { title: 'Service Versioning', href: '/docs/services/versioning' },
+    ],
+  },
+  {
+    title: 'Workflows',
+    links: [
+      { title: 'Workflow Workers', href: '/docs/workflows/workers' },
+      { title: 'Workflow Syntax', href: '/docs/workflows/syntax' },
+      { title: 'Sequential Tasks', href: '/docs/workflows/sequential' },
+      { title: 'Parallelization', href: '/docs/workflows/parallel' },
+      { title: 'Properties', href: '/docs/workflows/properties' },
+      { title: 'Waiting', href: '/docs/workflows/waiting' },
+      { title: 'Signals', href: '/docs/workflows/signals' },
+      { title: 'Inline Tasks', href: '/docs/workflows/inline' },
+      { title: 'Deferred', href: '/docs/workflows/deferred' },
+      { title: 'Errors', href: '/docs/workflows/errors' },
+      { title: 'Workflow Versioning', href: '/docs/workflows/versioning' },
+    ],
+  },
+  {
+    title: 'Dashboard',
+    links: [
+      { title: 'Install', href: '/docs/dashboard/install' },
+      { title: 'Features', href: '/docs/dashboard/features' },
+    ],
+  },
+  {
+    title: 'References',
+    links: [
+      { title: 'Pulsar', href: '/docs/references/pulsar' },
+      { title: 'Serializability', href: '/docs/references/serializability' },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { title: 'Contact', href: '/docs/community/contact' },
+      { title: 'Releases', href: '/docs/community/releases' },
+    ],
   },
 ]
 

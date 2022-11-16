@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 export function CodeKotlin({ children }) {
-
   useEffect(() => {
     const code = document.documentElement.getAttribute('data-code')
      // display this language

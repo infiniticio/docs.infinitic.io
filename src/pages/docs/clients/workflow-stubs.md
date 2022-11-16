@@ -10,13 +10,13 @@ Here is an example of workflow interface from our [Hello World](/docs/introducti
 {% codes %}
 
 ```java
-public interface HelloWorld {
+public interface HelloWorldWorkflow {
     String greet(String name);
 }
 ```
 
 ```kotlin
-interface HelloWorld {
+interface HelloWorldWorkflow {
     fun greet(name: String): String
 }
 ```
@@ -33,16 +33,18 @@ Stubs are used to trigger actions such as:
 
 ## Stub of new workflow
 
-The client has a `newWorkflow`method to create the stub of a new workflow:
+The client has a `newWorkflow` method to create the stub of a new workflow:
 
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = client.newWorkflow(HelloWorldWorkflow.class);
+HelloWorldWorkflow w = 
+    client.newWorkflow(HelloWorldWorkflow.class);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = client.newWorkflow(HelloWorldWorkflow::class.java)
+val w : HelloWorldWorkflow = 
+    client.newWorkflow(HelloWorldWorkflow::class.java)
 ```
 
 {% /codes %}
@@ -52,11 +54,13 @@ We can also add tags to this stub. Those tags will be attached to workflow insta
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = client.newWorkflow(HelloWorldWorkflow.class, Set.of("foo", "bar"));
+HelloWorldWorkflow w = 
+    client.newWorkflow(HelloWorldWorkflow.class, Set.of("foo", "bar"));
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = client.newWorkflow(HelloWorldWorkflow::class.java, tags = setOf("foo", "bar"))
+val w : HelloWorldWorkflow = 
+    client.newWorkflow(HelloWorldWorkflow::class.java, tags = setOf("foo", "bar"))
 ```
 
 {% /codes %}
@@ -73,11 +77,13 @@ We can create the stub of a running workflow from its `id`:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = client.getWorkflowById(HelloWorldWorkflow.class, id);
+HelloWorldWorkflow w = 
+    client.getWorkflowById(HelloWorldWorkflow.class, id);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = client.getWorkflowById(HelloWorldWorkflow::class.java, id)
+val w : HelloWorldWorkflow = 
+    client.getWorkflowById(HelloWorldWorkflow::class.java, id)
 ```
 
 {% /codes %}
@@ -87,11 +93,13 @@ Alternatively, we can create a stub targeting all running workflow having a give
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorldWorkflow w =
+    client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
 ```
 
 ```kotlin
-val w: HelloWorldWorkflow = client.getWorkflowByTag(HelloWorldWorkflow::class.java, tag = "foo")
+val w: HelloWorldWorkflow = 
+    client.getWorkflowByTag(HelloWorldWorkflow::class.java, tag = "foo")
 ```
 
 {% /codes %}
@@ -102,8 +110,8 @@ The stub of running workflows can be used to apply actions to the targeted workf
 - sending signals
 - starting new methods
 
-::: tip
+{% callout type="note"  %}
 
 Creating a stub has no side effect. It just creates an object that contains the provided info.
 
-:::
+{% /callout  %}
