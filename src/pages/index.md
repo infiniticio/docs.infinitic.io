@@ -23,7 +23,9 @@ Using Infinitic, we get:
 
 {% callout type="note" title="Choose your programming language" %}
 
-Infinitic is currently available in Java and Kotlin. *Use the {% code-icon type="java" /%} button in the top navigation bar to select the one you want for this documentation*.
+Infinitic is currently available in Java and Kotlin.
+
+*Click the {% code-icon type="java" /%} button in the top navigation bar to select the programming language for this documentation*.
 
 Infinitic can support more programming languages. [Contact us](/docs/community/contact) if interested.
 

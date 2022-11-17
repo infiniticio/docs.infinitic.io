@@ -12,6 +12,8 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
+const CURRENT_VERSION = 'v0.11.2'
+
 const navigation = [
   {
     title: 'Introduction',
@@ -124,10 +126,13 @@ function Header({ navigation }) {
           <Logo className="hidden h-9 w-auto fill-slate-700 dark:fill-sky-100 lg:block" />
         </Link>
       </div>
-      <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
+      {/* <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
         <Search />
-      </div>
+      </div> */}
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">
+        <Link href="/docs/community/releases" className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300" aria-label="current version">
+          { CURRENT_VERSION }
+        </Link>
         <CodeSelector className="relative z-10" />
         <ThemeSelector className="relative z-10" />
         <Link href="https://github.com/infiniticio/infinitic" className="group" aria-label="Infinitic on GitHub">
