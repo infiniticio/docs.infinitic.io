@@ -4,6 +4,13 @@ import { Codes } from '@/components/Codes'
 import { CodeJava } from '@/components/CodeJava'
 import { CodeKotlin } from '@/components/CodeKotlin'
 import { CodeIcon } from '@/components/CodeIcon'
+import { VersionDate } from '@/components/VersionDate'
+import { VersionNewFeatures } from '@/components/VersionNewFeatures'
+import { VersionBreakingChanges } from '@/components/VersionBreakingChanges'
+import { VersionBugFixes } from '@/components/VersionBugFixes'
+import { VersionImprovements } from '@/components/VersionImprovements'
+
+
 
 const tags = {
   callout: {
@@ -65,6 +72,29 @@ const tags = {
         matches: ['java', 'kotlin']
       }
     },
+  },
+  'version-date': {
+    selfClosing: true,
+    render: VersionDate,
+    attributes: {
+      date: String
+    },
+  },
+  'version-new-features': {
+    selfClosing: true,
+    render: VersionNewFeatures
+  },
+  'version-breaking-changes': {
+    selfClosing: true,
+    render: VersionBreakingChanges
+  },
+  'version-bug-fixes': {
+    selfClosing: true,
+    render: VersionBugFixes
+  },
+  'version-improvements': {
+    selfClosing: true,
+    render: VersionImprovements
   },
 }
 

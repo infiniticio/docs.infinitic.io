@@ -3,32 +3,26 @@ title: Releases
 description: ""
 ---
 
-## v0.11.2
+## v0.11.2 {% version-date date="10/25/2022" /%}
 
-10/25/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - new consumer property in Pulsar configuration to define default properties for Pulsar consumers
 - new producer property in Pulsar configuration to define default properties for Pulsar producers
 
 ---
 
-## v0.11.1
+## v0.11.1 {% version-date date="10/23/2022" /%}
 
-10/23/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - Workflow Versioning
 
 ---
 
-## v0.11.0
+## v0.11.0 {% version-date date="10/16/2022" /%}
 
-10/16/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - new @Timeout annotation
 - new @Retry annotation
@@ -39,7 +33,7 @@ description: ""
 - new retry parameter in worker's configuration file
 - new checkMode in worker's configuration file
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - TaskOptions removed
 - WorkflowOptions removed
@@ -48,207 +42,179 @@ description: ""
 
 ---
 
-## v0.10.0
+## v0.10.0 {% version-date date="10/3/2022" /%}
 
-10/3/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - new completeTimers function in clients
 - Services can now be manually registered in workers (fix #168)
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - In configuration files, stateStorage is replaced by storage and stateCache is replaced by cache
 - storage and cache configuration are now properties of those keywords (see doc)
 - InfiniticClient and InfiniticWorker can now be used for both Pulsar and InMemory transport, removing the need for factories
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - Topics used for delayed messages now have a long TTL (fix #170)
 - Improved WorkflowUpdatedException logging
 
 ---
 
-## v0.9.12
+## v0.9.12 {% version-date date="9/10/2022" /%}
 
-9/10/2022
-
-### 🔬 Improvements
+{% version-improvements /%}
 
 - Bump version of Kotlin, Gradle and dependencies
 
 ---
 
-## v0.9.11
+## v0.9.11 {% version-date date="6/28/2022" /%}
 
-6/28/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix BytesSchemaVersion collision in KSchemaReader
 
 ---
 
-## v0.9.10
+## v0.9.10 {% version-date date="6/27/2022" /%}
 
-6/27/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix #164
 
 ---
 
-## v0.9.9
+## v0.9.9 {% version-date date="6/5/2022" /%}
 
-6/5/2022
-
-### 🔬 Improvements
+{% version-improvements /%}
 
 - It's now possible to config Redis pool (maxTotal, maxIdle, minIdle). MaxTotal default is unlimited
 - It's now possible to serialize/deserialize an empty object
 
 ---
 
-## v0.9.8
+## v0.9.8 {% version-date date="5/29/2022" /%}
 
-5/29/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix backward compatibility of workflow state storage
 - fix backward compatibility of Pulsar message serialization
 
 ---
 
-### v0.9.7
+## v0.9.7 {% version-date date="5/22/2022" /%}
 
-5/22/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - MySQL can now be used to store states (thx to @GauthierHacout)
 
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix #154
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - WorkflowEngine is now idempotent when receiving multiple times the DispatchMethod message
 - WorkflowEngine is now idempotent when receiving multiple times the SendSignal message
 
 ---
 
-## v0.9.6
+## v0.9.6 {% version-date date="5/1/2022" /%}
 
-5/1/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - This release fixes a bug introduced in 0.9.4 when getting the status of deferred signals
 
 ---
 
-## v0.9.5
+## v0.9.5 {% version-date date="4/28/2022" /%}
 
-4/28/2022
-
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - use Java version 11
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - Bump libraries dependencies
 
 ---
 
-## v0.9.4
+## v0.9.4 {% version-date date="4/18/2022" /%}
 
-4/18/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - if we dispatch a workflow with a tag starting by "uniqueId:", Infinitic will check if another workflow with the same tag exists before dispatching it
 change the behavior of channel.receive(): each time await() is applied, the workflow awaits a new signal
 - channel.receive(n) will let you receive n signals through await() and throw a OutOfBoundAwaitException at n+1
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - await() method applied to a deferred channel.receive() does not return the same value anymore
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - Topics associated to clients and used for worker naming are now non-partitioned
 
 ---
 
-## v0.9.3
+## v0.9.3 {% version-date date="4/2/2022" /%}
 
-4/2/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 This release fixes the issue preventing workers to run in v0.9.2
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - Add Infinitic version to schemas
 
 ---
 
-## v0.9.2
-
-3/28/2022
+## v0.9.2 {% version-date date="3/28/2022" /%}
 
 **This version contains a configuration bug in Java compatibility and must not be used**
 
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.9.1
-
-3/27/2022
+## v0.9.1 {% version-date date="3/27/2022" /%}
 
 **This version contains a configuration bug in Java compatibility and must not be used**
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - move Deferred and InfiniticClient to io.infinitic.clients
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - add backward compatibility test on WorkflowState
 - add backward compatibility tests to topics schemas
 
 ---
 
-## v0.9.0
+## v0.9.0 {% version-date date="3/21/2022" /%}
 
-3/21/2022
-
-### 🚀 New features
+{% version-new-features /%}
 
 - new retryTasks and retryTasksAsync methods to retry tasks in running workflows
 - messages that can not be handled by the engines are not put in dead letter queues
 
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix a race condition where a client could send workflows with wrong parameters if sent asynchronously
 - JSON deserialization does not fail on additional fields
 - JSON deserialization use default value on missing fields (Kotlin)
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - it's not possible anymore to manage tasks individually (tasks that are no within a workflow).
 - the internal data and topics structure has changed. Hopefully, that should be the last breaking change before v1.0
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - wrap any exception in storage into a StorageException
 - refactor and simplify Pulsar implementations into a new infinitic-transport-pulsar module
@@ -261,29 +227,25 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v.0.8.3
+## v.0.8.3 {% version-date date="2/12/2022" /%}
 
-2/12/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - Fix #139
 
 ---
 
-## v0.8.2
+## v0.8.2 {% version-date date="2/6/2022" /%}
 
-2/6/2022
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - Fix #137 - key-shared subscription could not guarantee that a given workflow or task is managed by a unique engine, if more than one topic leads to this engine
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - runningTimeout in TaskOptions has now been named maxRunDuration and should be a Duration object
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - Upgrade to Kotlin 1.6.10
 - Bump version of 3rd party libs
@@ -292,43 +254,39 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.8.1
+## v0.8.1 {% version-date date="12/18/2021" /%}
 
-12/18/2021
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - bump kotlin-logging version to 2.1.20 to mitigate Log4shell
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - remove unused directories node and infinitic-rest-api
 
 ---
 
-## v0.8.0
+## v0.8.0 {% version-date date="10/24/2021" /%}
 
-10/24/2021
-
-### 🚀 New features
+{% version-new-features /%}
 
 - new dispatch syntax to start task and workflow. The need for a new syntax was induced by #130 (removing the async function)
 - methods in the client have now an Async version, useful if we do not want to wait for message sending.
 - workflows can now run multiple methods in parallel! A straightforward application is to easily retrieve the properties of a running workflow
 - we now use String instead of UUID for ids. Using UUID was an implementation leak, that could prevent us in the future to let the user choose for an id
 
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - Fix #130
 - Fix #56
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - removing the join() method on deferred (replaced by Async version on method in client)
 - removing the async function in client and workflow, replaced by dispatch
 - updated internal schemas
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - improved default value when using channels in Java
 - refactored error management in workflows, with new exception: WorkerException, FailedTaskException, FailedWorkflowException, UnknowWorkflowException...
@@ -336,11 +294,9 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## V0.7.4
+## V0.7.4 {% version-date date="9/11/2021" /%}
 
-9/11/2021
-
-### 🚀 New features
+{% version-new-features /%}
 
 - authentication added to Pulsar configuration file to access to a secured Pulsar
 - join() method to Deferred to wait for the triggering message to be sent to Pulsar
@@ -348,11 +304,11 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 - client and worker are now closeable and wait for having sent all messages
 - an in-memory implementation can be used during development by adding transport: inMemory in the configuration file.
 
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix bugs in workflow engines occurring in some edge cases
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - in Infinitic configuration file:
   - serviceUrl renamed to brokerServiceUrl to be on par with Pulsar documentation
@@ -360,7 +316,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 - changes in internal schemas
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - needed tenant/namespace/topics are now automatically created at launch time by workers.
 - infiniticClient topic is automatically deleted when quitting
@@ -368,105 +324,91 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## V0.7.3
+## V0.7.3 {% version-date date="9/11/2021" /%}
 
-9/11/2021
-
-** This release contains a syntax issue and should not be used **
+**This release contains a syntax issue and should not be used**
 
 ---
 
-## V0.7.2
+## V0.7.2 {% version-date date="7/30/2021" /%}
 
-7/30/2021
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - [Dashboard] add missing icons in git
 
-### 🎉 Improvements
+{% version-improvements /%}
 
 - [Dashboard] make data loading explicit with animated icon
 
 ---
 
-## V0.7.1
+## V0.7.1 {% version-date date="7/20/2021" /%}
 
-7/20/2021
+{% version-bug-fixes /%}
 
-### 🪲 Fixes
 - password for Redis is not exposed anymore in logs
 - fixed a bug making SVG disappeared in Dashboard
 
 ---
 
-## v0.7.0
+## v0.7.0 {% version-date date="7/15/2021" /%}
 
-7/15/2021
-
-### 🚀 New feature
+{% version-new-features /%}
 
 - New infinity-dashboard module implementing a first version of the infinitic dashboard. - - This version can:
-    - display tasks and workflows (based on existing topics)
-    - for each task or workflow, display connected workers and real-time stats of all topics used to manage it
+  - display tasks and workflows (based on existing topics)
+  - for each task or workflow, display connected workers and real-time stats of all topics used to manage it
 - A @ignore annotation has beed added to label properties you may want to ignore in a workflow's state
 
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix #119
 - fix #120 - logger variables are now ignored from workflow's state -
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - some topic names were changed - you need to use a new Pulsar namespace
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - dependencies were upgraded
 
 ---
 
-## v0.6.5
+## v0.6.5 {% version-date date="5/28/2021" /%}
 
-5/28/2021
-
-### 🪲 Fixes
+{% version-bug-fixes /%}
 
 - fix a bug appearing when for some java distribution due to bad detection of proxy classes
 
-### 🚨 Breaking changes
+{% version-breaking-changes /%}
 
 - internal schema has changed - you need to use a new Pulsar namespace
 
-### 🔬 Improvements
+{% version-improvements /%}
 
 - upgrade dependencies, including Kotlin 1.5
 
 ---
 
-## v0.6.4
+## v0.6.4 {% version-date date="5/19/2021" /%}
 
-5/19/2021
+{% version-new-features /%}
 
-### 🚀 New Features
 - [client, task, workflow] an @Name annotation allows you to decouple the name of tasks and workflows from their underlying implementation name
 - [task] tags are now accessible from the task context
 
-## v0.6.3
+## v0.6.3 {% version-date date="5/11/2021" /%}
 
-5/11/2021
-
-### 🔬 Improvements
+{% version-improvements /%}
 
 - better expose errors during task or workflow initialization in workers
 
 ---
 
-## v0.6.2
+## v0.6.2 {% version-date date="5/11/2021" /%}
 
-5/11/2021
-
-### 🔬 Improvements
+{% version-improvements /%}
 
 - use new s01.oss.sonatype.org server for publishing
 - infinitic-client module is now as an api-type dependency in infinitic-pulsar module (users do not need anymore to import infinitic-client)

@@ -24,4 +24,12 @@ npm run build
 
 To preview the static generated app, run `npm run start`
 
-For a detailed explanation of how things work, checkout [nextjs](https://nextjs.org/docs/getting-started), [markdoc](https://markdoc.dev/docs/getting-started) and [tailwind](https://tailwindcss.com/docs/installation).
+For a detailed explanation of how things work, check out [nextjs](https://nextjs.org/docs/getting-started), [markdoc](https://markdoc.dev/docs/getting-started) and [tailwind](https://tailwindcss.com/docs/installation).
+
+## Banner
+
+in `src/components/Banner`
+
+## Releases
+
+in `src/pages/community/releases`

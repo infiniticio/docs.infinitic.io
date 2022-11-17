@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from 'next/document'
+import { Banner } from '@/components/Banner'
 
 const themeScript = `
   let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
@@ -76,7 +77,9 @@ export default function Document() {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <body className="bg-white dark:bg-slate-900">
+        
         <Main />
+        <Banner />
         <NextScript />
       </body>
     </Html>
