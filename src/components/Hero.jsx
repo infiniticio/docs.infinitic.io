@@ -52,19 +52,22 @@ export function Hero() {
             <div className="relative">
               <p className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
               
-              Easily Code Complex Business Processess 
+              Fault-Tolerant Sophisticated Business Processess 
 
               </p>
               <p className="mt-3 text-2xl tracking-tight text-slate-400">
-              Reliably orchestrate distributed services
-              with just a few lines of code, at any scale.
+              Infinitic reliably orchestrates your distributed tasks
+              at any scale, with just a few lines of code.
               </p>
-              {/* <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
-                <Button href="/">Get started</Button>
-                <Button href="/" variant="secondary">
+               <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
+                {/* <Button href="/">Get started</Button> */}
+                <div className="inline-flex items-center rounded-full bg-sky-800 px-2.5 py-0.5 text-xs font-medium text-blue-200">
+                Built with Apache Pulsar
+                </div>
+                {/* <Button href="/" variant="secondary">
                   View on GitHub
-                </Button>
-              </div> */}
+                </Button> */}
+              </div> 
             </div>
           </div>
           <div className="relative lg:static xl:pl-10">

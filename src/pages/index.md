@@ -4,9 +4,9 @@ pageTitle: Unbreakable Business Processess.
 description: ""
 ---
 
-Infinitic lets us easily orchestrate services distributed on multiple servers - in any complex scenario. With the peace of mind of knowing that a failure somewhere will never break our workflows. {% .lead %}
+Built on top of [Apache Pulsar](https://pulsar.apache.org/), Infinitic lets us easily orchestrate services distributed on multiple servers - in any complex scenario. With the peace of mind of knowing that a failure somewhere will never break our workflows. {% .lead %}
 
-It does this on top of [Apache Pulsar](https://pulsar.apache.org/) to benefit from its scalability and reliability. Possible use cases are:
+Possible use cases are:
 
 - microservices orchestration
 - distributed transactions
@@ -14,7 +14,7 @@ It does this on top of [Apache Pulsar](https://pulsar.apache.org/) to benefit fr
 - business processes implementation
 - etc.
 
-Using Infinitic we get:
+Using Infinitic, we get:
 
 - **versatility**: we can use loops, conditions, data manipulations instructions provided by the programming language, without being limited by the capabilities of a DSL
 - **maintainability**: our workflows are easy to understand, defined in one place, and versioned like any other piece of code
