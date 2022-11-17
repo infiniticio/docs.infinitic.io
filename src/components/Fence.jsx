@@ -15,7 +15,7 @@ export function Fence({ children, language }) {
       {...defaultProps}
       code={children.trimEnd()}
       language={language}
-      theme={theme}
+      theme={undefined}
     >
       {({ className, style, tokens, getTokenProps }) => (
         <pre className={className} style={style}>

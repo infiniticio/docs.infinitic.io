@@ -20,7 +20,7 @@ const code = `public void start(User user) {
 }`
 
 const tabs = [
-  { name: 'loyaltyWorkflow', isActive: true },
+  { name: 'LoyaltyWorkflow', isActive: true },
   // { name: 'package.json', isActive: false },
 ]
 

@@ -21,9 +21,9 @@ Using Infinitic, we get:
 - **observability**: everything is closely monitored and exposed on dashboards
 - **reliability**: workflows are immune to services or workers failures
 
-{% callout type="note" title="Programming languages" %}
+{% callout type="note" title="Choose your programming language" %}
 
-Infinitic is currently available in Java and Kotlin. *Use the {% code-icon type="java" /%} button in the top menu to select the version you want for this documentation*.
+Infinitic is currently available in Java and Kotlin. *Use the {% code-icon type="java" /%} button in the top navigation bar to select the one you want for this documentation*.
 
 Infinitic can support more programming languages. [Contact us](/docs/community/contact) if interested.
 

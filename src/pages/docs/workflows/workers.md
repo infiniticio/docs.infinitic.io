@@ -61,7 +61,7 @@ public class App {
 ```kotlin
 import io.infinitic.workers.InfiniticWorker
 
-fun main(args: Array<String>) {
+fun main() {
     InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
         worker.start()
     }
