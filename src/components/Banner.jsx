@@ -2,7 +2,7 @@ import { MegaphoneIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const URL = "https://infinitic.substack.com/p/state-of-infinitic-v0112"
 const TITLE_SMALL = "New version 0.11.2!"
-const TITLE = "New version 0.11.2! What's new for Infinitic and what's next."
+const TITLE = "Version 0.11.2 released! What's new for Infinitic and what's next."
 
 export  function Banner() {
   return (
@@ -25,7 +25,8 @@ export  function Banner() {
                   href={ URL }
                   className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-600 shadow-sm hover:bg-indigo-50"
                 >
-                  Learn more
+                  <span className='sm:hidden'>{TITLE_SMALL}</span>
+                  <span className='hidden sm:inline'>Learn More</span>
                 </a>
               </div>
             </div> 
