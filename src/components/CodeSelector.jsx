@@ -41,7 +41,7 @@ export function CodeSelector(props) {
     return () => window.removeEventListener('storage', handler)
   }, [])
 
-  return (
+  if (selectedCode) return (
     <Listbox
       as="div"
       value={selectedCode}

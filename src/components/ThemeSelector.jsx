@@ -73,7 +73,7 @@ export function ThemeSelector(props) {
     return () => window.removeEventListener('storage', handler)
   }, [])
 
-  return (
+  if (selectedTheme) return (
     <Listbox
       as="div"
       value={selectedTheme}
