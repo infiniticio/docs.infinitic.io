@@ -77,7 +77,6 @@ export default function Document() {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <body className="bg-white dark:bg-slate-900">
-        
         <Main />
         <Banner />
         <NextScript />

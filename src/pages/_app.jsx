@@ -49,6 +49,7 @@ function collectHeadings(nodes, slugify = slugifyWithCounter()) {
 }
 
 export default function App({ Component, pageProps }) {
+
   let title = pageProps.markdoc?.frontmatter.title
 
   let pageTitle =
@@ -61,13 +62,15 @@ export default function App({ Component, pageProps }) {
     ? collectHeadings(pageProps.markdoc.content)
     : []
 
+  let path = pageProps.markdoc?.file.path
+
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
         {description && <meta name="description" content={description} />}
       </Head>
-      <Layout title={title} tableOfContents={tableOfContents}>
+      <Layout title={title} tableOfContents={tableOfContents} path={path}>
         <Component {...pageProps} />
       </Layout>
     </>

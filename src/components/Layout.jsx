@@ -14,7 +14,17 @@ import { ThemeSelector } from '@/components/ThemeSelector'
 
 const CURRENT_VERSION = 'v0.11.2'
 
-const navigation = [
+const guide_navigation = [
+  {
+    title: 'Introduction',
+    links: [
+      { title: 'Getting started', href: '/guide/introduction' },
+      { title: 'Terminology', href: '/guide/introduction/terminology' },
+    ],
+  },
+]
+
+const docs_navigation = [
   {
     title: 'Introduction',
     links: [
@@ -36,8 +46,9 @@ const navigation = [
       { title: 'Retry Failed Tasks', href: '/docs/clients/retry-failed-tasks' },
       { title: 'Retry Failed Workflow Task', href: '/docs/clients/retry-failed-workflow-task' },
       { title: 'Complete Running Timers', href: '/docs/clients/complete-running-timers' },
-      { title: 'Cancel Running Workflows', href: '/docs/clients/cancel-running-workflows',
-      }, ],
+      {
+        title: 'Cancel Running Workflows', href: '/docs/clients/cancel-running-workflows',
+      },],
   },
   {
     title: 'Services',
@@ -130,8 +141,14 @@ function Header({ navigation }) {
         <Search />
       </div> */}
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">
-        <Link href="/docs/community/releases" className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300" aria-label="current version">
-          { CURRENT_VERSION }
+        <Link href="/" className={((navigation == docs_navigation) ? "text-sky-500 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300" : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300")} aria-label="current version">
+          Docs
+        </Link>
+        <Link href="/guide/introduction" className={((navigation == guide_navigation) ? "text-sky-500 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300" : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300")} aria-label="current version">
+          Guide
+        </Link>
+        <Link href="/docs/community/releases" className= "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300" aria-label="current version">
+          {CURRENT_VERSION}
         </Link>
         <CodeSelector className="relative z-10" />
         <ThemeSelector className="relative z-10" />
@@ -186,7 +203,16 @@ function useTableOfContents(tableOfContents) {
   return currentSection
 }
 
-export function Layout({ children, title, tableOfContents }) {
+export function Layout({ children, title, tableOfContents, path }) {
+
+  let navigation
+  if (path?.startsWith("/guide")) { 
+    navigation = guide_navigation
+  } else {
+    // default - includes / 
+    navigation = docs_navigation
+  }
+
   let router = useRouter()
   let isHomePage = router.pathname === '/'
   let allLinks = navigation.flatMap((section) => section.links)

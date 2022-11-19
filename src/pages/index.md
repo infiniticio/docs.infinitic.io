@@ -1,6 +1,6 @@
 ---
 title: Getting started
-pageTitle: Unbreakable Business Processess.
+pageTitle: Fault-Tolerant Sophisticated Business Processess
 description: ""
 ---
 
@@ -30,7 +30,6 @@ Infinitic is currently available in Java and Kotlin.
 Infinitic can support more programming languages. [Contact us](/docs/community/contact) if interested.
 
 {% /callout  %}
-
 
 {% quick-links %}
 
