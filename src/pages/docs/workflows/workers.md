@@ -12,7 +12,6 @@ The roles of workflow workers are:
 
 ![Workflow worker](/img/concept-workflow-only@2x.png)
 
-
 {% callout type="note"  %}
 
 Workflow workers are horizontally scalable: to increase throughput and resilience, just start workers on multiple servers.
@@ -182,6 +181,12 @@ The default value is `simple`. The check mode can also be defined directly from 
 ### Storage
 
 #### Redis state storage
+
+{% callout type="warning"  %}
+
+Redis is not recommended in production, because in case of a crash, last states may not have been saved correctly on disk.
+
+{% /callout  %}
 
 Example of a configuration for using Redis for state storage:
 
