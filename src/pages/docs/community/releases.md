@@ -2,6 +2,17 @@
 title: Releases
 description: ""
 ---
+## v0.11.3 {% version-date date="01/15/2023" /%}
+
+{% version-bug-fixes /%}
+
+- fix bug in which a state was not deleted after completion of an async child-workflow or method
+
+{% version-improvements /%}
+
+- use Ktfmt instead of Ktlint
+
+---
 
 ## v0.11.2 {% version-date date="10/25/2022" /%}
 
