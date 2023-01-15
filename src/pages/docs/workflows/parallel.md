@@ -243,7 +243,7 @@ To dispatch another method on the same workflow, we can define a stub targeting 
 
 ```java
 // create a stub targeting the current workflow
-private HelloWorldWorkflow self() {
+@Ignore private HelloWorldWorkflow self() {
     return getWorkflowById(HelloWorldWorkflow.class, getWorkflowId());
 }
 
@@ -255,7 +255,7 @@ dispatch(self()::other, parameters);
 
 ```kotlin
 // create a stub targeting the current workflow
-private val self by lazy {
+@Ignore private val self by lazy {
     getWorkflowById(HelloWorldWorkflow::class.java, workflowId)
 }
 
