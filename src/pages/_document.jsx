@@ -77,7 +77,8 @@ export default function Document() {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <body className="bg-white dark:bg-slate-900">
-        
+        {/* scarf.sh pixel */}
+        <img referrerPolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=b7a9c0b3-ae8b-4e19-838b-36a40ee1cf96" />
         <Main />
         <Banner />
         <NextScript />
