@@ -2,6 +2,17 @@
 title: Releases
 description: ""
 ---
+
+## v0.11.4 {% version-date date="04/19/2023" /%}
+
+{% version-bug-fixes /%}
+
+- fixed a bug occurring for tasks longer than 30 seconds
+
+{% version-improvements /%}
+
+- upgrade of dependencies
+
 ## v0.11.3 {% version-date date="01/15/2023" /%}
 
 {% version-bug-fixes /%}
