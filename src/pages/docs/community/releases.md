@@ -3,6 +3,28 @@ title: Releases
 description: ""
 ---
 
+## v0.11.5 {% version-date date="06/07/2023" /%}
+
+{% version-improvements /%}
+
+Bump dependencies version:
+
+- kotlinx-coroutines from 1.6.4 to 1.7.1
+- caffeine from 3.1.3 to 3.1.6
+- kotlinx-serialization-json from 1.5.0-RC to 1.5.1
+- json-path from 2.7.0 to 2.8.0
+- jackson from 2.14.2 to 2.15.2
+- kotest from 5.5.5 to 5.6.2
+- mockk from 1.13.4 to 1.13.5
+- avro4k from 1.6.0 to 1.7.0
+- hoplite from 2.7.1 to 2.7.4
+- pulsar from 2.11.0 to 2.11.1
+- kweb from 1.3.7 to 1.4.0
+- slf4j from 2.0.6 to 2.0.7
+- kotlin-logging from 3.0.0 to 3.0.5
+
+[@Enach](https://github.com/enach): Improve MySQL table structure with an additional index on KeySet
+
 ## v0.11.4 {% version-date date="04/19/2023" /%}
 
 {% version-bug-fixes /%}
