@@ -25,7 +25,7 @@ We need to have [Gradle](https://gradle.org/install/) installed, with:
 
 If we have Docker on our computer, we can simply run `docker-compose up` on this `docker-compose.yml` file:
 
-```yml
+```yaml
 services:
   # Pulsar settings
   pulsar-standalone:
@@ -60,7 +60,7 @@ volumes:
 
 Create a new project within a new directory:
 
-```sh
+```bash
 mkdir hello-world && cd hello-world && gradle init
 ```
 
@@ -68,7 +68,7 @@ Configure this project:
 
 {% code-java %}
 
-```sh
+```
 Select type of project to generate:
   1: basic
   2: application
@@ -380,7 +380,7 @@ Note the `newService` function creating a stub from the `HelloWorldService` inte
 
 The `app/infinitic.yml` file should contain the Pulsar configuration:
 
-```yml
+```yaml
 pulsar:
   brokerServiceUrl: pulsar://localhost:6650
   webServiceUrl: http://localhost:8080
@@ -392,7 +392,7 @@ pulsar:
 
 The easiest way to build workers is from an `app/infinitic.yml` config file:
 
-```yml
+```yaml
 storage:
   redis:
     host: localhost

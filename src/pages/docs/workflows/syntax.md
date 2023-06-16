@@ -720,7 +720,7 @@ interface HelloWorldWorkflow {
 
 When using this annotation, the Service `name` setting in [Workflow workers](/docs/workflows/workers) configuration file should be the one provided by the annotation:
 
-```yml
+```yaml
 workflows:
   - name: HelloWorkflow
     class: hello.world.workflows.HelloWorldWorkflowImpl

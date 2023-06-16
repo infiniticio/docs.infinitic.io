@@ -75,7 +75,7 @@ We can also use `.fromConfigResource("/infinitic.yml")` if the configuration fil
 
 Here is an example of a valid `infinitic.yml` file:
 
-```yml
+```yaml
 name: optional_worker_name
 
 storage:
@@ -141,7 +141,7 @@ Any `class` declared in this configuration file must have an empty constructor (
 
 Per default, workflow instances are executed one after the other for a given workflow. If we provide a value for `concurrency`, like:
 
-```yml
+```yaml
 concurrency: 50
 ```
 
@@ -190,7 +190,7 @@ Redis is not recommended in production, because in case of a crash, last states 
 
 Example of a configuration for using Redis for state storage:
 
-```yml
+```yaml
 storage: 
   redis:
     host: 127.0.0.1
@@ -210,7 +210,7 @@ storage:
 
 Example of a configuration for using MySQL for state storage:
 
-```yml
+```yaml
 storage:
   mysql:
     host: 127.0.0.1
@@ -220,6 +220,20 @@ storage:
     database: infinitic
 ```
 
+#### State compression
+
+By default, the states of workflows are stored as uncompressed Avro binaries.
+To compress them and save storage space in exchange for CPU and a little time,
+we can add a `compression` option:
+
+```yaml
+storage:
+  compression: "deflate"
+  ...
+```
+
+The possible options are `deflate`, `gzip`, and `bzip2`, and use the [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/) algorithms.
+
 ### Cache
 
 #### Caffeine cache
@@ -228,7 +242,7 @@ Per default, Infinitic uses [Caffeine](https://github.com/ben-manes/caffeine) as
 
 Here is the default configuration:
 
-```yml
+```yaml
 cache:
   caffeine:
     maximumSize: 10000
@@ -240,7 +254,7 @@ cache:
 
 Here is the configuration for removing the cache:
 
-```yml
+```yaml
 cache:
   none:
 ```

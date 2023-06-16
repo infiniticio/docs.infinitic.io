@@ -73,7 +73,7 @@ The infinitic.yml configuration file should contain:
 - a `name` (optional)
 - a `pulsar` entry describing how to connect to [Pulsar](/docs/references/pulsar)
 
-```yml
+```yaml
 # name is optional
 name: client_name
 

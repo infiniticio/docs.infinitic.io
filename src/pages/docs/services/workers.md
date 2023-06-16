@@ -78,7 +78,7 @@ We can also use `.fromConfigResource("/infinitic.yml")` if the configuration fil
 
 Here is an example of a valid `infinitic.yml` file:
 
-```yml
+```yaml
 # (Optional) Worker name
 name: gilles_worker
 
@@ -138,7 +138,7 @@ Any `class` declared in this configuration file must have an empty constructor (
 
 Per default, tasks are executed one after the other for a given service. If we provide a value for `concurrency`, like:
 
-```yml
+```yaml
 concurrency: 50
 ```
 
@@ -148,7 +148,7 @@ the Service worker will execute at most 50 tasks in parallel for this service.
 
 Per default, tasks have no timeout defined. If we provide a value for `timeoutInSeconds`:
 
-```yml
+```yaml
 timeoutInSeconds: 100
 ```
 
@@ -168,7 +168,7 @@ The timeout can also be defined directly from the Service, through a [`WithTimeo
 The `retry` parameter lets us define a truncated randomized exponential backoff retry policy.
 If none is provided, this default setting is applied:
 
-```yml
+```yaml
 retry:
   minimumSeconds: 1      
   maximumSeconds: 1000   # default = 1000 * minimumSeconds
@@ -192,7 +192,7 @@ where `random()` is a random value between `0` and `1`.
 
 If we do not want any retries, the simplest configuration is:
 
-```yml
+```yaml
 retry:    
   maximumRetries: 0   
 ```

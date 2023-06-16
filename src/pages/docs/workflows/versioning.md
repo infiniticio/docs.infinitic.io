@@ -184,7 +184,7 @@ class MyWorkflowImpl_1 : Workflow(), MyWorkflow {
 
 Those multiple versions can be registered in workers, through the configuration file:
 
-```yml
+```yaml
 workflows:
   - name: MyWorkflow
     classes:
