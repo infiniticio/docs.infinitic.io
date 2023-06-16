@@ -35,7 +35,7 @@ This is done through a `pulsar` entry within their configuration file.
 
 The minimal configuration - typically needed for development - contains:
 
-```yml
+```yaml
 pulsar:
   brokerServiceUrl: pulsar://localhost:6650
   webServiceUrl: http://localhost:8080
@@ -47,7 +47,7 @@ pulsar:
 
 [Transport Encryption using TLS](https://pulsar.apache.org/docs/en/security-tls-transport/#client-configuration) can be configured with those additional parameters:
 
-```yml
+```yaml
 pulsar:
   ...
   useTls: true
@@ -58,7 +58,7 @@ pulsar:
 
 If we use a [KeyStore](https://pulsar.apache.org/docs/en/security-tls-keystore/#configuring-clients), it can be configured with:
 
-```yml
+```yaml
 pulsar:
   ...
   useKeyStoreTls: true
@@ -71,7 +71,7 @@ pulsar:
 
 Using [Json Web Token](https://pulsar.apache.org/docs/en/security-jwt/):
 
-```yml
+```yaml
 pulsar:
   ...
   authentication:
@@ -81,7 +81,7 @@ pulsar:
 
 Using [Athen](https://pulsar.apache.org/docs/en/security-athenz/#configure-clients-for-athenz):
 
-```yml
+```yaml
 pulsar:
   ...
   authentication:
@@ -94,7 +94,7 @@ pulsar:
 
 Using [OAuth2](https://pulsar.apache.org/docs/en/security-oauth2/#pulsar-client)
 
-```yml
+```yaml
 pulsar:
   ...
   authentication:
@@ -107,7 +107,7 @@ pulsar:
 
 We can provide default settings for all producers. All are optional. Pulsar default will be used if not provided.
 
-```yml
+```yaml
 pulsar:
   ...
   producer:
@@ -136,7 +136,7 @@ pulsar:
 
 We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
 
-```yml
+```yaml
 pulsar:
   ...
   consumer:

@@ -112,7 +112,7 @@ fun main(String[] args) {
 
 where `infinitic.yml` is a configuration file mapped to a `io.infinitic.config.DashboardConfig` instance, for example:
 
-```yml [infinitic.yml]
+```yaml [infinitic.yml]
 port: 16097 # default port for KWeb server
 
 debug: true # default value for KWeb server

@@ -540,7 +540,7 @@ interface MyService {
 
 When using this annotation, the Service `name` setting in [Service worker](/docs/services/workers) configuration file should be the one provided by the annotation:
 
-```yml
+```yaml
 services:
   - name: MyService
     class: com.company.services.MyServiceImpl

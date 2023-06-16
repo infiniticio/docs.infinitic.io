@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import Highlight, { defaultProps } from 'prism-react-renderer'
-import theme from 'prism-react-renderer/themes/duotoneDark'
+import theme from 'prism-react-renderer/themes/vsDark'
 import Prism from "prism-react-renderer/prism";
 
 (typeof global !== "undefined" ? global : window).Prism = Prism;
@@ -8,6 +8,7 @@ import Prism from "prism-react-renderer/prism";
 require("prismjs/components/prism-java");
 require("prismjs/components/prism-kotlin");
 require("prismjs/components/prism-bash");
+require("prismjs/components/prism-yaml");
 
 export function Fence({ children, language }) {
   return (
@@ -15,7 +16,7 @@ export function Fence({ children, language }) {
       {...defaultProps}
       code={children.trimEnd()}
       language={language}
-      theme={undefined}
+      theme={theme}
     >
       {({ className, style, tokens, getTokenProps }) => (
         <pre className={className} style={style}>

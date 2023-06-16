@@ -12,7 +12,7 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
-const CURRENT_VERSION = 'v0.11.5'
+const CURRENT_VERSION = 'v0.11.6'
 
 const navigation = [
   {

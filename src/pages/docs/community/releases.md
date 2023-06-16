@@ -3,6 +3,25 @@ title: Releases
 description: ""
 ---
 
+## v0.11.6 {% version-date date="06/17/2023" /%}
+
+{% version-bug-fixes /%}
+
+- fix [#184](https://github.com/infiniticio/infinitic/issues/184)
+
+{% version-new-features /%}
+
+With the help of [@cyrilStern](https://github.com/cyrilStern), workflows' state can now be stored in a compressed format
+
+{% version-improvements /%}
+
+Bump dependencies version:
+
+- com.ncorti.ktfmt.gradle from 0.11.0 to 0.12.0
+- mysql:mysql-connector-java from 8.0.32 to 8.0.33
+- org.testcontainers:mysql from 1.17.6 to 1.18.3
+
+
 ## v0.11.5 {% version-date date="06/07/2023" /%}
 
 {% version-improvements /%}
