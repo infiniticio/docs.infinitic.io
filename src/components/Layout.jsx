@@ -81,6 +81,7 @@ const navigation = [
     title: 'Community',
     links: [
       { title: 'Contact', href: '/docs/community/contact' },
+      { title: 'Spring Integration', href: '/docs/community/spring' },
       { title: 'Releases', href: '/docs/community/releases' },
     ],
   },
