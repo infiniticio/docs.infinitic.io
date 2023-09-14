@@ -109,6 +109,7 @@ services:
 ```
 
 This configuration contains
+
 - an optional worker name
 - optional default values for service's `concurrency`, `timeoutInSeconds` and `retry`
 - the [Pulsar settings](/docs/references/pulsar)
