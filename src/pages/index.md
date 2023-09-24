@@ -1,6 +1,6 @@
 ---
 title: Getting started
-pageTitle: Unbreakable Business Processess.
+pageTitle: Unbreakable Business Processes.
 description: ""
 ---
 
