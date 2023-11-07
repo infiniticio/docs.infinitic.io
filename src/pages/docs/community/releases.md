@@ -2,6 +2,16 @@
 title: Releases
 description: ""
 ---
+## v0.11.7 {% version-date date="07/11/2023" /%}
+
+{% version-improvements /%}
+
+- Bump to gradle 8.4 and use jvm toolchain 17
+- Update to kotlin 1.9.20
+- Update CI to jvm 17 and separate build, test and lint
+- Bump several libraries
+- Plugin replace ktfmt with Spotless (with ktfmt) for better integration
+- use testContainers for testing Redis
 
 ## v0.11.6 {% version-date date="06/17/2023" /%}
 
