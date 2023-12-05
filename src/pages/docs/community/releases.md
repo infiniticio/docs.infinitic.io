@@ -2,7 +2,27 @@
 title: Releases
 description: ""
 ---
-## v0.11.7 {% version-date date="07/11/2023" /%}
+## v0.12.0
+
+{% version-new-features /%}
+
+* @TimeOut annotations on Services and Workflows interfaces can now be used to define global timeouts (including message transportation and retries) increasing workflow reliability - fix [#74](https://github.com/infiniticio/infinitic/issues/74) &  [#198 ](https://github.com/infiniticio/infinitic/issues/198)
+* Pulsar tenant, namespace and topics are created on-the-fly when needed. ("client-response" topics are not created systematically anymore)
+* We now check that services and workflows implementation defined in configuration are actually an implementation of the provided name  - fix [#200](https://github.com/infiniticio/infinitic/issues/200)
+* A subscription is now automatically created to DLQ to avoid losing the messages
+* The workflow engine is now aware of messages sent to Dead Letter Queue
+
+{% version-improvements /%}
+
+* Refactor of Transport (Pulsar and InMemory implementation)
+* End-to-end tests are now done directly on Pulsar (when Docker is available)
+* Additional backward compatibility tests
+* Improved logging
+* Throwable are not caught anymore anywhere
+* Use io.github.oshai:kotlin-logging-jvm for Logging
+* Fixed https://github.com/infiniticio/infinitic/security/dependabot/33
+
+## v0.11.7
 
 {% version-improvements /%}
 
@@ -13,7 +33,7 @@ description: ""
 - Plugin replace ktfmt with Spotless (with ktfmt) for better integration
 - use testContainers for testing Redis
 
-## v0.11.6 {% version-date date="06/17/2023" /%}
+## v0.11.6
 
 {% version-bug-fixes /%}
 
@@ -31,8 +51,7 @@ Bump dependencies version:
 - mysql:mysql-connector-java from 8.0.32 to 8.0.33
 - org.testcontainers:mysql from 1.17.6 to 1.18.3
 
-
-## v0.11.5 {% version-date date="06/07/2023" /%}
+## v0.11.5
 
 {% version-improvements /%}
 
@@ -54,7 +73,7 @@ Bump dependencies version:
 
 [@Enach](https://github.com/enach): Improve MySQL table structure with an additional index on KeySet
 
-## v0.11.4 {% version-date date="04/19/2023" /%}
+## v0.11.4
 
 {% version-bug-fixes /%}
 
@@ -64,7 +83,7 @@ Bump dependencies version:
 
 - upgrade of dependencies
 
-## v0.11.3 {% version-date date="01/15/2023" /%}
+## v0.11.3
 
 {% version-bug-fixes /%}
 
@@ -76,7 +95,7 @@ Bump dependencies version:
 
 ---
 
-## v0.11.2 {% version-date date="10/25/2022" /%}
+## v0.11.2
 
 {% version-new-features /%}
 
@@ -85,7 +104,7 @@ Bump dependencies version:
 
 ---
 
-## v0.11.1 {% version-date date="10/23/2022" /%}
+## v0.11.1
 
 {% version-new-features /%}
 
@@ -93,7 +112,7 @@ Bump dependencies version:
 
 ---
 
-## v0.11.0 {% version-date date="10/16/2022" /%}
+## v0.11.0
 
 {% version-new-features /%}
 
@@ -115,7 +134,7 @@ Bump dependencies version:
 
 ---
 
-## v0.10.0 {% version-date date="10/3/2022" /%}
+## v0.10.0
 
 {% version-new-features /%}
 
@@ -135,7 +154,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.12 {% version-date date="9/10/2022" /%}
+## v0.9.12
 
 {% version-improvements /%}
 
@@ -143,7 +162,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.11 {% version-date date="6/28/2022" /%}
+## v0.9.11
 
 {% version-bug-fixes /%}
 
@@ -151,7 +170,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.10 {% version-date date="6/27/2022" /%}
+## v0.9.10
 
 {% version-bug-fixes /%}
 
@@ -159,7 +178,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.9 {% version-date date="6/5/2022" /%}
+## v0.9.9
 
 {% version-improvements /%}
 
@@ -168,7 +187,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.8 {% version-date date="5/29/2022" /%}
+## v0.9.8
 
 {% version-bug-fixes /%}
 
@@ -177,7 +196,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.7 {% version-date date="5/22/2022" /%}
+## v0.9.7
 
 {% version-new-features /%}
 
@@ -194,7 +213,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.6 {% version-date date="5/1/2022" /%}
+## v0.9.6
 
 {% version-bug-fixes /%}
 
@@ -202,7 +221,7 @@ Bump dependencies version:
 
 ---
 
-## v0.9.5 {% version-date date="4/28/2022" /%}
+## v0.9.5
 
 {% version-breaking-changes /%}
 
@@ -214,12 +233,12 @@ Bump dependencies version:
 
 ---
 
-## v0.9.4 {% version-date date="4/18/2022" /%}
+## v0.9.4
 
 {% version-new-features /%}
 
 - if we dispatch a workflow with a tag starting by "uniqueId:", Infinitic will check if another workflow with the same tag exists before dispatching it
-change the behavior of channel.receive(): each time await() is applied, the workflow awaits a new signal
+  change the behavior of channel.receive(): each time await() is applied, the workflow awaits a new signal
 - channel.receive(n) will let you receive n signals through await() and throw a OutOfBoundAwaitException at n+1
 
 {% version-breaking-changes /%}
@@ -232,7 +251,7 @@ change the behavior of channel.receive(): each time await() is applied, the work
 
 ---
 
-## v0.9.3 {% version-date date="4/2/2022" /%}
+## v0.9.3
 
 {% version-bug-fixes /%}
 
@@ -244,7 +263,7 @@ This release fixes the issue preventing workers to run in v0.9.2
 
 ---
 
-## v0.9.2 {% version-date date="3/28/2022" /%}
+## v0.9.2
 
 **This version contains a configuration bug in Java compatibility and must not be used**
 
@@ -254,7 +273,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.9.1 {% version-date date="3/27/2022" /%}
+## v0.9.1
 
 **This version contains a configuration bug in Java compatibility and must not be used**
 
@@ -269,7 +288,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.9.0 {% version-date date="3/21/2022" /%}
+## v0.9.0
 
 {% version-new-features /%}
 
@@ -300,7 +319,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v.0.8.3 {% version-date date="2/12/2022" /%}
+## v.0.8.3
 
 {% version-bug-fixes /%}
 
@@ -308,7 +327,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.8.2 {% version-date date="2/6/2022" /%}
+## v0.8.2
 
 {% version-bug-fixes /%}
 
@@ -327,7 +346,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.8.1 {% version-date date="12/18/2021" /%}
+## v0.8.1
 
 {% version-bug-fixes /%}
 
@@ -339,7 +358,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## v0.8.0 {% version-date date="10/24/2021" /%}
+## v0.8.0
 
 {% version-new-features /%}
 
@@ -367,7 +386,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 
 ---
 
-## V0.7.4 {% version-date date="9/11/2021" /%}
+## V0.7.4
 
 {% version-new-features /%}
 
@@ -386,7 +405,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 - in Infinitic configuration file:
   - serviceUrl renamed to brokerServiceUrl to be on par with Pulsar documentation
   - serviceHttpUrl renamed to webServiceurl to be on par with Pulsar documentation
-removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
+    removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 - changes in internal schemas
 
 {% version-improvements /%}
@@ -397,13 +416,13 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## V0.7.3 {% version-date date="9/11/2021" /%}
+## V0.7.3
 
 **This release contains a syntax issue and should not be used**
 
 ---
 
-## V0.7.2 {% version-date date="7/30/2021" /%}
+## V0.7.2
 
 {% version-bug-fixes /%}
 
@@ -415,7 +434,7 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## V0.7.1 {% version-date date="7/20/2021" /%}
+## V0.7.1
 
 {% version-bug-fixes /%}
 
@@ -424,7 +443,7 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## v0.7.0 {% version-date date="7/15/2021" /%}
+## v0.7.0
 
 {% version-new-features /%}
 
@@ -448,7 +467,7 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## v0.6.5 {% version-date date="5/28/2021" /%}
+## v0.6.5
 
 {% version-bug-fixes /%}
 
@@ -464,14 +483,14 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## v0.6.4 {% version-date date="5/19/2021" /%}
+## v0.6.4
 
 {% version-new-features /%}
 
 - [client, task, workflow] an @Name annotation allows you to decouple the name of tasks and workflows from their underlying implementation name
 - [task] tags are now accessible from the task context
 
-## v0.6.3 {% version-date date="5/11/2021" /%}
+## v0.6.3
 
 {% version-improvements /%}
 
@@ -479,7 +498,7 @@ removed setupPulsar from PulsarInfiniticAdmin (not needed anymore)
 
 ---
 
-## v0.6.2 {% version-date date="5/11/2021" /%}
+## v0.6.2
 
 {% version-improvements /%}
 
