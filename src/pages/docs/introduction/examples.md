@@ -2,16 +2,17 @@
 title: Workflow Examples
 description: Quidem magni aut exercitationem maxime rerum eos.
 ---
-
-We will give here some examples of workflows to illustrate how powerful Infinitic is.
+Infinitic's power and flexibility can be best understood through examples. Here, we provide several workflow examples to showcase its capabilities.
 
 ## Bookings and Saga
 
-We implement a booking process combining a car rental, a flight, and a hotel reservation. _We require that all three bookings have to be successful together_: if any of them fails, we should cancel the other successful bookings.
+Consider a booking process that includes a car rental, a flight, and a hotel reservation. All these bookings must either succeed or fail together. If any booking fails, the others that succeeded should be canceled.
 
 ![Bookings and Saga](/img/booking-saga@2x.png)
 
-This is `HotelBookingService`'s signature (`CarRentalService` and `FlightBookingService`'s signatures are similar):
+### The Services
+
+Each service involved in this process, like `HotelBookingService`, has functions to `book` and `cancel` a booking. 
 
 {% codes %}
 
@@ -33,7 +34,7 @@ interface HotelBookingService {
 
 {% /codes %}
 
-The orchestration of a complete booking will be done through the `book` method of `BookingWorkflow`:
+The `BookingWorkflow` orchestrates the complete booking process:
 
 {% codes %}
 
@@ -143,29 +144,37 @@ class BookingWorkflowImpl : Workflow(), BookingWorkflow {
 
 {% /codes %}
 
-This is really all we need to implement this workflow.
+The `BookingWorkflowImpl` class in Java or Kotlin coordinates the bookings. It performs these bookings in parallel and cancels them if any one of them fails. The code structure is as follows:
+
+* Services for car rental, flight, and hotel are initialized.
+* Bookings are dispatched in parallel.
+* Results are awaited and checked.
+* If any booking fails, successful ones are canceled.
+
+The workflow is a perfect example of the Saga pattern in distributed transactions.
 
 {% callout type="note"  %}
 
-Inside a workflow, using the [`dispatch`](/docs/workflows/syntax#dispatch-a-new-task) function triggers the execution of a task _without blocking the flow of the workflow_.
-Multiple uses of this function will trigger parallel executions of multiple tasks.
-The `dispatch` function returns a `Deferred` object, which is a reference to the dispatched task.
-By applying the `await()` method to it, we tell the workflow to wait for the task completion and to return its result.
+In a workflow, when you use the [`dispatch`](https://chat.openai.com/docs/workflows/syntax#dispatch-a-new-task) function, it starts a task without interrupting the workflow's ongoing process. If you use `dispatch` multiple times, it will run several tasks at the same time, in parallel. The `dispatch` function gives back a `Deferred` object. When you use the `await()` method on this `Deferred` object, it makes the workflow pause and wait until the task is finished, and then it provides the task's result.
 
 {% /callout  %}
 
 ## Monthly invoicing
 
-Let's consider now a workflow where, every month, we will:
+Imagine a workflow where, every month, we need to:
 
-- use a Consumption service to get some metrics from a user
-- use a payment service to charge the user payment card
-- generate an invoice
-- send the invoice to the user
+* Gather user metrics
+* Charge the user's payment card
+* Generate and send an invoice
 
 ![Monthly invoicing](/img/invoicing@2x.png)
 
-With Infinitic, we do not need any cron, writing such workflow is as simple as:
+With Infinitic, this process does not require a cron job. The `InvoicingWorkflowImpl` handles this monthly routine:
+
+* It uses services like `ConsumptionService` and `PaymentService`.
+* The workflow waits until the first day of the next month.
+* It calculates the payment amount and processes the payment.
+* An invoice is generated and sent to the user.
 
 {% codes %}
 
@@ -241,34 +250,38 @@ class InvoicingWorkflowImpl : Workflow(), InvoicingWorkflow {
 
 {% callout type="note"  %}
 
-Inside a workflow, awaiting a [`timer`](/docs/workflows/waiting) blocks the flow of the workflow up to the desired `Instant` or `Duration` (no resources are used during this waiting time).
+In a workflow, when you use a [`timer`](https://chat.openai.com/docs/workflows/waiting) and `await` it, the workflow pauses until a specific time (`Instant`) or for a set period (`Duration`). During this wait, no resources are being used.
 
 {% /callout  %}
 
 {% callout type="warning"  %}
 
-Inside a workflow, all instructions [must be deterministic](/docs/workflows/syntax#constraints) - that's why the instruction `LocalDate.now()` must be in a task. Here, the [`inline`](/docs/workflows/inline) function creates a pseudo-task inlined in the workflow.
+In a workflow, every step [must be deterministic](/docs/workflows/syntax#constraints), which is why commands like `LocalDate.now()` should be part of a task. The [`inline`](https://chat.openai.com/docs/workflows/inline) function is used to create what's called a pseudo-task, which is integrated directly into the workflow.
 
 {% /callout  %}
 
 {% callout type="warning"  %}
 
-A workflow [must not contain a very high number of tasks](/docs/workflows/syntax#constraints), that's why loops should be avoided. Here, we have a limited number of possible iterations (running for 10 years will generate only 120 iterations) and 7 tasks per iteration. So we are fine in this case.
+A workflow should not have [too many tasks](/docs/workflows/syntax#constraints), so it's best to avoid loops. In this example, the number of iterations is limited (running for 10 years results in just 120 iterations) and there are only 7 tasks in each iteration. Therefore, this setup is manageable and appropriate.
 
 {% /callout  %}
 
 ## Loyalty program
 
-Let's consider now a point-based loyalty program where:
+Consider a loyalty program where users earn points for various actions:
 
-- users receive 10 points every week
-- users receive 100 points every time they complete a form
-- users receive 100 points every time they complete an order
-- users can burn points
+- 10 points weekly
+- 100 points for completing a form
+- 100 points for completing an order
+- Users can also burn points
 
 ![Loyalty program](/img/loyalty@2x.png)
 
-With Infinitic, we can implement such a loyalty program like this:
+`LoyaltyWorkflowImpl` is all we need to manages this program:
+
+- Points are stored and updated within the workflow.
+- Different methods update points for different actions.
+- The workflow runs as long as the user is active.
 
 {% codes %}
 
@@ -277,7 +290,7 @@ public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
   
     // create stub for UserService
     private final UserService userService = newService(UserService.class);
-    
+  
     // we store the number of points there
     private Int points = 0;
 
@@ -317,10 +330,10 @@ public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
 
 ```kotlin
 class LoyaltyWorkflowImpl : Workflow(), LoyaltyWorkflow {
-    
+  
     // create stub for UserService
     val userService = newService(UserService::class.java)
-    
+  
     // we store the number of points there
     var points = 0
 
@@ -357,35 +370,39 @@ class LoyaltyWorkflowImpl : Workflow(), LoyaltyWorkflow {
 
 {% callout type="note"  %}
 
-An Infinitic client (or another workflow) can [call methods](/docs/clients/start-method) of a running workflow. Multiple methods of the same workflow instance can run in parallel (but only one is running at a given time - one way to think of it is as an asynchronous but single-threaded execution)
+An Infinitic client, or another workflow, can [invoke methods](/docs/clients/start-method) of an active workflow. While it's possible for multiple methods of the same workflow instance to operate concurrently, only one method runs at any specific moment. You can think of this as an asynchronous, yet single-threaded execution.
 
 {% /callout  %}
 
 {% callout type="note"  %}
 
-[Properties](/docs/workflows/properties) in workflows can be used to store information mutable from multiple methods.
+[Properties](/docs/workflows/properties) within workflows serve as a way to store information that can be modified by various methods.
 
 {% /callout  %}
 
 {% callout type="warning"  %}
 
-A workflow [must not contain a very high number of tasks](/docs/workflows/syntax#constraints), that's why loops should be avoided. Here we have a limited number of possible iterations (running for 10 years will generate 560 iterations only) and 2 tasks per iteration. So we are fine in this case.
+A workflow shouldn't have [too many tasks](/docs/workflows/syntax#constraints), which is why it's advisable to steer clear of loops. In this scenario, the number of iterations is controlled (for example, operating over 10 years results in just 560 iterations) with only 2 tasks in each iteration. This amount is acceptable and manageable.
 
 {% /callout  %}
 
 ## Location Booking
 
-Let's consider now an Airbnb-like service, where a traveler does a request to a host. The host will be notified of the request at most 3 times. If the response is positive, the traveler should pay a deposit, then both are notified.
+Imagine an Airbnb-like service where travelers request bookings from hosts. 
+
+- Travelers' requests are sent to hosts.
+- If the host responds positively, the traveler pays a deposit.
+- Both parties are then notified of the booking.
 
 ![Location Booking](/img/location@2x.png)
 
-This workflow could be implemented as such:
+`LocationBookingWorkflowImpl` handles this process:
 
 {% codes %}
 
 ```java
 public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
-    
+  
     // create stub for HostService
     private final HostService hostService = newService(HostService.class);
 
@@ -397,7 +414,7 @@ public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
 
     // create channel for BookingStatus
     final Channel<BookingStatus> responseChannel = channel();
-    
+  
     @Override
     public Channel<BookingStatus> getResponseChannel() {
         return responseChannel;
@@ -452,7 +469,7 @@ public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
 
 ```kotlin
 public class LoyaltyWorkflowImpl: Workflow(), LoyaltyWorkflow {
-    
+  
     // create stub for HostService
     val hostService = newService(HostService.class)
 
@@ -513,23 +530,22 @@ public class LoyaltyWorkflowImpl: Workflow(), LoyaltyWorkflow {
 
 {% /codes %}
 
-{% callout type="note"  %}
+This workflow showcases complex decision-making and communication between multiple parties.
 
-We can send [external signals](/docs/workflows/signals) to a workflow to notify it that something happened. A signal is a [serializable](/docs/references/serializability) object. To receive a signal, a workflow must have a [channel](/docs/workflows/signals#implementing-channels).
-
-{% /callout  %}
 
 {% callout type="note"  %}
 
-As illustrated here with the `PaymentWorkflow`, a workflow can dispatch (synchronously or asynchronously)
-another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow).
-It opens unlimited possibilities.
+We have the ability to dispatch [external signals](/docs/workflows/signals) to a workflow to inform it of an event or change. A signal is a type of [serializable](/docs/references/serializability) object. For a workflow to receive and process a signal, it needs to be equipped with a [channel](/docs/workflows/signals#implementing-channels).
 
 {% /callout  %}
 
-## Projects examples
 
-- "Hello World": simple workflow with 2 sequential tasks ([java](https://github.com/infiniticio/infinitic-example-java-hello-world), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-hello-world))
-- "Booking Workflow": saga pattern implementation with 3 tasks ([java](https://github.com/infiniticio/infinitic-example-java-booking), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-booking))
-- "Loyalty Workflow": loyalty points are maintained as workflow properties and updated through a method ([java](https://github.com/infiniticio/infinitic-example-java-loyalty), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-loyalty))
-- "Sync Workflow": the workflow continuoulsy receives events. Each event triggers 3 sequential tasks that must be processed before processing the next event ([java](https://github.com/infiniticio/infinitic-example-java-loyalty-signals))
+This example with the `PaymentWorkflow`` demonstrates that a workflow can launch another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow), either in a synchronous or asynchronous manner. This capability unlocks endless possibilities.
+
+
+## Reporitories examples
+
+- "Hello World": a simple workflow with 2 sequential task. ([java](https://github.com/infiniticio/infinitic-example-java-hello-world), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-hello-world))
+- "Booking Workflow": a saga pattern implementation with three tasks. ([java](https://github.com/infiniticio/infinitic-example-java-booking), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-booking))
+- "Loyalty Workflow": A loyalty program with points updated through methods. ([java](https://github.com/infiniticio/infinitic-example-java-loyalty), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-loyalty))
+- "Sync Workflow": this workflow continuously receives events, with each event initiating a sequence of three tasks. These tasks must be completed before the workflow can proceed to handle the next event ([java](https://github.com/infiniticio/infinitic-example-java-loyalty-signals))
