@@ -155,7 +155,7 @@ The workflow is a perfect example of the Saga pattern in distributed transaction
 
 {% callout type="note"  %}
 
-In a workflow, when you use the [`dispatch`](https://chat.openai.com/docs/workflows/syntax#dispatch-a-new-task) function, it starts a task without interrupting the workflow's ongoing process. If you use `dispatch` multiple times, it will run several tasks at the same time, in parallel. The `dispatch` function gives back a `Deferred` object. When you use the `await()` method on this `Deferred` object, it makes the workflow pause and wait until the task is finished, and then it provides the task's result.
+In a workflow, when you use the [`dispatch`](/docs/workflows/syntax#dispatch-a-task) function, it starts a task without interrupting the workflow's ongoing process. If you use `dispatch` multiple times, it will run several tasks at the same time, in parallel. The `dispatch` function gives back a `Deferred` object. When you use the `await()` method on this `Deferred` object, it makes the workflow pause and wait until the task is finished, and then it provides the task's result.
 
 {% /callout  %}
 
@@ -250,13 +250,13 @@ class InvoicingWorkflowImpl : Workflow(), InvoicingWorkflow {
 
 {% callout type="note"  %}
 
-In a workflow, when you use a [`timer`](https://chat.openai.com/docs/workflows/waiting) and `await` it, the workflow pauses until a specific time (`Instant`) or for a set period (`Duration`). During this wait, no resources are being used.
+In a workflow, when you use a [`timer`](/docs/workflows/waiting) and `await` it, the workflow pauses until a specific time (`Instant`) or for a set period (`Duration`). During this wait, no resources are being used.
 
 {% /callout  %}
 
 {% callout type="warning"  %}
 
-In a workflow, every step [must be deterministic](/docs/workflows/syntax#constraints), which is why commands like `LocalDate.now()` should be part of a task. The [`inline`](https://chat.openai.com/docs/workflows/inline) function is used to create what's called a pseudo-task, which is integrated directly into the workflow.
+In a workflow, every step [must be deterministic](/docs/workflows/syntax#constraints), which is why commands like `LocalDate.now()` should be part of a task. The [`inline`](/docs/workflows/inline) function is used to create what's called a pseudo-task, which is integrated directly into the workflow.
 
 {% /callout  %}
 
