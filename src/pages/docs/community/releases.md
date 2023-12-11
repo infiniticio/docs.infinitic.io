@@ -2,6 +2,21 @@
 title: Releases
 description: ""
 ---
+## v0.12.1
+
+{% version-new-features /%}
+
+* `WithTimeout` interfaces on Workflows interfaces can now be used to define global timeouts
+
+{% version-bug-fixes /%}
+
+* Fix Json Serialization of WorkflowTask parameters and return value for previous versions
+* Fix GetIds on client for inMemory implementation
+
+{% version-improvements /%}
+
+* WorkflowTask parameters and return value are now serialized using avro with schema fingerprint - this will improve future backward compatibilities
+
 ## v0.12.0
 
 {% version-new-features /%}

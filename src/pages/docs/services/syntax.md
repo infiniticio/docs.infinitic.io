@@ -2,18 +2,15 @@
 title: Service Syntax
 description: ""
 ---
-
 ## Constraints
 
-Any class can be a service, but:
+Upon receiving a message instructing to execute a task, a service worker instantiates the service class, deserializes the parameters, executes the requested method and returns the serialized result:
 
 {% callout type="warning"  %}
 
-The parameters and return value of a method used as a task must be [serializable](/docs/references/serializability).
+- The parameters and return value of a method used as task must be [serializable](/docs/references/serializability).
 
 {% /callout  %}
-
-Indeed, upon receiving a message instructing to execute a task, a service worker instantiates the class, deserializes the parameters, executes the requested method and returns the serialized result.
 
 If we chose to have several executions in parallel (`concurrency` > 1), they must not interfere with each other:
 
@@ -23,15 +20,7 @@ A method used as a task must be thread-safe.
 
 {% /callout  %}
 
-If our method uses multi-threading, we should keep in mind that:
-
-{% callout type="note"  %}
-
-A task is considered completed when the method returns.
-
-{% /callout  %}
-
-Any exception occurring on another thread than the one that initiated the execution of the task will be ignored.
+If our method uses multi-threading, **we should keep in mind that a task is considered completed when the method returns**. Any exception occurring on another thread than the one that initiated the execution of the task will be ignored.
 
 ## Recommendations
 
@@ -39,11 +28,7 @@ For an easier [versioning of services](/docs/services/versioning), we recommend 
 
 {% callout type="note"  %}
 
-Each service should be given a simple name through the [@Name](#name-annotation) annotation
-
-{% /callout  %}
-
-{% callout type="note"  %}
+Each service should be given a simple name through the [@Name](#name-annotation) annotation.
 
 Methods used as tasks should have:
 
@@ -93,29 +78,25 @@ Technical failures should be distinguished from non-technical failures:
   - a flight booking fails because no seats remain available
   - a bank wire fails because there is not enough money in the account
 
-{% callout type="note"  %}
+Non-technical failures are better handled through a status in the return value.(That's another reason why having an object as return value is a good practice.)
 
-Non-technical failures should be handled through a status in the return value.
+When an exception is thrown during a task execution, the task will be automatically retried based on its [retry policy](/docs/services/syntax#task-retries).
 
-{% /callout  %}
+When a task execution run for longer than a defined timeout, the task will also automatically failed and retried.
 
-(That's another reason why having an object as return value is a good practice.)
+## Runtime timeout
 
-When a task fails due to a thrown exception, it will be automatically retried based on its [retry policy](/docs/services/syntax#task-retries).
+We can set a maximum duration of task execution inside a Service worker, by defining a runtime timeout in the Service implementation. By default, tasks do not have a runtime timeout defined.
 
-## Task timeout
+{% callout type="warning"  %}
 
-The timeout defined the maximum duration of task execution.
-
-{% callout type="note"  %}
-
-By default, tasks do not have a timeout defined.
+Since 0.12.0, the runtime timeout must be defined on the class implementation. When defined in the interface, a timeout represents the maximal duration of the task dispatched by workflows (including retries and transportation) before a timeout is thrown at workflow level.
 
 {% /callout  %}
 
-There are multiple ways to define a timeout:
+There are multiple ways to define a runtime timeout:
 
-- in the service:
+- in the service implementation:
   - by extending the [`WithTimeout`](/docs/services/syntax#withtimeout-interface) interface
   - by using the [`@Timeout`](/docs/services/syntax#timeout-annotation) annotation
 - in the worker:
@@ -129,6 +110,7 @@ The timeout policy used will be the first found in this order:
 3) `@Timeout` class annotation
 4) `WithTimeout` interface
 5) No timeout
+
 
 ### `WithTimeout` interface
 
@@ -280,7 +262,7 @@ class MyServiceImpl : MyService {
 
 {% /codes %}
 
-## Task retries
+## Retries policy
 
 {% callout type="note"  %}
 
@@ -468,13 +450,13 @@ In some cases, we want to know more about the context of the execution of a task
 
 `io.infinitic.tasks.Task` contains the following static properties:
 
-| Name            | Type            | Description                                                                          |
-| --------------- | --------------- | ------------------------------------------------------------------------------------ |
+| Name              | Type            | Description                                                                          |
+| ----------------- | --------------- | ------------------------------------------------------------------------------------ |
 | `tags`          | Set\<String\>   | tags of the task                                                                     |
 | `taskId`        | String          | id of the task                                                                       |
 | `taskName`      | String          | name of the task                                                                     |
-| `workflowId`    | String          | id of the workflow (may be null)                                              |
-| `workflowName`  | String          | name of the workflow (may be null)                                            |
+| `workflowId`    | String          | id of the workflow (may be null)                                                     |
+| `workflowName`  | String          | name of the workflow (may be null)                                                   |
 | `retrySequence` | Integer         | number of times the task was manually retried                                        |
 | `retryIndex`    | Integer         | number of times the task was automatically retried (reset to 0 after a manual retry) |
 | `lastError`     | ExecutionError  | if any, the error during the previous attempt                                        |
@@ -545,5 +527,3 @@ services:
   - name: MyService
     class: com.company.services.MyServiceImpl
 ```
-
-

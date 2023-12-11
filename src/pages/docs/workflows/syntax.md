@@ -2,7 +2,6 @@
 title: Workflows Syntax
 description: ""
 ---
-
 Here is an example of workflow implementation, from our [Hello World app](/docs/introduction/hello-world):
 
 {% codes %}
@@ -158,15 +157,15 @@ interface MyWorkflow {
 
 In some cases, we want to know more about the context of the execution of a workflow. An instance contains the following properties:
 
-| Name            | Type            | Description                    |
-| --------------- | --------------- | ------------------------------ |
-| `tags`          | Set\<String\>   | tags of this workflow instance |
-| `workflowId`    | String          | id of this workflow instance   |
-| `workflowName`  | String          | name of the workflow           |
-| `methodId`      | String          | id of this method run          |
-| `methodName`    | String          | name of the method currently running |
+| Name             | Type          | Description                          |
+| ---------------- | ------------- | ------------------------------------ |
+| `tags`         | Set\<String\> | tags of this workflow instance       |
+| `workflowId`   | String        | id of this workflow instance         |
+| `workflowName` | String        | name of the workflow                 |
+| `methodId`     | String        | id of this method run                |
+| `methodName`   | String        | name of the method currently running |
 
-## Dispatch a new task
+## Dispatch a task
 
 Workflows only need to know the interface of remote services to be able to use them.
 
@@ -249,6 +248,14 @@ val service: ServiceInterface = newService(ServiceInterface::class.java, tags = 
 
 {% /codes %}
 
+We can define global timeout for tasks at workflow level by adding `@Timeout` annotations to the Servide interface. It's also possible to extend the `WithTimeout`interface.
+
+A global timeout represents the maximal duration of the task dispatched by workflows (including retries and transportation) before a timeout is thrown at workflow level for this task.
+
+Defining global timeouts can be useful to ensure that a workflow is never stuck.
+
+
+
 ## Dispatch a child-workflow
 
 By using the `newWorkflow` function on a workflow interface, we create a stub that behaves syntactically as an instance of the workflow but sends a message to Pulsar that will trigger the remote execution of the workflow.
@@ -329,6 +336,14 @@ val otherWorkflow: OtherWorkflow = newWorkflow(OtherWorkflow::class.java, setOf(
 ```
 
 {% /codes %}
+
+
+
+We can define global timeout for child-workflows at workflow level by adding `@Timeout` annotations to the child Workflow interface. It's also possible to extend the `WithTimeout`interface.
+
+A global timeout represents the maximal duration of the child workflow before a timeout is thrown at workflow level for it.
+
+Defining global timeouts can be useful to ensure that a workflow is never stuck.
 
 ## Inline task
 
