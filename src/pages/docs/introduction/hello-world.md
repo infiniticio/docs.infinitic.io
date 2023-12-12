@@ -1,6 +1,6 @@
 ---
 title: Hello World Application
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page offers a step-by-step guide to creating your first Infinitic workflow, ideal for Java and Kotlin developers new to distributed systems. Learn the basics of setting up a project, writing tasks and workflows, deploying workers, and running a workflow in a simple, approachable format. This tutorial provides the foundational knowledge needed to start building scalable and resilient applications with Infinitic.
 ---
 This guide will walk you through building a "Hello World" workflow from scratch, covering these steps:
 
@@ -8,7 +8,7 @@ This guide will walk you through building a "Hello World" workflow from scratch,
 * Writing tasks
 * Writing a workflow
 * Deploying workers
-* Running a workflow
+* Starting a workflow
 
 Our `HelloWorld` workflow will take a `name` string as input and return `"Hello $name!"`, utilizing two tasks run on distributed workers:
 
@@ -16,8 +16,6 @@ Our `HelloWorld` workflow will take a `name` string as input and return `"Hello 
 * An `addEnthusiasm` task that inputs a `str` string and outputs `"$str!"`
 
 ## Prerequisites
-
-
 
 Before we begin, ensure you have [Gradle](https://gradle.org/install/) installed, along with:
 
@@ -258,13 +256,11 @@ package hello.world.services;
 public class HelloWorldServiceImpl implements HelloWorldService {
     @Override
     public String sayHello(String name) {
-
         return "Hello " + ((name == null) ? "World" : name);
     }
 
     @Override
     public String addEnthusiasm(String str) {
-
         return str + "!";
     }
 }
@@ -375,7 +371,7 @@ class HelloWorldWorkflowImpl: Workflow(), HelloWorld {
 
 {% /codes %}
 
-Note: the `newService` function creates a stub from the `HelloWorldService` interface. 
+Note: the `newService` function creates a stub from the `HelloWorldService` interface.
 
 Syntax-wise, this stub functions like an implementation of `HelloWorldService`. However, instead of executing a method directly, it sends a message to carry out the execution. This is why running a workflow without deploying any workers will result in no action being taken.
 

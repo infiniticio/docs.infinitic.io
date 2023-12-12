@@ -1,20 +1,18 @@
 ---
 title: Event-Driven Workflows
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page provides an in-depth exploration of how Infinitic harnesses event-driven architecture to facilitate robust and efficient business processes management in distributed systems. Ideal for Java and Kotlin developers, this guide is your resource for mastering event-driven processes with Infinitic.
 ---
-Infinitic allows us to define workflows in Java or Kotlin, as if we're working on a reliable monolith. Here's what makes this possible:
+Infinitic enables the creation of scalable and robust business processes in Java or Kotlin, simplifying the complexities typically associated with distributed systems. This is achieved through several key features:
 
-* Services are called remotely using an event-based RPC technique, making it seem like they're local.
-* Workflow services keep a history of each workflow instance, allowing them to resume from where they left off.
+* Services are invoked remotely using an event-based RPC method, which creates the illusion of local calls.
+* The persistence and handling of messages are assured by Apache Pulsar.
+* Services are coordinated by dedicated Workflow services, which maintain a history for each workflow instance. This allows them to pick up where they left off, ensuring continuity.
 
 Despite workflows appearing to be coded in a straightforward, step-by-step manner, they are actually driven by events.
 
 ## Sequential Workflow Example
 
-Let's take a simple bank transfer workflow as an example. It sequentially processes three tasks: withdrawing from one account, depositing into another, and then sending an email confirmation.
-
-* We start with a withdrawal. Only after this is completed do we proceed to deposit. Following these, an email is sent.
-* In a real-world scenario, we would account for potential business errors like insufficient funds, but for simplicity, we'll skip these here, although Infinitic is easily capable of handling such cases.
+Let's take a simple bank transfer workflow as an example. It sequentially processes three tasks: withdrawing from one account, depositing into another, and then sending an email confirmation. In a real-world scenario, we would account for potential business errors like insufficient funds, but for simplicity, we'll skip these here, although Infinitic is easily capable of handling such cases.
 
 Here is the code of this workflow:
 

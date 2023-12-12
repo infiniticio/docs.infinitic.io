@@ -1,6 +1,6 @@
 ---
 title: Workflow Examples
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page showcases a variety of scenarios, illustrating how Infinitic can be leveraged in Java and Kotlin to streamline complex workflow processes in distributed systems. From simple "Hello World" applications to more intricate use cases like booking systems, monthly invoicing, and loyalty programs, these examples provide valuable insights into implementing effective task orchestration and workflow management with Infinitic.
 ---
 Infinitic's power and flexibility can be best understood through examples. Here, we provide several workflow examples to showcase its capabilities.
 
@@ -12,7 +12,7 @@ Consider a booking process that includes a car rental, a flight, and a hotel res
 
 ### The Services
 
-Each service involved in this process, like `HotelBookingService`, has functions to `book` and `cancel` a booking. 
+Each service involved in this process, like `HotelBookingService`, has methods to `book` and `cancel` a booking.
 
 {% codes %}
 
@@ -144,7 +144,7 @@ class BookingWorkflowImpl : Workflow(), BookingWorkflow {
 
 {% /codes %}
 
-The `BookingWorkflowImpl` class in Java or Kotlin coordinates the bookings. It performs these bookings in parallel and cancels them if any one of them fails. The code structure is as follows:
+The `BookingWorkflowImpl` class in Java or Kotlin performs the bookings in parallel and cancels them if any one of them fails. The code structure is as follows:
 
 * Services for car rental, flight, and hotel are initialized.
 * Bookings are dispatched in parallel.
@@ -260,11 +260,7 @@ In a workflow, every step [must be deterministic](/docs/workflows/syntax#constra
 
 {% /callout  %}
 
-{% callout type="warning"  %}
-
 A workflow should not have [too many tasks](/docs/workflows/syntax#constraints), so it's best to avoid loops. In this example, the number of iterations is limited (running for 10 years results in just 120 iterations) and there are only 7 tasks in each iteration. Therefore, this setup is manageable and appropriate.
-
-{% /callout  %}
 
 ## Loyalty program
 
@@ -380,15 +376,11 @@ An Infinitic client, or another workflow, can [invoke methods](/docs/clients/sta
 
 {% /callout  %}
 
-{% callout type="warning"  %}
-
 A workflow shouldn't have [too many tasks](/docs/workflows/syntax#constraints), which is why it's advisable to steer clear of loops. In this scenario, the number of iterations is controlled (for example, operating over 10 years results in just 560 iterations) with only 2 tasks in each iteration. This amount is acceptable and manageable.
-
-{% /callout  %}
 
 ## Location Booking
 
-Imagine an Airbnb-like service where travelers request bookings from hosts. 
+Imagine an Airbnb-like service where travelers request bookings from hosts.
 
 - Travelers' requests are sent to hosts.
 - If the host responds positively, the traveler pays a deposit.
@@ -532,20 +524,17 @@ public class LoyaltyWorkflowImpl: Workflow(), LoyaltyWorkflow {
 
 This workflow showcases complex decision-making and communication between multiple parties.
 
-
 {% callout type="note"  %}
 
 We have the ability to dispatch [external signals](/docs/workflows/signals) to a workflow to inform it of an event or change. A signal is a type of [serializable](/docs/references/serializability) object. For a workflow to receive and process a signal, it needs to be equipped with a [channel](/docs/workflows/signals#implementing-channels).
 
 {% /callout  %}
 
-
 This example with the `PaymentWorkflow`` demonstrates that a workflow can launch another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow), either in a synchronous or asynchronous manner. This capability unlocks endless possibilities.
-
 
 ## Reporitories examples
 
-- "Hello World": a simple workflow with 2 sequential task. ([java](https://github.com/infiniticio/infinitic-example-java-hello-world), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-hello-world))
-- "Booking Workflow": a saga pattern implementation with three tasks. ([java](https://github.com/infiniticio/infinitic-example-java-booking), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-booking))
-- "Loyalty Workflow": A loyalty program with points updated through methods. ([java](https://github.com/infiniticio/infinitic-example-java-loyalty), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-loyalty))
-- "Sync Workflow": this workflow continuously receives events, with each event initiating a sequence of three tasks. These tasks must be completed before the workflow can proceed to handle the next event ([java](https://github.com/infiniticio/infinitic-example-java-loyalty-signals))
+- *Hello World*: a simple workflow with 2 sequential task. ([java](https://github.com/infiniticio/infinitic-example-java-hello-world), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-hello-world))
+- *Booking Workflow*: a saga pattern implementation with three tasks. ([java](https://github.com/infiniticio/infinitic-example-java-booking), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-booking))
+- *Loyalty Workflow*: A loyalty program with points updated through methods. ([java](https://github.com/infiniticio/infinitic-example-java-loyalty), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-loyalty))
+- *Sync Workflow*: this workflow continuously receives events, with each event initiating a sequence of three tasks. These tasks must be completed before the workflow can proceed to handle the next event ([java](https://github.com/infiniticio/infinitic-example-java-loyalty-signals))

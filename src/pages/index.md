@@ -1,36 +1,34 @@
 ---
 title: Getting started
-pageTitle: Unbreakable Business Processes.
-description: ""
+pageTitle: Scalable Workflow Engine For Distributed Services.
+description: Infinitic's official documentation, your comprehensive guide to mastering Infinitic's scalable workflow engine for distributed services. Dive into detailed tutorials, explore in-depth concepts, and discover practical examples to leverage Infinitic effectively in your Java or Kotlin projects. Whether you're orchestrating microservices, managing data pipelines, or implementing complex business processes, our documentation provides the tools and insights you need for success. Start enhancing your distributed systems with Infinitic's robust, scalable, and resilient framework today.
 ---
+Built on top of your event streaming platform, with current support for [Apache Pulsar](https://pulsar.apache.org/), Infinitic enables the straightforward creation of complex business processes using your distributed services. It offers the peace of mind of knowing that a failure in the system will never break your workflows. {% .lead %}
 
-Built on top of [Apache Pulsar](https://pulsar.apache.org/), Infinitic lets us easily orchestrate services distributed on multiple servers - in any complex scenario. With the peace of mind of knowing that a failure somewhere will never break our workflows. {% .lead %}
+ Infinitic is ideal for a range of applications, such as:
 
-Possible use cases are:
+* Orchestrating microservices
+* Managing distributed transactions
+* Operating data pipelines
+* Implementing business processes
+* And more
 
-- microservices orchestration
-- distributed transactions
-- data pipelines operations
-- business processes implementation
-- etc.
+Using Infinitic, you get:
 
-Using Infinitic, we get:
+* **Flexibility** : Embrace the unconstrained full power of programming languages with loops, conditions, and data manipulation to define your durable processes
+* **Ease of Maintenance** : Workflows are easy to understand, consolidated in a single class, and version-controlled like any standard codebase.
+* **Enhanced Observability** : Comprehensive monitoring is in place, with detailed insights available on dashboards.
+* **Unmatched Reliability** : Workflows are resilient to service or worker failures, ensuring consistent operation.
+* **High Scalability**: Infinitic employs an event-driven architecture at its core, which guarantees exceptional scalability.
 
-- **versatility**: we can use loops, conditions, data manipulations instructions provided by the programming language, without being limited by the capabilities of a DSL
-- **maintainability**: our workflows are easy to understand, defined in one place, and versioned like any other piece of code
-- **observability**: everything is closely monitored and exposed on dashboards
-- **reliability**: workflows are immune to services or workers failures
+{% callout type="note" title="Infinitic is currently available in Java and Kotlin." %}
 
-{% callout type="note" title="Choose your programming language" %}
-
-Infinitic is currently available in Java and Kotlin.
 
 *Click the {% code-icon type="java" /%} button in the top navigation bar to select the programming language for this documentation*.
 
 Infinitic can support more programming languages. [Contact us](/docs/community/contact) if interested.
 
 {% /callout  %}
-
 
 {% quick-links %}
 
