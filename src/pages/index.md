@@ -23,7 +23,6 @@ Using Infinitic, you get:
 
 {% callout type="note" title="Infinitic is currently available in Java and Kotlin." %}
 
-
 *Click the {% code-icon type="java" /%} button in the top navigation bar to select the programming language for this documentation*.
 
 Infinitic can support more programming languages. [Contact us](/docs/community/contact) if interested.
