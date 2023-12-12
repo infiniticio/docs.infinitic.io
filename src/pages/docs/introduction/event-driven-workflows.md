@@ -1,28 +1,18 @@
 ---
 title: Event-Driven Workflows
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page provides an in-depth exploration of how Infinitic harnesses event-driven architecture to facilitate robust and efficient business processes management in distributed systems. Ideal for Java and Kotlin developers, this guide is your resource for mastering event-driven processes with Infinitic.
 ---
+Infinitic enables the creation of scalable and robust business processes in Java or Kotlin, simplifying the complexities typically associated with distributed systems. This is achieved through several key features:
 
-Infinitic let us define workflows with imperative Java or Kotlin  - as if the code was processed on an infallible monolith. To be able to do so:
+* Services are invoked remotely using an event-based RPC method, which creates the illusion of local calls.
+* The persistence and handling of messages are assured by Apache Pulsar.
+* Services are coordinated by dedicated Workflow services, which maintain a history for each workflow instance. This allows them to pick up where they left off, ensuring continuity.
 
-- Services are remotely called using an RPC technique provided by Infinitic
-- Workflow services keep track of the execution history of each workflow instance so that it can be restarted from where it left off.
-
-Despite the apparent imperative coding of workflows, their processings are event-driven.
+Despite workflows appearing to be coded in a straightforward, step-by-step manner, they are actually driven by events.
 
 ## Sequential Workflow Example
 
-We consider here a simple transfer `BankWorkflow::wire` workflow with the sequential processings of three tasks (`BankService::withdraw`, `BankService::deposit`, and `EmailService::send`):
-
-![Sequential Workflow Example](/img/banking@2x.png)
-
-We expect the task `BankService::deposit` to be executed only after `BankService::withdraw` is completed. When both are done, then `EmailService::send` is called.
-
-{% callout type="note"  %}
-
-A real-world scenario would take into account the possibility that these tasks fail for business reasons, e.g., the sender does not have enough funds or the receiver's bank details are wrong. For the sake of simplicity, we do not consider these cases here.
-
-{% /callout  %}
+Let's take a simple bank transfer workflow as an example. It sequentially processes three tasks: withdrawing from one account, depositing into another, and then sending an email confirmation. In a real-world scenario, we would account for potential business errors like insufficient funds, but for simplicity, we'll skip these here, although Infinitic is easily capable of handling such cases.
 
 Here is the code of this workflow:
 
@@ -84,68 +74,49 @@ class BankWorkflow: Workflow() {
 
 {% /codes %}
 
-
 {% callout type="note"  %}
 
-It's not visible from the code, but this workflow is resilient to technical failures:
+It's not immedialely visible but this workflow is resilient to technical failures:
 
-- if a task fails, it will be automatically retried
-- if a task permanently fails, the workflow will pick up where it left off after manually correcting the faulty task.
+* If a task fails, it's automatically retried.
+* If it fails permanently, the workflow can restart from the point of failure after the issue is resolved.
 
 {% /callout  %}
 
 ## Event-based execution
 
-The picture below explains what happens under the hood when Infinitic runs the workflow `BankWorkflow::wire` above:
+Here's a breakdown of what happens behind the scenes when running `BankWorkflow::wire` above:
 
 ![Event-based execution](/img/workflow-as-code-example@2x.png)
 
-1. The client triggers a synchronous execution of the `BankWorkflow::wire` (synchronous means that the client is waiting for the workflow result). Internally the client creates and sends a `RunWorkflow` message with a new `workflowId`.
-2. One instance of the `BankWorkflow` service catches this message (this instance will automatically stay the same as the message routing is based on the value of `workflowId`). This instance checks in the database that this workflow does not exist already; injects an empty history into a `BankWorkflow` instance, and runs the `wire` method.
+**1. Workflow Initiation** : The process begins when the client initiates the `BankWorkflow::wire` method. Internally, a `RunWorkflow` command with a unique `workflowId` is generated and dispatched.
 
-    - When reaching the synchronous `withdraw` call on the `bankService` stub, this latter checks this task was not already dispatched, sends a `runTask` message, stops the execution here and updates the workflow history.
-3. One instance of the `BankService` service catches this message, executes the `withdraw` command on sends back a `TaskCompleted` message with the serialized output.
-4. the `BankWorkflow` service catches this message, gets (from cache) the current workflow history; update it with the content of the message, then inject the updated history into a `BankWorkflow` instance, and runs the `wire` method.
+**2. Receiving and Processing the Workflow** : A `BankWorkflow` instance then receives this `RunWorkflow` command. It checks if a workflow with this `workflowId` already exists. If not, it starts the `wire` method, handling the sequence of tasks.
 
-    - When reaching the synchronous `withdraw` call on the `bankService` stub, this latter finds in the history that this task has already been completed and returns its result.
-    - When reaching the synchronous `deposit` call on the `bankService` stub, this latter checks this task was not already dispatched, sends a `runTask` message, stops the execution here and updates the workflow history.
-5. One instance of the `BankService` service catches this message, executes the `deposit` command on sends back a `TaskCompleted` message with the serialized output.
-6. the `BankWorkflow` service catches this message, gets (from cache) the current workflow history, update it with the content of the message, then inject the updated history into a `BankWorkflow` instance, and runs the `wire` method.
+**3, 5 and 7. Executing Tasks** : Each task within the workflow (such as withdrawal, deposit, and email sending) is executed in turn. These tasks are handled by their respective services. If a task fails, the worker is capable of handling this. The service will either retry the task. After a service completes a task, it sends back a `TaskCompleted` message.
 
-    - When reaching the synchronous `withdraw` call on the `bankService` stub, this latter finds in the history that this task has already been completed and returns its result.
-    - When reaching the synchronous `deposit` call on the `bankService` stub, this latter finds in the history that this task has already been completed and returns its result.
-    - When reaching the synchronous `send` call on the `emailService` stub, this latter checks this task was not already dispatched, sends a `runTask` message, stops the execution here and updates the workflow history.
-7. One instance of the `EmailService` service catches this message, executes the `send` command on sends back a `TaskCompleted` message with the serialized output.
-8. the `BankWorkflow` service catches this message, gets (from cache) the current workflow history, update it with the content of the message, then inject the updated history into a `BankWorkflow` instance, and runs the `wire` method.
+**4, 6 and 8. Workflow Progression** : Upon receiving the `TaskCompleted` message, the `BankWorkflow` service updates its history with the results of the task. It then proceeds to the next step in the workflow sequence.
 
-    - When reaching the synchronous `withdraw` call on the `bankService` stub, this latter finds in the history that this task has already been completed and returns its result.
-    - When reaching the synchronous `deposit` call on the `bankService` stub, this latter finds in the history that this task has already been completed and returns its result.
-    - When reaching the synchronous `send` call on the `emailService` stub, this latter finds in the history that this task has already been completed and returns its result.
-    - When reaching the end of the method, a `WorkflowCompleted` message is sent back to the client, and the workflow history is deleted.
-9. the client catches this message and gets the workflow result from its content.
+**9. Completing the Workflow** : Once all the tasks in the workflow are successfully completed, a `WorkflowCompleted` message is sent back to the client. This marks the end of the workflow, and its history is subsequently cleared.
+
+This detailed breakdown illustrates the event-driven nature of the `BankWorkflow`, highlighting how tasks are processed sequentially and how the workflow adapts and responds to task completions and failures.
 
 {% callout type="note"  %}
 
-As illustrated here, we can see that a "running workflow" is not an ongoing thread somewhere, but is composed of multiple events related to the processing of tasks and the ephemeral step-by-step processing of the workflow.
+As shown in this example, a 'running workflow' is actually a series of events. Each event corresponds to a task being processed and the step-by-step progression of the workflow.
 
 {% /callout  %}
 
-This event-driven nature of the orchestration makes Infinitic highly scalable. We will see later that it makes also the workflows resilient to failures.
-
 ## Constraints
 
-To be able to replay deterministically a workflow implementation must contain only the logical sequence of tasks and in particular must avoid any element that can change its behavior over time.
-
-Those constraints are described in details [here](/docs/workflows/syntax).
+For deterministic replayability, a workflow must contain only the logical sequence of tasks and avoid elements that change behavior over time. More details on these constraints are available [here](/docs/workflows/syntax).
 
 ## Possibilities
 
-We have seen how to implement simple sequential tasks, but the possibilities are endless:
+This approach to workflow design makes Infinitic highly scalable and resilient to failures, offering endless possibilities for task orchestration:
 
-- we can easily manipulate the data between tasks
-- we can use the conditional structure of the language (if/then), the loop/functional structure (for/map)
-- we can dispatch tasks [asynchronously](/docs/workflows/parallel)
-- we can dispatch [sub-workflows](/docs/workflows/parallel#child-workflows)
-- we can dispatch [multiple methods](/docs/workflows/parallel#parallel-methods) in parallel
-- we can wait for a [duration](/docs/workflows/waiting), a date or for external [signals](/docs/workflows/signals)
-- we can wait for the completion of any [asynchronous execution](/docs/workflows/deferred)
+* Data can be easily manipulated between tasks. Use language-specific structures like if/then and for/map.
+* Dispatch tasks [asynchronously](/docs/workflows/parallel).
+* Implement [child-workflows](/docs/workflows/parallel#child-workflows) and execute multiple methods in parallel.
+* Wait for a [duration](/docs/workflows/waiting), a date, or external [signals](/docs/workflows/signals).
+* Wait for the completion of any [asynchronous execution](/docs/workflows/deferred).

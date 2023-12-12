@@ -1,82 +1,63 @@
 ---
 title: Terminology
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page is your starting point to learn about Services, Tasks, Workflows, and Clients in Infinitic's distributed task management framework. Dive into the foundational elements of Infinitic and streamline your distributed systems knowledge.
 ---
+Welcome to Infinitic! Understanding the key terms used in Infinitic is crucial for effectively utilizing its capabilities. This guide breaks down the essential terminology in simple terms, helping you get a clear picture of how Infinitic operates.
 
-## Service
+## Services
 
-**Services** are classes that implement domain-driven methods, called [tasks](#task) in Infinitic terminology.
-Typical self-explanatory examples are:
+Services are the backbone of Infinitic. They are classes that implement various tasks or functions that you want to perform. Think of services like distinct units in your application, each responsible for a specific type of job. Examples include:
 
-- `EmailService`
-- `NotificationService`
-- `InvoiceService`
-- `HotelBookingService`
-- `BankService`
+- `EmailService` for handling email-related tasks.
+- `NotificationService` for sending notifications.
+- `InvoiceService` for managing invoices.
 
-Services are exposed through our Apache Pulsar cluster by [workers](#worker).
+In the context of [workflows](#workflows), services are primarily defined by their interfaces and are invoked using event-based RPC (Remote Procedure Call). 
+
+These services are implemented in classes within [workers](#worker), which are connected and managed via the Apache Pulsar cluster. They can be scaled across multiple workers to handle parallel processing, ensuring efficiency and resilience.
 
 ![Services](/img/concept-service@2x.png)
 
-As illustrated above:
+## Tasks
 
-- one worker can contain multiple instances of the same service. This is useful for a worker to run multiple [tasks](#task) in parallel.
-- the same service can be deployed through multiple workers. This is useful to scale the service horizontally and ensure resiliency to the failure of a worker.
-
-A worker can also contain different services if needed.
-
-## Task
-
-A **task** is a [service](#service)'s method. It can be
-
-- a database call;
-- an API call;
-- a complex domain-driven action;
-- actually anything!
-Tasks are processed inside [workers](#worker) and remotely invoked through Apache Pulsar.
+A **task** is essentially a method within a [service](#service) class. It can be anything from a database operation, an API call, to any complex action specific to your domain. Tasks are processed inside [workers](#worker) and are invoked remotely via Apache Pulsar.
 
 ![Tasks](/img/concept-task@2x.png)
 
-## Worker
+## Workers
 
-A **worker** is a running application connected to our Apache Pulsar cluster and configured to run one or multiple [services](#service). For each service that it contains, a worker does:
-
-- listen to the Apache Pulsar's topic dedicated to the service;
-- consume and deserialize their messages and process [tasks](#task) accordingly;
-- send back the serialized results.
-Workers are stateless and can be scaled horizontally.
+Workers are applications that run [services](#service). A worker embeds an Apache Pulsar's consumer listening the topics dedicated to each service it implements. When receiving the instruction to run a task, the worker deserializes the input, trigger the task procesing, and return the result to Pulsar in a JSON serialized format. Workers are stateless, meaning they don't store any data permanently, and can be scaled to meet demand. Workers also catch any [task](#task) failure, and manage retries,  ensuring that your distributed tasks are executed seamlessly. 
 
 ![Workers](/img/concept-worker@2x.png)
 
 {% callout type="note"  %}
 
-When using Infinitic, we do not need to know anything about the messages exchanged between services and workflows. Infinitic handles that for us. under the hood, workers receive `ExecuteTask` command messages (with task's details) and return `TaskCompleted` (with task's result) or `TaskFailed` (with task's error) event messages. When using a choreography pattern, services need to know the events produced by other services. This is not the case here as we use an orchestration pattern. Services are fully decoupled.
+The complexity of communication between services and workflows is handled seamlessly for us. You don't have to worry about the underlying messages being sent back and forth.
+
+In Infinitic, we use an orchestration pattern. This is different from a choreography pattern where services need to be aware of the events produced by other services. With orchestration, services are completely independent or decoupled. They don't need to know about each other's events; Infinitic coordinates everything.
 
 {% /callout  %}
 
-## Workflow
+## Workflows
 
-A **workflow** is a special service dedicated to orchestrating the execution of different tasks (or sub-workflows) according to an execution logic directly described in its methods. Infinitic does not define workflows through JSON or Yaml files but with imperative code, following a modern [_workflow as code_](https://medium.com/swlh/code-is-the-best-dsl-for-building-workflows-548d6824f549) pattern.
+Workflows are special types of [services](#service) that orchestrate the execution of various tasks. Unlike traditional methods, Infinitic workflows are defined [using code](https://medium.com/swlh/code-is-the-best-dsl-for-building-workflows-548d6824f549), offering more flexibility and control.
 
 ![Workflows](/img/concept-workflow@2x.png)
 
-Workers running workflows are also stateless and can be scaled horizontally. They connect to a database storing the state of each workflow instance. Infinitic automatically maintains those states as workflow executions progress.
-
-Today, supported databases are Redis and MySQL. Adding another database is trivial; please [contribute](https://github.com/infiniticio/infinitic).
-Soon, workflow services could be deployed as [Pulsar stateful functions](https://pulsar.apache.org/docs/functions-overview/), removing the need to manage another database.
+Workflow workers are also stateless and scalable. They connect to databases like Redis or MySQL to manage the state of each workflow instance, ensuring smooth progress and stateful execution.
 
 {% callout type="note" %}
 
-Contrary to "normal" services, each workflow instance has its own message consumer using a [key-shared subscription](https://pulsar.apache.org/docs/concepts-messaging/#key_shared) on workflow's ID to ensure that all messages related to the same workflow instance are handled sequentially. This is needed to:
+Workflow services in Infinitic are managed differently compared to typical services. Each workflow consumer uses a method called a [key-shared subscription](https://pulsar.apache.org/docs/concepts-messaging/#key_shared), which is based on the workflow's ID. This approach is crucial for several reasons:
 
-- avoid race conditions induced by parallel handling of multiple messages related to the same workflow instance
-- maintain locally a cache of the workflow state
-- avoid race conditions when saving workflow state in the database
+- Infinitic guarantees that messages pertaining to a particular workflow instance are handled sequentially. This orderly processing is crucial to prevent race conditions that could occur if multiple messages for the same workflow were handled simultaneously. Avoiding these situations is key to ensuring a predictable and stable task flow.
+- Through the use of a key-shared subscription, a workflow service can receive all events linked to a specific workflow instance. This enables the service to keep a local cache of the workflow's state, reducing the need for frequent database queries.
+- Finally, there's no requirement for techniques like database locking to avert race conditions during the saving of workflow states in the database. This aspect significantly enhances Infinitic's scalability, ensuring that the database doesn't become a performance bottleneck.
 
 {% /callout  %}
 
-## Client
+## Clients
 
-We use a _client_ mainly to start new workflow instances. To do so, clients need to know the signature of workflow services and be able to connect to our Apache Pulsar cluster.
+**Client's Role.** The client is primarily used to initiate new workflow instances. It needs to understand the workflow services' signatures and connect to the Apache Pulsar cluster to start and manage workflows.
 
 ![Clients](/img/concept-client@2x.png)

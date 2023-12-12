@@ -1,29 +1,28 @@
 ---
 title: Hello World Application
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page offers a step-by-step guide to creating your first Infinitic workflow, ideal for Java and Kotlin developers new to distributed systems. Learn the basics of setting up a project, writing tasks and workflows, deploying workers, and running a workflow in a simple, approachable format. This tutorial provides the foundational knowledge needed to start building scalable and resilient applications with Infinitic.
 ---
+This guide will walk you through building a "Hello World" workflow from scratch, covering these steps:
 
-We'll show here how to build an "Hello World" workflow from scratch, with the following steps:
+* Creating a project
+* Writing tasks
+* Writing a workflow
+* Deploying workers
+* Starting a workflow
 
-- create a project
-- write tasks
-- write a workflow
-- deploy workers
-- run a workflow
+Our `HelloWorld` workflow will take a `name` string as input and return `"Hello $name!"`, utilizing two tasks run on distributed workers:
 
-The workflow `HelloWorld` will take a `name` string as input and return `"Hello $name!"` using sequentially 2 tasks run on distributed workers:
-
-- a `sayHello` task that takes a `name` string as input and returns `"Hello $name"`
-- an `addEnthusiasm` task that takes a `str` string as input and returns `"$str!"`
+* A `sayHello` task that inputs a `name` string and outputs `"Hello $name"`
+* An `addEnthusiasm` task that inputs a `str` string and outputs `"$str!"`
 
 ## Prerequisites
 
-We need to have [Gradle](https://gradle.org/install/) installed, with: 
+Before we begin, ensure you have [Gradle](https://gradle.org/install/) installed, along with:
 
-- an Apache Pulsar cluster ([install](https://pulsar.apache.org/docs/en/standalone-docker/))
-- a Redis ([install](https://redis.io/topics/introduction)) or MySQL database, to store workflow states.
+* An Apache Pulsar cluster ([installation guide](https://pulsar.apache.org/docs/en/standalone))
+* A Redis ([installation guide](https://redis.io/download)) or MySQL database for storing workflow states.
 
-If we have Docker on our computer, we can simply run `docker-compose up` on this `docker-compose.yml` file:
+With Docker installed, you can set up the environment using the provided `docker-compose.yml` file:
 
 ```yaml
 services:
@@ -58,7 +57,7 @@ volumes:
 
 ## Create project
 
-Create a new project within a new directory:
+Start by creating a new project:
 
 ```bash
 mkdir hello-world && cd hello-world && gradle init
@@ -141,15 +140,15 @@ Source package (default: hello.world):
 
 {% /code-kotlin %}
 
-in our build gradle file, we add:
+in our build gradle file, we'll include:
 
-- Maven repository
-- needed dependencies
-- instruction to compile to Java 1.8
+* The Maven repository
+* The required dependencies
+* A directive to compile using Java 1.8"
 
 {% codes %}
 
-```java [app/build.gradle]
+```java
 plugins {
     id 'application'
 }
@@ -176,7 +175,7 @@ java {
 }
 ```
 
-```kotlin [app/build.gradle.kts]
+```kotlin
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.5.10"
 
@@ -215,17 +214,17 @@ And install dependencies:
 
 ## Writing services
 
-Let's create a `services` directory:
+Create a `services` directory:
 
 ```sh
 mkdir app/src/main/java/hello/world/services
 ```
 
-in which, we add a `HelloWorldService` interface:
+and define the `HelloWorldService` interface:
 
 {% codes %}
 
-```java [app/src/main/java/hello/world/services/HelloWorldService.java]
+```java
 package hello.world.services;
 
 public interface HelloWorldService {
@@ -235,7 +234,7 @@ public interface HelloWorldService {
 }
 ```
 
-```kotlin [app/src/main/kotlin/hello/world/services/HelloWorldService.kt]
+```kotlin
 package hello.world.services
 
 interface HelloWorldService {
@@ -247,29 +246,27 @@ interface HelloWorldService {
 
 {% /codes %}
 
-and a `HelloWorldServiceImpl` implementation:
+and its implementation, `HelloWorldServiceImpl`, which will contain our tasks:
 
 {% codes %}
 
-```java [app/src/main/java/hello/world/services/HelloWorldServiceImpl.java]
+```java
 package hello.world.services;
 
 public class HelloWorldServiceImpl implements HelloWorldService {
     @Override
     public String sayHello(String name) {
-
         return "Hello " + ((name == null) ? "World" : name);
     }
 
     @Override
     public String addEnthusiasm(String str) {
-
         return str + "!";
     }
 }
 ```
 
-```kotlin [app/src/main/kotlin/hello/world/services/HelloWorldServiceImpl.kt]
+```kotlin
 package hello.world.services
 
 class HelloWorldServiceImpl : HelloWorldService {
@@ -283,17 +280,17 @@ class HelloWorldServiceImpl : HelloWorldService {
 
 ## Writing workflow
 
-Let's create a `workflows` directory:
+Set up a `workflows` directory:
 
 ```sh
 mkdir app/src/main/java/hello/world/workflows
 ```
 
-in which, we add a `HelloWorldWorkflow` interface:
+and add the `HelloWorldWorkflow` interface:
 
 {% codes %}
 
-```java [app/src/main/java/hello/world/workflows/HelloWorldWorkflow.java]
+```java
 package hello.world.workflows;
 
 public interface HelloWorldWorkflow {
@@ -301,7 +298,7 @@ public interface HelloWorldWorkflow {
 }
 ```
 
-```kotlin [app/src/main/kotlin/hello/world/workflows/HelloWorldWorkflow.kt]
+```kotlin
 package hello.world.workflows
 
 interface HelloWorldWorkflow {
@@ -311,17 +308,17 @@ interface HelloWorldWorkflow {
 
 {% /codes %}
 
-and a `HelloWorldWorkflowImpl` implementation:
+and its `HelloWorldWorkflowImpl` implementation:
 
 {% callout type="warning"  %}
 
-Workflow implementation must extend `io.infinitic.workflows.Workflow`
+This implementation must extend `io.infinitic.workflows.Workflow`
 
 {% /callout  %}
 
 {% codes %}
 
-```java [app/src/main/java/hello/world/workflows/HelloWorldWorkflowImpl.java]
+```java
 package hello.world.workflows;
 
 import hello.world.services.HelloWorldService;
@@ -347,7 +344,7 @@ public class HelloWorldWorkflowImpl extends Workflow implements HelloWorld {
 }
 ```
 
-```kotlin [app/src/main/kotlin/hello/world/workflows/HelloWorldWorkflowImpl.kt]
+```kotlin
 package hello.world.workflows
 
 import hello.world.services.HelloWorldService
@@ -374,11 +371,13 @@ class HelloWorldWorkflowImpl: Workflow(), HelloWorld {
 
 {% /codes %}
 
-Note the `newService` function creating a stub from the `HelloWorldService` interface. From a syntax point of view, this stub can be used as an implementation of `HelloWorldService` . But instead of executing a method, it sends a message to Infinitic requesting this execution. That's why nothing happens if we run a workflow without having deployed any worker.
+Note: the `newService` function creates a stub from the `HelloWorldService` interface.
+
+Syntax-wise, this stub functions like an implementation of `HelloWorldService`. However, instead of executing a method directly, it sends a message to carry out the execution. This is why running a workflow without deploying any workers will result in no action being taken.
 
 ## Pulsar configuration
 
-The `app/infinitic.yml` file should contain the Pulsar configuration:
+Configure Pulsar in the  `app/infinitic.yml` file:
 
 ```yaml
 pulsar:
@@ -390,7 +389,7 @@ pulsar:
 
 ## Deploying workers
 
-The easiest way to build workers is from an `app/infinitic.yml` config file:
+Set up services and workflows, and update values for Redis and Pulsar connections as necessary:
 
 ```yaml
 storage:
@@ -415,17 +414,11 @@ workflows:
     class: hello.world.workflows.HelloWorldImpl
 ```
 
-{% callout type="warning"  %}
-
-Please update values for Redis and Pulsar connections if necessary.
-
-{% /callout  %}
-
-Then, to create a worker, just replace the App file with:
+Replace the App file with:
 
 {% codes %}
 
-```java [app/src/main/java/hello/world/App.java]
+```java
 package hello.world;
 
 import io.infinitic.worker.InfiniticWorker;
@@ -439,7 +432,7 @@ public class App {
 }
 ```
 
-```kotlin [app/src/main/kotlin/hello/world/App.kt]
+```kotlin
 package hello.world
 
 import io.infinitic.worker.InfiniticWorker
@@ -470,24 +463,25 @@ SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further detail
 
 {% callout type="note"  %}
 
-The SLF4J outputs are there because we do not have any logger yet in the app. To remove those messages, add our logger of choice (for example [Simple Logger] (#simple-logger) as a dependency in our Gradle build file.
+The SLF4J output messages appear because our app doesn't have a logger set up yet. To eliminate these messages, we can add a logger of our choice, such as [Simple Logger](#simple-logger), as a dependency in our Gradle build file.
 
 {% /callout  %}
 
 {% callout type="warning"  %}
 
-When coding, workers need to be restarted to account for any change.
+When making code changes, it's necessary to restart the workers to ensure they incorporate these updates.
 
 {% /callout  %}
 
 ## Start a workflow
 
-The easiest way to instantiate an InfiniticClient is to use a config file exposing a `pulsar` configuration.
-Here, we already have the `infinitic.yml` file that we can reuse in a new `Client` file:
+Use a config file with pulsar configuration to instantiate an `InfiniticClient`. Use this client to create a workflow stub and dispatch the workflow.
+
+Here, we already have the `infinitic.yml` file that we can reuse:
 
 {% codes %}
 
-```java [app/src/main/java/hello/world/Client.java]
+```java
 package hello.world;
 
 import hello.world.workflows.HelloWorldWorkflow;
@@ -512,7 +506,7 @@ public class Client {
 }
 ```
 
-```kotlin [app/src/main/kotlin/hello/world/Client.kt]
+```kotlin
 package hello.world
 
 import hello.world.workflows.HelloWorldWorkflow
@@ -538,27 +532,25 @@ fun main(args: Array<String>) {
 
 {% /codes %}
 
-We can run it directly from our IDE (we may need to change the working directory on the Run configuration), or add the `startWorkflow` Gradle task to our build file:
+We can run this directly from our IDE (remembering to possibly adjust the working directory in the Run configuration), or we can add a `startWorkflow` Gradle task to our build file:
 
 {% codes %}
 
-```java [app/build.gradle]
+```java
 ...
-
-task startWorkflow(type: JavaExec) {
+tasks.register('startWorkflow', JavaExec) {
     group = "infinitic"
-    main = "hello.world.Client"
+    mainClass = "hello.world.Client"
     classpath = sourceSets.main.runtimeClasspath
 }
 ```
 
-```kotlin [app/build.gradle.kts]
+```kotlin
 ...
-
-task("startWorkflow", JavaExec::class) {
+task<JavaExec>("startWorkflow") {
     group = "infinitic"
-    main = "hello.world.ClientKt"
     classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("hello.world.ClientKt")
 }
 ```
 
@@ -570,31 +562,29 @@ and run it from the command line:
 ./gradlew startWorkflow --args Infinitic
 ```
 
-Where our app/worker is running, we should see:
+Where the app/worker is running, we should see:
 
 ```sh
 Hello Infinitic!
 ```
 
-Congrats! We have run our first Infinitic workflows.
+Congrats! You have run your first Infinitic workflows.
 
 ## Debugging
 
 ### Check-list
 
-Here is a check-list when encountering issues:
+In case of issues, check:
 
-- Pulsar should be up and running
-- Redis should be up and running
-- `infinitic.yml` file:
+- If Pulsar and Redis are running
+- Correctness of `infinitic.yml` file that
   - should expose correct values to access Pulsar and Redis
   - should have `name` and `class` that match interface names and implementation full names respectively of our task and workflows
-  - should have at least 1 taskEngine consumer, 1 workflowEngine consumer
-- at least one worker should be running
+- If at least one worker is running
 
 {% callout type="warning"  %}
 
-If nothing happens when it should not, remember that workers won't quit if an exception is thrown from our tasks or workflows. To see exceptions, we must install a logger and look at the log file.
+Keep in mind that workers will continue running even if an exception occurs in our tasks or workflows. To observe these exceptions, you need to set up a logger and then review the log file for any errors.
 
 {% /callout  %}
 
@@ -604,7 +594,7 @@ To use `SimpleLogger` as logger in this app, just add the dependency in our Grad
 
 {% codes %}
 
-```java [app/build.gradle]
+```java
 dependencies {
     ...
     implementation "org.slf4j:slf4j-simple:2.0.3"
@@ -624,7 +614,7 @@ dependencies {
 
 and this `simplelogger.properties` example file in our `resources` directory:
 
-```shell [app/src/main/resources/simplelogger.properties]
+```shell
 # SLF4J's SimpleLogger configuration file
 # Simple implementation of Logger that sends all enabled log messages, for all defined loggers, to System.err.
 
@@ -669,4 +659,3 @@ git clone https://github.com/infiniticio/infinitic-example-kotlin-hello-world
 ```
 
 {% /code-kotlin %}
-
