@@ -97,7 +97,7 @@ Since 0.12.0, the runtime timeout must be defined on the class implementation. W
 There are multiple ways to define a runtime timeout:
 
 - in the service implementation:
-  - by extending the [`WithTimeout`](/docs/services/syntax#withtimeout-interface) interface
+  - by using the [`WithTimeout`](/docs/services/syntax#withtimeout-interface) interface
   - by using the [`@Timeout`](/docs/services/syntax#timeout-annotation) annotation
 - in the worker:
   - through its configuration [file](/docs/services/workers#timeout-policy)
