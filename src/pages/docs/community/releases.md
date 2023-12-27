@@ -2,6 +2,14 @@
 title: Releases
 description: ""
 ---
+## v0.12.2
+
+{% version-improvements /%}
+
+* restore config files as data classes instead of interfaces
+* restore `fromConfig` method for clients and workers
+* improve worker logging
+
 ## v0.12.1
 
 {% version-new-features /%}
