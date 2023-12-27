@@ -6,9 +6,9 @@ description: ""
 
 {% version-improvements /%}
 
-* restore config files as data classes instead of interfaces
-* restore `fromConfig` method for clients and workers
-* improve worker logging
+* Restore config files as data classes instead of interfaces
+* Restore `fromConfig` method for clients and workers
+* iImprove worker logging
 
 ## v0.12.1
 
