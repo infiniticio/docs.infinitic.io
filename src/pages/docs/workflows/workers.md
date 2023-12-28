@@ -217,6 +217,7 @@ storage:
     user: root
     password: 
     database: infinitic
+    maxPoolSize: 5
 ```
 
 #### State compression
