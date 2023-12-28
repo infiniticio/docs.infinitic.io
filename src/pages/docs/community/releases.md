@@ -6,17 +6,17 @@ description: ""
 
 {% version-new-features /%}
 
-- new `maxPoolSize` in MySQL storage config.
-- `tagEngine` can now be defined in `serviceDefault.`
-- `tagEngine` and `workflowEngine` can now be defined in `workflowDefault`.
+- A new configuration option `maxPoolSize` has been introduced to the MySQL storage configuration. This option allows you to specify the maximum number of connections in the connection pool.
+- The `tagEngine` setting can now be configured under `serviceDefault`.
+- The `tagEngine` and `workflowEngine` settings can now be configured under `workflowDefault`.
 
 {% version-breaking-changes /%}
 
-- `service` and `worflow` entries in worker config - defining default values for services and workflows - are renamed `serviceDefault` and `workflowDefault`.
+- The entries `service` and `workflow` in the worker configuration, which were used to establish default values for services and workflows, have been renamed. The updated names are `serviceDefault` and `workflowDefault`, respectively.
 
 {% version-improvements /%}
 
-- Not being able to check tenant / namespace does not trigger an error.
+- Not being able to check tenant / namespace does not trigger an error anymore.
 
 ## v0.12.2
 
