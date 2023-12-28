@@ -2,7 +2,6 @@
 title: Workflow Workers
 description: ""
 ---
-
 Infinitic workers can be configured to orchestrate workflows.
 The roles of workflow workers are:
 
@@ -93,7 +92,7 @@ pulsar:
   namespace: dev
 
 # (Optional) default values for workflows
-workflow:
+workflowDefault:
   concurrency: 10
   timeoutInSeconds: 400
   retry:
@@ -122,14 +121,14 @@ Worker `name` (when provided) must be unique among all our workers and clients c
 
 ### Workflows
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `name`        | string  | name of the workflow (its interface per default) |
-| `class`       | string  | name of the class to instantiate |
-| `concurrency` | integer | maximum number of messages processed in parallel |
-| `timeoutInSeconds` | double | maximum duration of a workflow task execution before timeout | 60
-| `retry` | RetryPolicy | retry policy for the workflow tasks of this workflow | no retry
-| `checkMode` | WorkflowCheckMode | mode used to check if a workflow is modified while still running | simple
+| Name                 | Type              | Description                                                      |
+| -------------------- | ----------------- | ---------------------------------------------------------------- |
+| `name`             | string            | name of the workflow (its interface per default)                 |
+| `class`            | string            | name of the class to instantiate                                 |
+| `concurrency`      | integer           | maximum number of messages processed in parallel                 |
+| `timeoutInSeconds` | double            | maximum duration of a workflow task execution before timeout     |
+| `retry`            | RetryPolicy       | retry policy for the workflow tasks of this workflow             |
+| `checkMode`        | WorkflowCheckMode | mode used to check if a workflow is modified while still running |
 
 {% callout type="warning"  %}
 
@@ -273,7 +272,7 @@ public class App {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
             worker.registerWorkflow(
                 // workflow name
-                BookingWorkflow.class.getName(),                                                
+                BookingWorkflow.class.getName(),                                              
                 // workflow implementation class
                 BookingWorkflowImpl.class,
                 // number of parallel processings (default: 1)

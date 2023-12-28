@@ -2,13 +2,29 @@
 title: Releases
 description: ""
 ---
+## v0.12.3
+
+{% version-new-features /%}
+
+- new `maxPoolSize` in MySQL storage config.
+- `tagEngine` can now be defined in `serviceDefault.`
+- `tagEngine` and `workflowEngine` can now be defined in `workflowDefault`.
+
+{% version-breaking-changes /%}
+
+- `service` and `worflow` entries in worker config - defining default values for services and workflows - are renamed `serviceDefault` and `workflowDefault`.
+
+{% version-improvements /%}
+
+- Not being able to check tenant / namespace does not trigger an error.
+
 ## v0.12.2
 
 {% version-improvements /%}
 
 * Restore config files as data classes instead of interfaces
 * Restore `fromConfig` method for clients and workers
-* iImprove worker logging
+* Improve worker logging
 
 ## v0.12.1
 

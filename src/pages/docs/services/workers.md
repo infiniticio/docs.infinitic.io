@@ -2,7 +2,6 @@
 title: Service Workers
 description: Quidem magni aut exercitationem maxime rerum eos.
 ---
-
 Infinitic provides a generic worker that executes tasks or workflows depending on its configuration.
 When configured to run a service, a worker will:
 
@@ -26,7 +25,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 
 {% codes %}
 
-```java [build.gradle]
+```java
 dependencies {
     ...
     implementation "io.infinitic:infinitic-worker:0.11.+"
@@ -34,7 +33,7 @@ dependencies {
 }
 ```
 
-```kotlin [build.gradle.kts]
+```kotlin
 dependencies {
     ...
     implementation("io.infinitic:infinitic-worker:0.11.+")
@@ -90,7 +89,7 @@ pulsar:
   namespace: dev
 
 # (Optional) default values for services
-service:
+serviceDefault:
   concurrency: 10
   timeoutInSeconds: 400
   retry:
@@ -115,13 +114,13 @@ This configuration contains
 - the [Pulsar settings](/docs/references/pulsar)
 - the description of services:
 
-| Name | Type | Description | Default
-| ---- | ---- | ----------- | ------- |
-| `name`        | string  | name of the service (its interface per default) |
-| `class`       | string  | name of the class to instantiate |
-| `concurrency` | integer | number of tasks executed in parallel | 1
-| `timeoutInSeconds` | double | maximum duration of a task execution before timeout | null
-| `retry` | RetryPolicy | retry policy for the tasks of this service | cf. below
+| Name                 | Type        | Description                                         | Default   |
+| -------------------- | ----------- | --------------------------------------------------- | --------- |
+| `name`             | string      | name of the service (its interface per default)     |           |
+| `class`            | string      | name of the class to instantiate                    |           |
+| `concurrency`      | integer     | number of tasks executed in parallel                | 1         |
+| `timeoutInSeconds` | double      | maximum duration of a task execution before timeout | null      |
+| `retry`            | RetryPolicy | retry policy for the tasks of this service          | cf. below |
 
 {% callout type="warning"  %}
 
@@ -171,12 +170,12 @@ If none is provided, this default setting is applied:
 
 ```yaml
 retry:
-  minimumSeconds: 1      
+  minimumSeconds: 1    
   maximumSeconds: 1000   # default = 1000 * minimumSeconds
   backoffCoefficient: 2  
-  randomFactor: 0.5     
-  maximumRetries: 11    
-  ignoredExceptions:     
+  randomFactor: 0.5   
+  maximumRetries: 11  
+  ignoredExceptions:   
     - # name of an first exception to ignore
     - # name of an second exception to ignore
     - # name of an third exception to ignore
@@ -194,7 +193,7 @@ where `random()` is a random value between `0` and `1`.
 If we do not want any retries, the simplest configuration is:
 
 ```yaml
-retry:    
+retry:  
   maximumRetries: 0   
 ```
 
@@ -218,7 +217,7 @@ public class App {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
             worker.registerService(
                 // service name
-                CarRentalService.class.getName(),                                                
+                CarRentalService.class.getName(),                                              
                 // function providing an instance of the service
                 () -> new CarRentalServiceFake(/* some injection here*/),
                 // number of parallel processings (default: 1)
@@ -242,7 +241,7 @@ fun main(args: Array<String>) {
         worker.registerService(
             // service name
             CarRentalService.class.getName(), 
-            // function providing an instance of the service                          
+            // function providing an instance of the service                        
             { CarRentalServiceFake(/* some injection here*/) },
             // number of parallel processings (default: 1)
             50,
@@ -292,7 +291,7 @@ dependencies {
 
 and this `simplelogger.properties` example file in our `resources` directory:
 
-```shell [src/main/resources/simplelogger.properties]
+```shell
 # SLF4J's SimpleLogger configuration file
 # Simple implementation of Logger that sends all enabled log messages, for all defined loggers, to System.err.
 
