@@ -28,7 +28,7 @@ With Docker installed, you can set up the environment using the provided `docker
 services:
   # Pulsar settings
   pulsar-standalone:
-    image: apachepulsar/pulsar:2.10.0
+    image: apachepulsar/pulsar:2.11.2
     environment:
       - BOOKIE_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
     command: >
@@ -164,9 +164,9 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation "io.infinitic:infinitic-client:0.11.+"
+    implementation "io.infinitic:infinitic-client:0.13.0"
     // infinitic worker
-    implementation "io.infinitic:infinitic-worker:0.11.+"
+    implementation "io.infinitic:infinitic-worker:0.13.0"
 }
 
 java {
@@ -188,9 +188,9 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation("io.infinitic:infinitic-client:0.11.+")
+    implementation("io.infinitic:infinitic-client:0.13.0")
     // infinitic worker
-    implementation("io.infinitic:infinitic-worker:0.11.+")
+    implementation("io.infinitic:infinitic-worker:0.13.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.services.KotlinCompile> {

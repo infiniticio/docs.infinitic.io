@@ -1,8 +1,7 @@
 ---
 title: Send A Signal To A Workflow
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page outlines how to send signals to running workflows in Infinitic, utilizing channels defined in the workflow interface. Signals, which can be any serializable object, are sent to either a specific workflow instance by ID or to instances tagged with a specific label. This functionality is critical for developers needing to communicate with and alter the state of running workflows dynamically within their applications.
 ---
-
 It is possible to send a signal to running workflows.
 Sending signals is done through [channels](/docs/workflows/signals) that must be described in the workflow interface, for example:
 
@@ -75,5 +74,3 @@ w.notificationChannel.send("foobar")
 ```
 
 {% /codes %}
-
-

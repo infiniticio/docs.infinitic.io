@@ -1,8 +1,7 @@
 ---
 title: Properties
-description: ""
+description: This page focuses on how to expose and manipulate public properties of workflows, illustrating with examples on managing properties for a simple loyalty program workflow.
 ---
-
 It could be useful to expose public properties of our workflow. We will illustrate this with the small example of a very simple loyalty program:
 
 {% codes %}

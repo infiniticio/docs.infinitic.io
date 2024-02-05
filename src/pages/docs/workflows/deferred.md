@@ -1,8 +1,7 @@
 ---
 title: Deferred
-description: ""
+description: The page focuses on Deferred objects used to manage tasks and child workflows that are scheduled for future execution, enabling workflows to handle long-running operations efficiently.
 ---
-
 In workflows, we often create `Deferred<T>` object using the workflow functions:
 
 - `dispatch` (on new task or new / existing workflows)

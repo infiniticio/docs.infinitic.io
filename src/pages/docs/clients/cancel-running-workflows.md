@@ -1,8 +1,7 @@
 ---
 title: Cancel Running Workflows
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page describes how to cancel running workflows in Infinitic, detailing methods to target workflows by ID or tag for cancellation. It highlights that canceling a workflow will also cancel its child workflows, unless the child workflows are dispatched from a task. The documentation provides Java and Kotlin examples for synchronous and asynchronous cancellation.
 ---
-
 The cancellation of a workflow stops its execution and delete its state.
 
 We can cancel running workflows by using a stub that target them by id:
@@ -25,7 +24,6 @@ client.cancel(w)
 
 {% /codes %}
 
-
 or by tag:
 
 {% codes %}
@@ -46,7 +44,6 @@ client.cancel(w)
 
 {% /codes %}
 
-
 {% callout type="note"  %}
 
 Cancelling a workflow cancels its child workflows as well.
@@ -55,7 +52,7 @@ If we do not want this behavior, we should dispatch our child workflow from a ta
 
 {% /callout  %}
 
-The direct cancellation of a child workflow will trigger a `CanceledWorkflowException` in the parent workflow 
+The direct cancellation of a child workflow will trigger a `CanceledWorkflowException` in the parent workflow
 if waiting for its completion.
 
 The `cancel` method waits for the adhoc message to be sent to Pulsar.

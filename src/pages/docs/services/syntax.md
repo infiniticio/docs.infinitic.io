@@ -1,6 +1,6 @@
 ---
 title: Service Syntax
-description: ""
+description: This documentation details the syntax and operational constraints for defining and implementing services in Infinitic. It emphasizes task methods must be serializable and thread-safe, with guidelines for versioning services, handling task failures, setting runtime timeouts, and customizing retry policies.
 ---
 ## Constraints
 
@@ -110,7 +110,6 @@ The timeout policy used will be the first found in this order:
 3) `@Timeout` class annotation
 4) `WithTimeout` interface
 5) No timeout
-
 
 ### `WithTimeout` interface
 

@@ -1,8 +1,7 @@
 ---
 title: Client Creation
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page guides on creating Infinitic clients, essential for starting, retrying, and canceling tasks or workflows. It covers adding the infinitic-client dependency, instantiating a client using a configuration file or resource, and details the required infinitic.yml configuration file structure. This is crucial for developers integrating Infinitic into their projects.
 ---
-
 An Infinitic client lets us start, retry and cancel tasks or workflows, usually from our Web App controllers.
 
 ![Client](/img/concept-client-only@2x.png)
@@ -17,7 +16,7 @@ file:
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-client:0.11.+"
+    implementation "io.infinitic:infinitic-client:0.13.0"
     ...
 }
 ```
@@ -25,7 +24,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-client:0.11.+")
+    implementation("io.infinitic:infinitic-client:0.13.0")
     ...
 }
 ```
@@ -70,18 +69,27 @@ val client = InfiniticClient.fromConfigResource("/infinitic.yml")
 
 The infinitic.yml configuration file should contain:
 
-- a `name` (optional)
-- a `pulsar` entry describing how to connect to [Pulsar](/docs/references/pulsar)
+- `name` (optional): Specifies the name of the client
+- `pulsar`:  Details the connection parameters for [Pulsar](/docs/references/pulsar)
+- `shutdownGracePeriodInSeconds` (optional): Defines the grace period allotted to the client to complete its current actions before shutting down (default is `10.0` seconds).
 
 ```yaml
-# name is optional
+# optional
 name: client_name
 
-pulsar: ...
+pulsar:
+  brokerServiceUrl: pulsar://localhost:6650
+  webServiceUrl: http://localhost:8080
+  tenant: infinitic
+  namespace: dev
+  ...
+
+# optional
+shutdownGracePeriodInSeconds: 10.0
 ```
 
 {% callout type="warning"  %}
 
-When providing a name, it must be unique among all clients connected to Pulsar, as it will be used as Pulsar producer name.
+When specifying a name in the `infinitic.yml` configuration file, it must be unique among all clients connected to Pulsar. This name will be utilized as the Pulsar producer name, ensuring distinct identification within Pulsar.
 
 {% /callout  %}

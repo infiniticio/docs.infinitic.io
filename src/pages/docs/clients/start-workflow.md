@@ -1,8 +1,7 @@
 ---
 title: Start New Workflows
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page explains how starting new workflows in Infinitic, focusing on asynchronous and synchronous dispatch methods. It covers how to initiate workflows using stubs, manage workflow IDs, and await results with examples in Java and Kotlin.
 ---
-
 ## Asynchronous dispatch
 
 The asynchronous dispatch of a new workflow starts a new instance without waiting for its completion:
@@ -64,7 +63,6 @@ The `Deferred<T>` object can be used to:
   ```
 
   {% /codes %}
-
 - wait for the synchronous completion:
 
   {% codes %}
@@ -81,11 +79,11 @@ The `Deferred<T>` object can be used to:
 
   where `T` is the actual return type.
 
-    {% callout type="warning"  %}
+  {% callout type="warning"  %}
 
   The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `UnknownWorkflowException` if the workflow is already terminated.
 
-    {% /callout  %}
+  {% /callout  %}
 
 ## Synchronous dispatch
 
@@ -116,5 +114,3 @@ val greeting = w.greet("Infinitic")
 {% /codes %}
 
 When dispatching a workflow, the client serializes parameters and sends them through Pulsar to the [workflow [worker](/docs/workflows/workers), which will orchestrate the workflow. Eventually, the return value will be serialized and sent back to the client through Pulsar.
-
-

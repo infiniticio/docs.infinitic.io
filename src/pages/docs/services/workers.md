@@ -1,6 +1,6 @@
 ---
 title: Service Workers
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This documentation introduces Infinitic's service workers, designed to execute tasks. It explains how to configure and start a service worker, detailing the addition of dependencies, the instantiation process, and the configuration of services including concurrency, timeout, and retry policies. This guide is crucial for developers seeking to implement robust task processing systems with Infinitic's scalable, horizontally distributed workers.
 ---
 Infinitic provides a generic worker that executes tasks or workflows depending on its configuration.
 When configured to run a service, a worker will:
@@ -170,7 +170,7 @@ If none is provided, this default setting is applied:
 
 ```yaml
 retry:
-  minimumSeconds: 1    
+  minimumSeconds: 1  
   maximumSeconds: 1000   # default = 1000 * minimumSeconds
   backoffCoefficient: 2  
   randomFactor: 0.5   
@@ -217,7 +217,7 @@ public class App {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
             worker.registerService(
                 // service name
-                CarRentalService.class.getName(),                                              
+                CarRentalService.class.getName(),                                            
                 // function providing an instance of the service
                 () -> new CarRentalServiceFake(/* some injection here*/),
                 // number of parallel processings (default: 1)
@@ -241,7 +241,7 @@ fun main(args: Array<String>) {
         worker.registerService(
             // service name
             CarRentalService.class.getName(), 
-            // function providing an instance of the service                        
+            // function providing an instance of the service                      
             { CarRentalServiceFake(/* some injection here*/) },
             // number of parallel processings (default: 1)
             50,

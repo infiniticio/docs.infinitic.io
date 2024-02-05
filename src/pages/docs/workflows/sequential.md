@@ -1,8 +1,7 @@
 ---
 title: Sequential Tasks
-description: ""
+description: This documentation covers the implementation of sequential tasks within workflows, showcasing how tasks are executed one after another, with practical examples.
 ---
-
 For infinitic, a [task](/docs/services/syntax) is basically the method of a class. The implementation of this class is only needed in [workers](/docs/services/workers) where the task is actually processed.
 
 Within workflows, we should know only the interface of the class, used by the `newService` workflow function to create a [stub](https://en.wikipedia.org/wiki/Method_stub). Syntactically, this stub can be used as an implementation of the task:

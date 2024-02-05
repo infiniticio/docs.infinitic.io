@@ -1,8 +1,7 @@
 ---
 title: Service Versioning
-description: ""
+description: This documentation provides best practices for versioning services in Infinitic, ensuring smooth updates without disrupting existing workflows. It covers the stability of class and method names using the @Name annotation, recommendations for method parameter and return type changes, and guidelines for modifying service implementations. 
 ---
-
 ## Changing the interface
 
 ### Class name

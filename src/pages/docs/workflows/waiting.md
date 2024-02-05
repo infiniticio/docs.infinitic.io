@@ -1,8 +1,7 @@
 ---
 title: Waiting
-description: ""
+description: This section covers how workflows can pause execution until certain conditions are met, such as waiting for specific signals or events, enabling dynamic interaction with running workflows.
 ---
-
 The `timer` function lets us suspend the execution of a workflow for a duration or up to a chosen date:
 
 {% codes %}

@@ -1,8 +1,7 @@
 ---
 title: Parallelization
-description: ""
+description: This page describes how to execute tasks in parallel within workflows, improving efficiency and execution speed, with examples of implementation.
 ---
-
 When a workflow need to do different actions in parallel, it can:
 
 - dispatch tasks asynchronously
@@ -145,7 +144,6 @@ public class Calculate extends Workflow implements CalculateInterface {
     }
 }
 ```
-
 
 ```kotlin
 class Calculate() : Workflow(), CalculateInterface {
