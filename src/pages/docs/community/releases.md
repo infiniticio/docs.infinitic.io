@@ -1,6 +1,6 @@
 ---
 title: Releases
-description: ""
+description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 ## v0.13.0
 

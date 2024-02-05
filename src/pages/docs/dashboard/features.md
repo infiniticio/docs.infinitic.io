@@ -1,8 +1,7 @@
 ---
 title: Features
-description: ""
+description: The Infinitic Dashboard features page highlights its capabilities for monitoring and managing tasks and workflows. Key features include a comprehensive listing of all processed tasks and workflows, detailed insights into the topics used for running workflows and processing tasks, and specific statistics for each topic, providing a deep dive into performance metrics. This functionality ensures efficient oversight of deployed workers, backlog, and throughput, enhancing the management of Infinitic's distributed task processing system.
 ---
-
 ## List of workflows and tasks
 
 Once set up, the dashboard presents all tasks and workflows that have been processed through our cluster:

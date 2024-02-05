@@ -1,8 +1,7 @@
 ---
 title: Install
-description: ""
+description: This section guides on installing the Infinitic Dashboard, an essential tool for monitoring and managing Infinitic tasks and workflows, providing installation commands and configuration tips.
 ---
-
 Currently, Infinitic's web-based dashboard focuses on providing an easy way to monitor our infrastructure, showing statistics of Pulsar topics used specifically to manage each task/service or workflow.
 
 Since this dashbord directly interacts with Pulsar, it is required to deploy it into the same network as the Pulsar clusters to be able to talk to it.
@@ -18,7 +17,7 @@ To run this dashboard, add to a project:
 
 {% codes %}
 
-```java [build.gradle]
+```java
 ...
 
 plugins {
@@ -48,7 +47,7 @@ shadowJar {
 
 ```
 
-```kotlin [build.gradle.kts]
+```kotlin
 ...
 plugins {
     ...
@@ -112,7 +111,7 @@ fun main(String[] args) {
 
 where `infinitic.yml` is a configuration file mapped to a `io.infinitic.config.DashboardConfig` instance, for example:
 
-```yaml [infinitic.yml]
+```yaml
 port: 16097 # default port for KWeb server
 
 debug: true # default value for KWeb server

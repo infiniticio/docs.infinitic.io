@@ -1,9 +1,7 @@
 ---
 title: Contact
-description: ""
+description: This page provides information on how to get in touch with the Infinitic community, offering links to various channels such as GitHub, Slack, and social media for support, discussions, and contributions.
 ---
-
-
 There are multiple ways to stay in touch:
 
 - Subscribe to our [Substack](https://infinitic.substack.com/) to receive our news, about every month

@@ -1,8 +1,7 @@
 ---
 title: Serializability
-description: ""
+description: This page explains the importance of serializability in Infinitic for tasks and workflows, detailing the requirements and best practices for ensuring data is correctly serialized and deserialized across distributed systems.
 ---
-
 _Why must task and workflow parameters and return values be serializable?_
 
 - when a [client](/docs/introduction/terminology#client) dispatches a task/workflow, it serializes parameters before sending them (along with class name and method name)
