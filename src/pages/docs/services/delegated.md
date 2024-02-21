@@ -1,9 +1,8 @@
 ---
 title: Delegated Task
-description: 
+description:
 ---
-
-## Purpose
+## Delegated task purpose
 
 In certain situations, completing a task within the Service worker may not be feasible. For instance, when the task is overseen by a system external to Infinitic, and the worker cannot synchronously wait for its conclusion. In such cases, the Service worker delegates the task's completion, yet Infinitic still requires awareness of when the task is finished and the corresponding return value.
 
@@ -43,12 +42,11 @@ interface MyService {
 
 {% /codes %}
 
-In the example above, the task `myFirstTask` is delegated.  It is the responsibility of the implementation to initiate the task on the external system. It's important to note that you still need to return an object of the correct type, but you have the option to return null.
+In the example above, the task `myFirstTask` is delegated.  It is the responsibility of the implementation to initiate the task on the external system. It's important to note that the implementation still needs to return an object of the correct type, but you have the option to return null.
 
 ## Delegated task completion
 
-You can use an Infinitic client to signify to Infinitic that the delegated task is completed: 
-
+You can use an Infinitic client to signify to Infinitic that the delegated task is completed:
 
 {% codes %}
 
@@ -72,9 +70,9 @@ client.completeDelegatedTask(
 
 Where:
 
-* `serviceName`:  the name of the service. Within the task execution in the Infinitic worker, you can retrieve it through the [task's context](/docs/services/syntax#task-context);
-* `taskId`: the ID of the task. Within the task execution in the Infinitic worker, you can retrieve it through the [task's context](/docs/services/syntax#task-context);
-* `result`: The outcome of the delegated task. 
+* `serviceName`:  the name of the service. Within the task execution in the Infinitic worker, you can retrieve it through the [task&#39;s context](/docs/services/syntax#task-context);
+* `taskId`: the ID of the task. Within the task execution in the Infinitic worker, you can retrieve it through the [task&#39;s context](/docs/services/syntax#task-context);
+* `result`: The outcome of the delegated task.
 
 {% callout type="warning"  %}
 

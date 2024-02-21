@@ -8,8 +8,14 @@ description: This section lists the release notes for Infinitic, detailing new f
 
 * The `context` property of the `Task` singleton, which was accessible during task execution, has been removed due to its redundancy with other properties.
 * In workers,
+
   * the method `registerService` has been replaced by 2 methods `registerServiceExecutor`and `registerServiceTagEngine`.
   * the method `registerWorkflow` has been replaced by 3 methods `registerWorkflowExecutor`, `registerWorkflowTagEngine`, and `registerWorkflowStateEngine`.
+* The following libraries are no longer exposed by Infinitic. If you were using them, you must now add them to the dependencies of your project:
+
+  * `org.jetbrains.kotlinx:kotlinx-serialization-json`
+  * `com.jayway.jsonpath:json-path`
+  * `com.sksamuel.hoplite:hoplite-core`
 
 {% version-new-features /%}
 
