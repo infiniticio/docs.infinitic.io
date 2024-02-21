@@ -1,6 +1,6 @@
 ---
 title: Service Versioning
-description: This documentation provides best practices for versioning services in Infinitic, ensuring smooth updates without disrupting existing workflows. It covers the stability of class and method names using the @Name annotation, recommendations for method parameter and return type changes, and guidelines for modifying service implementations. 
+description: This documentation provides best practices for versioning services in Infinitic, ensuring smooth updates without disrupting existing workflows. It covers the stability of class and method names using the @Name annotation, recommendations for method parameter and return type changes, and guidelines for modifying service implementations.
 ---
 ## Changing the interface
 
@@ -176,4 +176,4 @@ Any properties we add to the return type must have default values.
 ## Changing the implementation
 
 As long as we follow the above recommendations to modify their interfaces,
-the implementation itself of the services can be modified without any particular constraints.
+the implementation itself of the services can be modified without constraint.

@@ -28,7 +28,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.11.+"
+    implementation "io.infinitic:infinitic-worker:0.13.0"
     ...
 }
 ```
@@ -36,7 +36,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.11.+")
+    implementation("io.infinitic:infinitic-worker:0.13.0")
     ...
 }
 ```
@@ -215,9 +215,9 @@ import io.infinitic.workers.InfiniticWorker;
 public class App {
     public static void main(String[] args) {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
-            worker.registerService(
+            worker.registerServiceExecutor(
                 // service name
-                CarRentalService.class.getName(),                                            
+                CarRentalService.class.getName(),                          
                 // function providing an instance of the service
                 () -> new CarRentalServiceFake(/* some injection here*/),
                 // number of parallel processings (default: 1)
@@ -238,10 +238,10 @@ import io.infinitic.workers.InfiniticWorker
 
 fun main(args: Array<String>) {
     InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
-        worker.registerService(
+        worker.registerServiceExecutor(
             // service name
             CarRentalService.class.getName(), 
-            // function providing an instance of the service                      
+            // function providing an instance of the service                
             { CarRentalServiceFake(/* some injection here*/) },
             // number of parallel processings (default: 1)
             50,

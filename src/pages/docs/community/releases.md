@@ -7,6 +7,9 @@ description: This section lists the release notes for Infinitic, detailing new f
 {% version-breaking-changes /%}
 
 * The `context` property of the `Task` singleton, which was accessible during task execution, has been removed due to its redundancy with other properties.
+* In workers,
+  * the method `registerService` has been replaced by 2 methods `registerServiceExecutor`and `registerServiceTagEngine`.
+  * the method `registerWorkflow` has been replaced by 3 methods `registerWorkflowExecutor`, `registerWorkflowTagEngine`, and `registerWorkflowStateEngine`.
 
 {% version-new-features /%}
 

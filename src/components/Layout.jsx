@@ -45,6 +45,8 @@ const navigation = [
       { title: 'Service Workers', href: '/docs/services/workers' },
       { title: 'Service Syntax', href: '/docs/services/syntax' },
       { title: 'Service Versioning', href: '/docs/services/versioning' },
+      { title: 'Using APIs', href: '/docs/services/apis' },
+      { title: 'Delegated Task', href: '/docs/services/delegated' },
     ],
   },
   {

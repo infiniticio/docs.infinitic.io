@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-dashboard:0.11.+"
+    implementation "io.infinitic:infinitic-dashboard:0.13.0"
 }
 
 application {
@@ -64,7 +64,7 @@ repositories {
 dependencies {
     ...
     implementation "org.slf4j:slf4j-simple:2.0.3" // or another logger
-    implementation("io.infinitic:infinitic-dashboard:0.11.+")
+    implementation("io.infinitic:infinitic-dashboard:0.13.0")
 }
 
 application {
