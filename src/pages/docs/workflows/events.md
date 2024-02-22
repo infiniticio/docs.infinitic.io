@@ -118,22 +118,25 @@ Here is a typical CloudEvent example:
 ```json
 {
   "specversion" : "1.0",
-  "id" : "018dcb5f-aaa8-7bd3-92bd-ac1f0d52b2dd",
-  "source" : "pulsar://localhost:6650/infinitic/test9/services/HelloService",
-  "type" : "infinitic.task.completed",
+  "id" : "018dcb5f-aab3-705b-b6a6-083581389dc8",
+  "source" : "pulsar://localhost:6650/infinitic/test9/workflows/HelloWorkflow",
+  "type" : "infinitic.workflow.taskCompleted",
   "datacontenttype" : "application/json",
-  "subject" : "018dcb5f-aa4f-7187-8a9d-d656c4e13a1b",
-  "time" : "2024-02-21T11:14:20.968Z",
+  "subject" : "018dcb5f-a644-7a95-9375-ed68eb3082fb",
+  "time" : "2024-02-21T11:14:20.964Z",
   "data" : {
-    "result" : "Hello 0!",
-    "retrySequence" : 0,
-    "retryIndex" : 0,
-    "serviceName" : "HelloService",
-    "taskName" : "addEnthusiasm",
-    "taskMeta" : { },
-    "taskTags" : [ ],
+    "taskCompleted" : {
+      "result" : "Hello 0!",
+      "taskId" : "018dcb5f-aa4e-7ce2-9e64-6ba78d282c1f",
+      "taskName" : "addEnthusiasm",
+      "serviceName" : "HelloService"
+    },
+    "methodId" : "018dcb5f-a644-7a95-9375-ed68eb3082fb",
+    "methodName" : "greet",
+    "workflowName" : "HelloWorkflow",
+    "workflowVersion" : 0,
     "workerName" : "standalone-13907-104",
-    "infiniticVersion" : "0.13.0-SNAPSHOT"
+    "infiniticVersion" : "0.13.0"
   }
 }
 ```
@@ -145,26 +148,32 @@ For all workflow events:
 - `time` indicates the publishing time of the event.
 - `type` is prefixed with `infinitic.workflow.*`, where `*` corresponds to one of the following:
 
-| Type                  | Nature  | Description                                                                                        |
+| CloudEvent's type postfix    | Type  | Description                                                                                        |
 | --------------------- | ------- | -------------------------------------------------------------------------------------------------- |
-| `start`               | Command | Indicates that a new workflow has been scheduled.             |
-| `startMethod`         | Command | Indicates that a new method execution has been scheduled on an existing workflow.    |
-| `cancel`              | Command | Indicates that the cancellation of a workflow has been requested.      |
-| `cancelMethod`        | Command | Indicates that the cancellation of the execution of a workflow's method has been requested.   |
-| `retryTask`           | Command | Indicates that the retry of some tasks has been requested.          |
-| `retryExecutor`       | Command | Indicates that the retry of the workflow task has been requested.      |
-| `signal`              | Command | Indicates that a signal has been sent to the workflow.          |
-| `signalReceived`      | Event   | Indicates that the workflow has received the expected signal.       |
-| `signalDiscarded`     | Event   | Indicates that the workflow has received an unexpected signal.     |
-| `signalDispatched`    | Event   | Indicates that the workflow has sent a signal to another workflow.     |
-| `timerDispatched`     | Event   | Indicates that the workflow has dispatched a timer.       |
-| `timerCompleted`      | Event   | Indicates that a timer (used by the workflow) has completed.     |
-| `remoteMethodCompleted` | Event   | Indicates that another workflow's method  (used by the workflow) has completed.    |
-| `remoteMethodFailed`    | Event   | Indicates that another workflow's method  (used by the workflow) has failed.   |
-| `remoteMethodCanceled`  | Event   | Indicates that another workflow's method  (used by the workflow) has been canceled.     |
-| `remoteMethodTimedOut`  | Event   | Indicates that another workflow's method  (used by the workflow) has timed out.      |
-| `taskDispatched`    | Event   | Indicates that the workflow has dispatched a task.               |
-| `taskCompleted`     | Event   | Indicates that a task (used by the workflow) has completed successfully.   |
-| `taskFailed`        | Event   | Indicates that a task (used by the workflow) has failed.       |
-| `taskTimedOut`      | Event   | Indicates that a task (used by the workflow) has  timed out.        |
-  
+| `start`               | Command | A new workflow has been scheduled.             |
+| `startMethod`         | Command | A new method execution has been scheduled on an existing workflow.    |
+| `cancel`              | Command | The cancellation of a workflow has been requested.      |
+| `cancelMethod`        | Command | The cancellation of a workflow's method has been requested.   |
+| `retryTask`           | Command | The retry of some tasks has been requested.          |
+| `retryExecutor`       | Command | The retry of the workflow executor has been requested.      |
+| `signal`              | Command | A signal has been sent to the workflow.          |
+| `signalReceived`      | Event   | The workflow has received a signal.       |
+| `signalDiscarded`     | Event   | The workflow has discarded a signal that was unexpected.     |
+| `signalDispatched`    | Event   | The workflow has sent a signal to another workflow.     |
+| `timerDispatched`     | Event   | The workflow has dispatched a timer.       |
+| `timerCompleted`      | Event   | A timer, used by the workflow, has completed.     |
+| `remoteMethodDispatched`| Event   | The workflow has dispatched another workflow's method. |
+| `remoteMethodCompleted` | Event   | Another workflow's method, used by the workflow, has completed.    |
+| `remoteMethodFailed`    | Event   | Another workflow's method, used by the workflow, has failed.   |
+| `remoteMethodCanceled`  | Event   | Another workflow's method, used by the workflow, has been canceled.     |
+| `remoteMethodTimedOut`  | Event   | Another workflow's method, used by the workflow, has timed out.      |
+| `taskDispatched`    | Event   | The workflow has dispatched a task.               |
+| `taskCompleted`     | Event   | A task, used by the workflow, has completed successfully.   |
+| `taskFailed`        | Event   | A task, used by the workflow, has failed.       |
+| `taskTimedOut`      | Event   | A task, used by the workflow, has  timed out.        |
+
+{% callout type="note"  %}
+
+The `source` property describes the Pulsar cluster, tenant, and namespaces, as well as the workflow's name. However this property does not represent an actual Pulsar topic, as the events originate from multiple internal topics.
+
+{% /callout  %}

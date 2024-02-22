@@ -136,7 +136,7 @@ Here is a typical CloudEvent example:
     "taskMeta" : { },
     "taskTags" : [ ],
     "workerName" : "standalone-13907-104",
-    "infiniticVersion" : "0.13.0-SNAPSHOT"
+    "infiniticVersion" : "0.13.0"
   }
 }
 ```
@@ -148,16 +148,16 @@ For all service events:
 - `time` indicates the publishing time of the event.
 - `type` is prefixed with `infinitic.task.*`, where `*` corresponds to one of the following:
 
-| Type                  | Nature  | Description                                                                      |
+| CloudEvent's type postfix | Type   | Description                                                                      |
 | --------------------- | ------- | -------------------------------------------------------------------------------- |
-| `start`               | Command | Indicates that a task has been scheduled.                                       |
-| `started`             | Event   | Signifies that the worker has begun processing the task.                        |
-| `completed`           | Event   | Indicates successful completion of the task by the worker.                      |
-| `retryScheduled`      | Event   | Signifies that the task has failed and is scheduled for retry per the retry policy. |
-| `failed`              | Event   | Indicates that the task did not succeed within the allowed retries as defined by the retry policy. |
-| `delegationCompleted` | Event   | Indicates successful completion of a delegated task by the worker.              |
+| `start`               | Command | A task has been scheduled.                                       |
+| `started`             | Event   | The worker has begun processing the task.                        |
+| `completed`           | Event   | Successful completion of the task by the worker.                      |
+| `retryScheduled`      | Event   | The task has failed and is scheduled for retry per the retry policy. |
+| `failed`              | Event   | The task did not succeed within the allowed retries as defined by the retry policy. |
+| `delegationCompleted` | Event   | Successful completion of a delegated task by the worker.              |
 
-The `data` field contains type-specific information, and also:
+The `data` field contains the data below, as well as type-specific information:
 
 | Field Name          | Type     | Description                                                                   |
 | --------------------| ---------| ------------------------------------------------------------------------------|
@@ -168,3 +168,9 @@ The `data` field contains type-specific information, and also:
 | `taskMeta`          | Map<String, ByteArray> | Metadata of the task.                                                   |
 | `taskTags`          | Array<String> | Tags associated with the task.                                           |
 | `infiniticVersion`  | String   | Version of Infinitic used by the entity that published the event (e.g., "0.13.0"). |
+
+{% callout type="note"  %}
+
+The `source` property describes the Pulsar cluster, tenant, and namespaces, as well as the service's name. However this property does not represent an actual Pulsar topic, as the events originate from multiple internal topics.
+
+{% /callout  %}
