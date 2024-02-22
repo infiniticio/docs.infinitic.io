@@ -1,8 +1,7 @@
 ---
 title: Creating Workflow Stubs
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page details how to create workflow stubs in Infinitic, enabling the initiation, cancellation, and interaction with running workflows through a simplified interface. It explains the process of generating stubs from workflow interfaces for both new and running workflows, including tagging and method invocation on workflows. 
 ---
-
 The Infinitic client manages workflows through [stubs](https://en.wikipedia.org/wiki/Method_stub) built from the workflow interface.
 
 Here is an example of workflow interface from our [Hello World](/docs/introduction/hello-world) app:

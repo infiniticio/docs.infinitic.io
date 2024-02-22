@@ -1,8 +1,7 @@
 ---
 title: Workflow Versioning
-description: ""
+description: This section provides guidelines for versioning workflows, ensuring backward compatibility and smooth transitions between workflow versions.
 ---
-
 ## Changing the interface
 
 ### Class name
@@ -154,7 +153,7 @@ By convention:
 
 - a new implementation will be named with a postfix `_n`, where `n` is an integer
 - no postfix means version 0
-For example:
+  For example:
 
 {% codes %}
 
@@ -207,7 +206,7 @@ public class App {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
             worker.registerWorkflow(
                 // workflow name
-                "com.company.workflows.MyWorkflow",                                                
+                "com.company.workflows.MyWorkflow",                                              
                 // workflow implementation classes
                 List.of(
                     MyWorkflowImpl.class,

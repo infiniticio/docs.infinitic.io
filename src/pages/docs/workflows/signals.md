@@ -1,8 +1,7 @@
 ---
 title: Signals
-description: ""
+description: This page explains sending and receiving signals within workflows, allowing external events to influence workflow behavior, with details on implementing channels and filtering events.
 ---
-
 We can send external signals to workflows. Typically, a signal will convey a piece of information such as "a document has been validated" or "an order was just shipped"...
 
 We have described how a client can [send a signal](/docs/clients/send-signal) to a running workflow. Here, we will describe how the workflow can handle them.

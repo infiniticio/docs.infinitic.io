@@ -1,8 +1,7 @@
 ---
 title: Pulsar
-description: ""
+description: This page provides a comprehensive guide on installing and setting up Apache Pulsar for use with Infinitic. It covers recommendations for managed Pulsar clusters, retention policies, and the creation of dedicated tenants and namespaces for environment separation. Additionally, it details the configuration needed to connect Infinitic clients and workers to a Pulsar cluster, including minimal setup for development, transport encryption, authentication methods, and default settings for producers and consumers to ensure reliable message handling.
 ---
-
 ## Pulsar installation
 
 To install Pulsar, refer to the [Pulsar](http://pulsar.apache.org/docs/en/standalone/) documentation.

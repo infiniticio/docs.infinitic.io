@@ -1,8 +1,7 @@
 ---
 title: Retry Failed Tasks
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page explains how to retry failed tasks within running workflows in Infinitic. It covers targeting tasks by ID, status, or class for retry, offering flexibility in managing task execution. This feature is essential for developers aiming to enhance the reliability and error handling of their workflows by programmatically retrying tasks that have failed after all automatic retries have been exhausted.
 ---
-
 It is possible to retry one or more tasks from running workflows. Those tasks can be targeted by id, by status or by class.
 
 {% codes %}
@@ -39,7 +38,6 @@ client.retryTasks(w, DeferredStatus.FAILED, HelloWorldService::class.java)
 ```
 
 {% /codes %}
-
 
 We can also retry tasks on running workflows targeted by tag.
 

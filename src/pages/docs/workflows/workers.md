@@ -1,12 +1,12 @@
 ---
 title: Workflow Workers
-description: ""
+description: This page introduces Infinitic's workflow workers, explaining their setup and configuration for executing workflows, including dependencies addition and workflows configuration.
 ---
 Infinitic workers can be configured to orchestrate workflows.
 The roles of workflow workers are:
 
 - to listen to Pulsar for messages intended for this workflow
-- update workflow history
+- record workflow history in database
 - dispatch tasks or sub-workflows based on the workflow definition
 
 ![Workflow worker](/img/concept-workflow-only@2x.png)
@@ -26,7 +26,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java[build.gradle]
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.11.+"
+    implementation "io.infinitic:infinitic-worker:0.13.0"
     ...
 }
 ```
@@ -34,7 +34,7 @@ dependencies {
 ```kotlin[build.gradle.kts]
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.11.+")
+    implementation("io.infinitic:infinitic-worker:0.13.0")
     ...
 }
 ```
@@ -271,9 +271,9 @@ import io.infinitic.workers.InfiniticWorker;
 public class App {
     public static void main(String[] args) {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
-            worker.registerWorkflow(
+            worker.registerWorkflowExecutor(
                 // workflow name
-                BookingWorkflow.class.getName(),                                              
+                BookingWorkflow.class.getName(),                                    
                 // workflow implementation class
                 BookingWorkflowImpl.class,
                 // number of parallel processings (default: 1)
@@ -296,7 +296,7 @@ import io.infinitic.workers.InfiniticWorker
 
 fun main(args: Array<String>) {
     InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
-        worker.registerWorkflow(
+        worker.registerWorkflowExecutor(
             // workflow name
             BookingWorkflow::class.java.name, 
             // workflow implementation class

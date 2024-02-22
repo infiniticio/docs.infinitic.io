@@ -1,8 +1,7 @@
 ---
 title: Complete Running Timers
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This documentation covers how to manually complete running timers in Infinitic workflows, allowing for the continuation of workflow execution without waiting for the timer to expire. It details the completeTimers method usage for targeting specific workflow instances by ID or tag, including examples for Java and Kotlin.
 ---
-
 Workflows [are able to wait](/docs/workflows/waiting) for a specific time or duration.
 If we want to manually complete the waiting, we can do that through the `completeTimers` method of the client.
 
@@ -29,7 +28,6 @@ client.completeTimers(w)
 ```
 
 {% /codes %}
-
 
 We can also target workflows by tag:
 

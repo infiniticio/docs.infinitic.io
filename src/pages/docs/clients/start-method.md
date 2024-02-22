@@ -1,8 +1,7 @@
 ---
 title: Start A Parallel Method On A Running Workflow
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: This page details how to start a parallel method on a running workflow in Infinitic, allowing for the execution of multiple methods simultaneously within the same workflow instance. It explains how to use workflow stubs to invoke methods directly or asynchronously, with or without waiting for results, and includes specific syntax for handling void return types and targeting workflows by tags.
 ---
-
 A running workflow instance can have multiple methods running in parallel.
 When it's the case, those executions share the internal properties of this workflow instance.
 
@@ -74,5 +73,3 @@ When targeting workflows by tag, it's not possible to retrieve `deferred.id` or 
  as the deferred can target multiple instances.
 
 {% /callout  %}
-
-

@@ -1,6 +1,6 @@
 ---
 title: Service Syntax
-description: ""
+description: This documentation details the syntax and operational constraints for defining and implementing services in Infinitic. It emphasizes task methods must be serializable and thread-safe, with guidelines for versioning services, handling task failures, setting runtime timeouts, and customizing retry policies.
 ---
 ## Constraints
 
@@ -110,7 +110,6 @@ The timeout policy used will be the first found in this order:
 3) `@Timeout` class annotation
 4) `WithTimeout` interface
 5) No timeout
-
 
 ### `WithTimeout` interface
 
@@ -347,7 +346,7 @@ public class MyServiceImpl implements MyService, WithRetry {
     MySecondTaskOutput mySecondTask(MySecondTaskInput input) { /* */ }
 
     public Double getSecondsBeforeRetry(int retry, Exception e) {
-        if(Task.getTaskName().equals("sayHello"))
+        if(Task.getTaskName().equals("mySecondTask"))
             return 2.0;
         else
             return 1.0;
@@ -368,7 +367,7 @@ class MyServiceImpl : MyService, WithRetry {
 
     override fun getSecondsBeforeRetry(retry: Int, exception: Exception) = 
       when (Task.taskName) {
-          ::sayHello.name -> 2.0
+          ::mySecondTask.name -> 2.0
           else -> 1.0
       }
 }
@@ -450,13 +449,14 @@ In some cases, we want to know more about the context of the execution of a task
 
 `io.infinitic.tasks.Task` contains the following static properties:
 
-| Name              | Type            | Description                                                                          |
-| ----------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `tags`          | Set\<String\>   | tags of the task                                                                     |
+| Name            | Type            | Description                                                                          |
+| --------------- | --------------- | ------------------------------------------------------------------------------------ |
 | `taskId`        | String          | id of the task                                                                       |
-| `taskName`      | String          | name of the task                                                                     |
-| `workflowId`    | String          | id of the workflow (may be null)                                                     |
-| `workflowName`  | String          | name of the workflow (may be null)                                                   |
+| `taskName`      | String          | name of the task (from the [@Name annotation](#name-annotation), or the method's name by default)                 |
+| `serviceName`   | String          | name of the Service (from the [@Name annotation](#name-annotation), or the service's interface name by default)                |
+| `workflowId`    | String          | id of the workflow (if part of a workflow)                                           |
+| `workflowName`  | String          | name of the workflow (if part of a workflow)                                         |
+| `tags`          | Set\<String\>   | tags of the task                                                                     |
 | `retrySequence` | Integer         | number of times the task was manually retried                                        |
 | `retryIndex`    | Integer         | number of times the task was automatically retried (reset to 0 after a manual retry) |
 | `lastError`     | ExecutionError  | if any, the error during the previous attempt                                        |
@@ -464,7 +464,12 @@ In some cases, we want to know more about the context of the execution of a task
 
 {% callout type="warning"  %}
 
-Those data are only accessible from the thread having initiated the task execution, the `getTimeoutInSeconds` call or the `getSecondsBeforeRetry` call.
+Those data are only accessible within:
+* the task execution
+* the `getTimeoutInSeconds` execution 
+* the `getSecondsBeforeRetry` execution
+
+from the thread that initiated the call.
 
 {% /callout  %}
 
@@ -474,7 +479,7 @@ Those data are only accessible from the thread having initiated the task executi
 
 {% callout type="note"  %}
 
-In tests, we can mock `io.infinitic.tasks.TaskContext` and inject it through `Task.context.set(mockedTaskContext)` before running a test that uses task's context.
+In tests, we can mock `io.infinitic.tasks.TaskContext` and inject it through `Task.set(mockedTaskContext)` before running a test that uses task's context.
 
 {% /callout  %}
 
@@ -493,8 +498,9 @@ package com.company.services;
 
 import io.infinitic.annotations.Name;
 
-@Name(name = "MyService")
+@Name(name = "MyNewServiceName")
 public interface MyService {
+
     @Name(name = "FirstTask")
     MyFirstTaskOutput myFirstTask(MyFirstTaskInput input);
 
@@ -508,8 +514,9 @@ package com.company.services
 
 import io.infinitic.annotations.Name
 
-@Name("MyService")
+@Name("MyNewServiceName")
 interface MyService {
+    
     @Name("FirstTask")
     fun myFirstTask(input: MyFirstTaskInput): MyFirstTaskOutput
 
@@ -524,6 +531,6 @@ When using this annotation, the Service `name` setting in [Service worker](/docs
 
 ```yaml
 services:
-  - name: MyService
+  - name: MyNewServiceName
     class: com.company.services.MyServiceImpl
 ```

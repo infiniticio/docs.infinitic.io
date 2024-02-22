@@ -12,7 +12,7 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
-const CURRENT_VERSION = 'v0.12.3'
+const CURRENT_VERSION = 'v0.13.0'
 
 const navigation = [
   {
@@ -44,7 +44,10 @@ const navigation = [
     links: [
       { title: 'Service Workers', href: '/docs/services/workers' },
       { title: 'Service Syntax', href: '/docs/services/syntax' },
+      { title: 'Using APIs', href: '/docs/services/apis' },
+      { title: 'Delegated Task', href: '/docs/services/delegated' },
       { title: 'Service Versioning', href: '/docs/services/versioning' },
+      { title: 'Service Events', href: '/docs/services/events' },
     ],
   },
   {
@@ -61,6 +64,7 @@ const navigation = [
       { title: 'Deferred', href: '/docs/workflows/deferred' },
       { title: 'Errors', href: '/docs/workflows/errors' },
       { title: 'Workflow Versioning', href: '/docs/workflows/versioning' },
+      { title: 'Workflow Events', href: '/docs/workflows/events' },
     ],
   },
   {

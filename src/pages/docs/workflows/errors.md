@@ -1,8 +1,7 @@
 ---
 title: Errors
-description: ""
+description: This page discusses strategies for error handling within workflows, including retrying failed tasks and managing exceptions, to ensure robust workflow execution.
 ---
-
 Managing errors in a distributed system are usually tedious. Infinitic makes our life easier, by automatically keeping trace of the chain of errors. Infinitic even let us code the reaction to errors directly from the workflow!
 
 ## Error when processing a task
@@ -13,8 +12,8 @@ Tasks are processed within workers. If an exception is thrown while processing a
 
 Once all retries have failed, the worker tells the workflow the task has failed with a `WorkerException`. This exception has the properties below:
 
-| Property             | Type            | Description                                    |
-| -------------------- | --------------- | ---------------------------------------------- |
+| Property               | Type            | Description                                    |
+| ---------------------- | --------------- | ---------------------------------------------- |
 | `workerName`         | String          | name of the worker where the exception occured |
 | `name`               | String          | exception name                                 |
 | `message`            | String          | exception message                              |
@@ -33,8 +32,8 @@ What happens in the workflow depends on whether it is waiting for the task to be
 
 This is the case when we dispatch a task synchronously and also when we are [waiting the result](/docs/workflows/deferred#waiting-for-completion) of a `Deferred<T>`. In this case, a `FailedTaskException` is thrown inside the workflow with the properties below:
 
-| Property          | Type            | Description        |
-| ----------------- | --------------- | ------------------ |
+| Property            | Type            | Description        |
+| ------------------- | --------------- | ------------------ |
 | `taskName`        | String          | task name          |
 | `taskId`          | String          | task id            |
 | `methodName`      | String          | method called      |
@@ -48,8 +47,8 @@ Also, if another client or workflow expects the result of this workflow, it will
 
 `FailedWorkflowException` has the properties below:
 
-| Property            | Type              | Description            |
-| ------------------- | ----------------- | ---------------------- |
+| Property              | Type              | Description            |
+| --------------------- | ----------------- | ---------------------- |
 | `workflowName`      | String            | workflow name          |
 | `workflowId`        | String            | workflow id            |
 | `methodName`        | String            | method called          |
@@ -73,14 +72,14 @@ But if the workflow waits fot the result later, then a `FailedTaskException` wil
 
 We have seen that a failure of a synchronous task will throw a `FailedTaskException`. Also the failure of a synchronous child-workflow will throw a `FailedWorkflowException`. There are similar errors due to cancelation, and some other cases:
 
-| Name                          | When it happens                                                                                                                                                      |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `FailedTaskException`         | the task has failed. A task has failed only after all planed retries have failed.                                                                                    |
-| `CanceledTaskException`       | the task has been canceled.                                                                                                                                          |
-| `FailedWorkflowException`     | the targeted workflow has a failed synchronous task / child-workflow.                                                                                                |
-| `CanceledWorkflowException`   | the targeted workflow has been canceled.                                                                                                                             |
+| Name                            | When it happens                                                                                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FailedTaskException`         | the task has failed. A task has failed only after all planed retries have failed.                                                                                      |
+| `CanceledTaskException`       | the task has been canceled.                                                                                                                                            |
+| `FailedWorkflowException`     | the targeted workflow has a failed synchronous task / child-workflow.                                                                                                  |
+| `CanceledWorkflowException`   | the targeted workflow has been canceled.                                                                                                                               |
 | `UnknownWorkflowException`    | the targeted workflow has never existed or if it is already completed or canceled. This can happen when dispatching a method on a stub created by `getWorkflowById`. |
-| `FailedWorkflowTaskException` | an error occured directly from the code of the workflow.                                                                                                             |
+| `FailedWorkflowTaskException` | an error occured directly from the code of the workflow.                                                                                                               |
 
 {% callout type="note"  %}
 

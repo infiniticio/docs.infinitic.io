@@ -1,6 +1,6 @@
 ---
 title: Workflows Syntax
-description: ""
+description: This page provides guidelines on the syntax for defining workflows in Infinitic, emphasizing serializable and thread-safe methods, along with instructions for method versioning and error handling.
 ---
 Here is an example of workflow implementation, from our [Hello World app](/docs/introduction/hello-world):
 
@@ -254,8 +254,6 @@ A global timeout represents the maximal duration of the task dispatched by workf
 
 Defining global timeouts can be useful to ensure that a workflow is never stuck.
 
-
-
 ## Dispatch a child-workflow
 
 By using the `newWorkflow` function on a workflow interface, we create a stub that behaves syntactically as an instance of the workflow but sends a message to Pulsar that will trigger the remote execution of the workflow.
@@ -336,8 +334,6 @@ val otherWorkflow: OtherWorkflow = newWorkflow(OtherWorkflow::class.java, setOf(
 ```
 
 {% /codes %}
-
-
 
 We can define global timeout for child-workflows at workflow level by adding `@Timeout` annotations to the child Workflow interface. It's also possible to extend the `WithTimeout`interface.
 
