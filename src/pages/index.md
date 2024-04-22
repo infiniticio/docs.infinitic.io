@@ -3,9 +3,16 @@ title: Getting started
 pageTitle: Scalable Workflow Engine For Distributed Services.
 description: Infinitic's official documentation, your comprehensive guide to mastering Infinitic's scalable workflow engine for distributed services. Dive into detailed tutorials, explore in-depth concepts, and discover practical examples to leverage Infinitic effectively in your Java or Kotlin projects. Whether you're orchestrating microservices, managing data pipelines, or implementing complex business processes, our documentation provides the tools and insights you need for success. Start enhancing your distributed systems with Infinitic's robust, scalable, and resilient framework today.
 ---
-Built on top of your event streaming platform, with current support for [Apache Pulsar](https://pulsar.apache.org/), Infinitic enables the straightforward creation of complex business processes using your distributed services. It offers the peace of mind of knowing that a failure in the system will never break your workflows. {% .lead %}
+By using Infinitic, you can streamline the creation of resilient business processes, implementing an event-driven architecture in weeks instead of months. Infinitic provides peace of mind, ensuring that a failure in any component will never break your workflows. {% .lead %}
 
- Infinitic is ideal for a range of applications, such as:
+Infinitic Building with Infinitic requires running:
+- a **database** for saving the workflow states (currently supporting Redis and MySQL, adding more is an easy task)
+- an **event streaming platform** (currently supporting [Apache Pulsar](https://pulsar.apache.org/) as a dependency)
+- applications - called **workers** in Infinitic terminology - built with Infinitic SDK that handles the essential tasks such as implementing events consumer, producer, serialization, schemas, and error management. This allows you to focus on your application-specific code. 
+    - Workflow workers are in charge of managing the flow of data between Services
+    - Services workers are in charge or exeuting your Services, either by containing a full implementation or by making API calls to your pre-existing APIs.
+
+Infinitic is ideal for a wide range of applications requiring high scalability and high reliability, such as:
 
 * Orchestrating microservices
 * Managing distributed transactions
