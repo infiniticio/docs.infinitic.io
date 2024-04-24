@@ -215,14 +215,13 @@ public class InvoicingWorkflowImpl extends Workflow implements InvoicingWorkflow
 ```kotlin
 class InvoicingWorkflowImpl : Workflow(), InvoicingWorkflow {
     // create stub for ComsumptionService
-    private final ComsumptionService comsumptionService = newService(ComsumptionService::class.java)
+    val comsumptionService = newService(ComsumptionService::class.java)
     // create stub for PaymentService
-    private final PaymentService paymentService = newService(PaymentService::class.java)
+    val paymentService = newService(PaymentService::class.java)
     // create stub for InvoiceService
-    private final InvoiceService invoiceService = newService(InvoiceService::class.java)
+    val invoiceService = newService(InvoiceService::class.java)
     // create stub for EmainService
-    private final EmainService emainService = newService(EmainService::class.java)
-
+    val emainService = newService(EmainService::class.java)
 
     override fun start(user: User) {
         // while this user is subscribed
