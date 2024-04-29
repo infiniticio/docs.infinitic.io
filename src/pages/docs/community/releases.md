@@ -2,6 +2,38 @@
 title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
+
+## v0.13.1
+
+{% version-breaking-changes /%}
+
+* The new default setting for cache is no cache 
+* Workflow and Service names are now escaped in topic's name - it's a breaking change only in the unlikely situation where you have special characters in those names 
+
+{% version-improvements /%}
+
+* **Pulsar version is now 3.0.4 (from 2.11.2)**
+* Workflow Tasks are processed on a key-shared subscription. This allows new workflow versions to be deployed continuously.
+* Improve test coverage for tags
+* Improve test coverage for infinitic-transport-pulsar module
+* Client's topics are now deleted when clients are interrupted. 
+* Client's topics are not recreated by producers if already deleted
+* Bump version of dependencies:
+  - CloudEvents (2.5.0 to 3.0.0)
+  - Jackson (2.15.3 to 2.17.0)
+  - java-uuid-generator (4.3.0 to 5.0.0)
+  - Kotest (5.8.0 to 5.8.1)
+  - TestContainers (1.19.5 to 1.19.7)
+  -  Mockk (1.13.8 to 1.13.10).
+  - commons-compress (1.25.0 to 1.26.1)
+
+
+{% version-bug-fixes /%}
+
+* **Fix backward compatibility with 0.12.3** (in 0.13.0, some messages were wrongly discarded, leading to stuck workflows)
+* Fix a bug introduced in 0.13.0 that led to the possible creation of multiple workflow instance with the same customId tag
+* "none" cache setting now correctly means no cache, previously if was the default cache
+
 ## v0.13.0
 
 {% version-breaking-changes /%}
