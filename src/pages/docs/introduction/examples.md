@@ -531,7 +531,7 @@ We have the ability to dispatch [external signals](/docs/workflows/signals) to a
 
 This example with the `PaymentWorkflow`` demonstrates that a workflow can launch another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow), either in a synchronous or asynchronous manner. This capability unlocks endless possibilities.
 
-## Reporitories examples
+## Repositories examples
 
 - *Hello World*: a simple workflow with 2 sequential task. ([java](https://github.com/infiniticio/infinitic-example-java-hello-world), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-hello-world))
 - *Booking Workflow*: a saga pattern implementation with three tasks. ([java](https://github.com/infiniticio/infinitic-example-java-booking), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-booking))
