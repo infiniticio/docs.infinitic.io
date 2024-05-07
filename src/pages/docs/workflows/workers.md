@@ -238,9 +238,9 @@ The possible options are `deflate`, `gzip`, and `bzip2`, and use the [Apache Com
 
 #### Caffeine cache
 
-Per default, Infinitic uses [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache when requesting state storage.
+Infinitic lets you use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache when requesting state storage.
 
-Here is the default configuration:
+Here is an example of configuration:
 
 ```yaml
 cache:
@@ -252,7 +252,7 @@ cache:
 
 #### No cache
 
-Here is the configuration for removing the cache:
+By default, there is no cache. The equivalent configuration is:
 
 ```yaml
 cache:
