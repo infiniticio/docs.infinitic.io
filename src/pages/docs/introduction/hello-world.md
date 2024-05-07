@@ -17,12 +17,13 @@ Our `HelloWorld` workflow will take a `name` string as input and return `"Hello 
 
 ## Prerequisites
 
-Before we begin, ensure you have [Gradle](https://gradle.org/install/) installed, along with:
+Before we begin, ensure you have installed the following dependencies:
 
+* [Gradle](https://gradle.org/install/)
 * An Apache Pulsar cluster ([installation guide](https://pulsar.apache.org/docs/en/standalone))
 * A Redis ([installation guide](https://redis.io/download)) or MySQL database for storing workflow states.
 
-With Docker installed, you can set up the environment using the provided `docker-compose.yml` file:
+You can either run Redis and Pulsar on their own, or with [Docker](https://www.docker.com/get-started/), you can set up the environment using the provided `docker-compose.yml` file:
 
 ```yaml
 services:
@@ -63,9 +64,11 @@ Start by creating a new project:
 mkdir hello-world && cd hello-world && gradle init
 ```
 
-Configure this project:
+Configure this project by selecting the following settings (you may see slightly different prompts depending on your version of gradle):
 
 {% code-java %}
+
+Ensure that the version of Java you select matches what you have installed.
 
 ```
 Select type of project to generate:
@@ -140,7 +143,7 @@ Source package (default: hello.world):
 
 {% /code-kotlin %}
 
-in our build gradle file, we'll include:
+In our [Gradle build file](https://docs.gradle.org/current/userguide/build_file_basics.html), we'll include:
 
 * The Maven repository
 * The required dependencies
@@ -206,7 +209,7 @@ application {
 
 {% /codes %}
 
-And install dependencies:
+Once you've updated your gradle build file, install the dependencies by running:
 
 ```sh
 ./gradlew install
@@ -214,13 +217,13 @@ And install dependencies:
 
 ## Writing services
 
-Create a `services` directory:
+Next, create a `services` directory:
 
 ```sh
-mkdir app/src/main/java/hello/world/services
+mkdir -p app/src/main/java/hello/world/services
 ```
 
-and define the `HelloWorldService` interface:
+Within this directory, define the service in its own file:
 
 {% codes %}
 
@@ -246,7 +249,7 @@ interface HelloWorldService {
 
 {% /codes %}
 
-and its implementation, `HelloWorldServiceImpl`, which will contain our tasks:
+Within the same services directory, next define the `HelloWorldServiceImpl`, which will contain our tasks:
 
 {% codes %}
 
@@ -283,10 +286,10 @@ class HelloWorldServiceImpl : HelloWorldService {
 Set up a `workflows` directory:
 
 ```sh
-mkdir app/src/main/java/hello/world/workflows
+mkdir -p app/src/main/java/hello/world/workflows
 ```
 
-and add the `HelloWorldWorkflow` interface:
+Within it, add the `HelloWorldWorkflow` interface:
 
 {% codes %}
 
@@ -308,7 +311,7 @@ interface HelloWorldWorkflow {
 
 {% /codes %}
 
-and its `HelloWorldWorkflowImpl` implementation:
+And its `HelloWorldWorkflowImpl` implementation:
 
 {% callout type="warning"  %}
 

@@ -26,7 +26,7 @@ A **task** is essentially a method within a [service](#service) class. It can be
 
 ## Workers
 
-Workers are applications that run [services](#service). A worker embeds an Apache Pulsar's consumer listening the topics dedicated to each service it implements. When receiving the instruction to run a task, the worker deserializes the input, trigger the task procesing, and return the result to Pulsar in a JSON serialized format. Workers are stateless, meaning they don't store any data permanently, and can be scaled to meet demand. Workers also catch any [task](#task) failure, and manage retries,  ensuring that your distributed tasks are executed seamlessly. 
+Workers are applications that run [services](#service). A worker embeds an Apache Pulsar's consumer listening the topics dedicated to each service it implements. When receiving the instruction to run a task, the worker deserializes the input, trigger the task processing, and return the result to Pulsar in a JSON serialized format. Workers are stateless, meaning they don't store any data permanently, and can be scaled to meet demand. Workers also catch any [task](#task) failure, and manage retries,  ensuring that your distributed tasks are executed seamlessly.
 
 ![Workers](/img/concept-worker@2x.png)
 
