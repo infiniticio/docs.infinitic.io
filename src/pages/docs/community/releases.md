@@ -3,6 +3,12 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.13.2
+
+{% version-bug-fixes /%}
+
+* Fix [#227](https://github.com/infiniticio/infinitic/issues/227): all workflow tasks messages are going to the same partition
+
 ## v0.13.1
 
 {% version-breaking-changes /%}
