@@ -104,9 +104,9 @@ A workflow class must be deterministic and without side effects. As a consequenc
 
 {% callout type="warning"  %}
 
-the history of a workflow should not grow indefinitely, so we should avoid having more than a few thousand tasks in a workflow. If we need more, we should consider using child workflows to distribute our work.
+The history of a workflow should not grow indefinitely, so we should avoid having more than a few thousand tasks in a workflow. If we need more, we should consider using child workflows to distribute our work.
 
-For example, to manage 1 million tasks, we may have a workflow dispatching 1000 child-workflows managing 1000 tasks each)
+For example, to manage 1 million tasks, we can have a workflow dispatching 1000 child-workflows managing 1000 tasks each.
 
 {% /callout  %}
 
