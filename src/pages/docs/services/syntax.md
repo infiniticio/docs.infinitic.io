@@ -8,7 +8,7 @@ Upon receiving a message instructing to execute a task, a service worker instant
 
 {% callout type="warning"  %}
 
-- The parameters and return value of a method used as task must be [serializable](/docs/references/serializability).
+The parameters and return value of a method used as task must be [serializable](/docs/references/serializability).
 
 {% /callout  %}
 
@@ -24,16 +24,15 @@ If our method uses multi-threading, **we should keep in mind that a task is cons
 
 ## Recommendations
 
-For an easier [versioning of services](/docs/services/versioning), we recommend that:
+For an easier [versioning of services](/docs/services/versioning), we recommend:
 
 {% callout type="note"  %}
 
 Each service should be given a simple name through the [@Name](#name-annotation) annotation.
 
 Methods used as tasks should have:
-
-- one parameter of a dedicated type object
-- a return value of a dedicated type object
+ - One parameter of a dedicated type object
+ - A return value of a dedicated type object
 
 {% /callout  %}
 
@@ -69,39 +68,40 @@ interface MyService {
 
 {% /codes %}
 
-## Task failure
+## Task Failure
 
 Technical failures should be distinguished from non-technical failures:
 
-- a technical failure is triggered by an unexpected exception,
-- a non-technical failure is the inability to fulfill the task due to "business" reasons. For example:
-  - a flight booking fails because no seats remain available
-  - a bank wire fails because there is not enough money in the account
+- A technical failure is triggered by an unexpected exception.
+- A non-technical failure is the inability to fulfill the task due to "business" reasons. For example:
+  - A flight booking fails because no seats remain available.
+  - A bank wire fails because there is not enough money in the account.
 
-Non-technical failures are better handled through a status in the return value.(That's another reason why having an object as return value is a good practice.)
+Non-technical failures are better handled through a status in the return value.
+(That's another reason why having an object as return value is a good practice.)
 
 When an exception is thrown during a task execution, the task will be automatically retried based on its [retry policy](/docs/services/syntax#task-retries).
 
-When a task execution run for longer than a defined timeout, the task will also automatically failed and retried.
+When a task execution run for longer than a defined timeout, the task will also automatically fail and be retried.
 
-## Runtime timeout
+## Runtime Timeout
 
 We can set a maximum duration of task execution inside a Service worker, by defining a runtime timeout in the Service implementation. By default, tasks do not have a runtime timeout defined.
 
 {% callout type="warning"  %}
 
-Since 0.12.0, the runtime timeout must be defined on the class implementation. When defined in the interface, a timeout represents the maximal duration of the task dispatched by workflows (including retries and transportation) before a timeout is thrown at workflow level.
+Since 0.12.0, the runtime timeout must be defined on the class implementation. When defined in the interface, a timeout represents the maximal duration of the task dispatched by workflows (including retries and transportation) before a timeout is thrown at the workflow level.
 
 {% /callout  %}
 
 There are multiple ways to define a runtime timeout:
 
-- in the service implementation:
-  - by using the [`WithTimeout`](/docs/services/syntax#withtimeout-interface) interface
-  - by using the [`@Timeout`](/docs/services/syntax#timeout-annotation) annotation
-- in the worker:
-  - through its configuration [file](/docs/services/workers#timeout-policy)
-  - through service [registration](/docs/services/workers#service-registration)
+- In the service implementation:
+  - By using the [`WithTimeout`](/docs/services/syntax#withtimeout-interface) interface
+  - By using the [`@Timeout`](/docs/services/syntax#timeout-annotation) annotation
+- In the worker:
+  - Through its configuration [file](/docs/services/workers#timeout-policy)
+  - Through service [registration](/docs/services/workers#service-registration)
 
 The timeout policy used will be the first found in this order:
 
@@ -111,7 +111,7 @@ The timeout policy used will be the first found in this order:
 4) `WithTimeout` interface
 5) No timeout
 
-### `WithTimeout` interface
+### `WithTimeout` Interface
 
 The `WithTimeout` interface requires a `getTimeoutInSeconds` method. When present, Infinitic will call this method to know which timeout to apply for all tasks of the service:
 
@@ -193,7 +193,7 @@ class MyServiceImpl : MyService, WithTimeout {
 
 {% /codes %}
 
-### `@Timeout` annotation
+### `@Timeout` Annotation
 
 This annotation has a class implementing `WithTimeout` as parameter.
 
@@ -261,7 +261,7 @@ class MyServiceImpl : MyService {
 
 {% /codes %}
 
-## Retries policy
+## Retries Policy
 
 {% callout type="note"  %}
 
@@ -271,12 +271,12 @@ Per default, all tasks have a [truncated and randomized exponential backoff](/do
 
 There are multiple ways to define another retry policy:
 
-- in the service:
-  - by extending the [`WithRetry`](/docs/services/syntax#withretry-interface) interface
-  - by using the [`@Retry`](/docs/services/syntax#retry-annotation) annotation
-- in the worker:
-  - through its configuration [file](/docs/services/workers#retries-policy)
-  - through service [registration](/docs/services/workers#service-registration)
+- In the service:
+  - By extending the [`WithRetry`](/docs/services/syntax#withretry-interface) interface
+  - By using the [`@Retry`](/docs/services/syntax#retry-annotation) annotation
+- In the worker:
+  - Through its configuration [file](/docs/services/workers#retries-policy)
+  - Through service [registration](/docs/services/workers#service-registration)
 
 The retry policy used will be the first found in this order:
 
@@ -286,7 +286,7 @@ The retry policy used will be the first found in this order:
 4) `WithRetry` interface
 5) Default retry policy
 
-### `WithRetry` interface
+### `WithRetry` Interface
 
 The `WithRetry` interface requires a `getSecondsBeforeRetry` method with 2 parameters:
 
@@ -375,11 +375,11 @@ class MyServiceImpl : MyService, WithRetry {
 
 {% /codes %}
 
-### `@Retry` annotation
+### `@Retry` Annotation
 
 `@Retry` annotation takes a class implementing `WithRetry` as parameter.
 
-It can be used as a method annotation to define a retry policy on a specific task
+It can be used as a method annotation to define a retry policy on a specific task:
 
 {% codes %}
 
@@ -411,7 +411,7 @@ class MyServiceImpl : MyService {
 
 {% /codes %}
 
-Or as a class annotation to define a timeout on all tasks
+Or as a class annotation to define a retry policy on all tasks
 
 {% codes %}
 
@@ -443,47 +443,7 @@ class MyServiceImpl : MyService {
 
 {% /codes %}
 
-## Task context
-
-In some cases, we want to know more about the context of the execution of a task.
-
-`io.infinitic.tasks.Task` contains the following static properties:
-
-| Name            | Type            | Description                                                                          |
-| --------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `taskId`        | String          | id of the task                                                                       |
-| `taskName`      | String          | name of the task (from the [@Name annotation](#name-annotation), or the method's name by default)                 |
-| `serviceName`   | String          | name of the Service (from the [@Name annotation](#name-annotation), or the service's interface name by default)                |
-| `workflowId`    | String          | id of the workflow (if part of a workflow)                                           |
-| `workflowName`  | String          | name of the workflow (if part of a workflow)                                         |
-| `tags`          | Set\<String\>   | tags of the task                                                                     |
-| `retrySequence` | Integer         | number of times the task was manually retried                                        |
-| `retryIndex`    | Integer         | number of times the task was automatically retried (reset to 0 after a manual retry) |
-| `lastError`     | ExecutionError  | if any, the error during the previous attempt                                        |
-| `client`        | InfiniticClient | an InfiniticClient that can be used inside the task                                  |
-
-{% callout type="warning"  %}
-
-Those data are only accessible within:
-* the task execution
-* the `getTimeoutInSeconds` execution 
-* the `getSecondsBeforeRetry` execution
-
-from the thread that initiated the call.
-
-{% /callout  %}
-
-`RetrySequence` is incremented when a task is [manually retried](/docs/clients/retry-tasks):
-
-![Tasks retries](/img/task-retries@2x.png)
-
-{% callout type="note"  %}
-
-In tests, we can mock `io.infinitic.tasks.TaskContext` and inject it through `Task.set(mockedTaskContext)` before running a test that uses task's context.
-
-{% /callout  %}
-
-## @Name annotation
+## @Name Annotation
 
 A task instance is internally described by both its full java name (package included) and the name of the method called.
 
@@ -534,3 +494,132 @@ services:
   - name: MyNewServiceName
     class: com.company.services.MyServiceImpl
 ```
+
+## Task Context
+
+In some cases, we want to know more about the context of the execution of a task.
+
+`io.infinitic.tasks.Task` contains the following static properties:
+
+| Name            | Type            | Description                                                                          |
+| --------------- | --------------- | ------------------------------------------------------------------------------------ |
+| `taskId`        | String          | ID of the task                                                                       |
+| `serviceName`   | String          | Name of the Service (taken from the [@Name annotation](#name-annotation) if provided, otherwise defaulting to the service's interface name) |
+| `taskName`      | String          | Name of the task (taken from the [@Name annotation](#name-annotation) if provided, otherwise defaulting to the service's method name) |
+| `workflowId`    | String?         | ID of the workflow (if part of a workflow)                                           |
+| `workflowName`  | String?         | Name of the workflow (if part of a workflow)                                         |
+| [`tags`](#tags)                    | Set\<String\>   | Tags provided when dispatching the task                                              |
+| [`meta`](#meta)                    | MutableMap\<String, ByteArray\>   | Metadata provided when dispatching the task                        |
+| [`retryIndex`  ](#retry-index)     | Integer         | Number of times the task was automatically retried                                   |
+| [`retrySequence`](#retry-sequence) | Integer         | Number of times the task was manually retried                                        |
+| [`lastError`](#last-error)         | ExecutionError? | If any, the error during the previous attempt                                        |
+| `client`        | InfiniticClient | An [InfiniticClient](/introduction/terminology#clients) that can be used inside the task                                  |
+
+{% callout type="warning"  %}
+
+The task context is accessible from the thread that initiated:
+* the method (task) execution
+* the `getTimeoutInSeconds` execution 
+* the `getSecondsBeforeRetry` execution
+
+{% /callout  %}
+
+{% callout type="note"  %}
+
+In tests, `io.infinitic.tasks.TaskContext` can be mocked and injected through `Task.set(mockedTaskContext)` before running a test that uses the task's context.
+
+{% /callout  %}
+
+### `tags`
+
+The `tags` property of the task context is an immutable set of strings.
+Its value is defined when dreating the Service stub before dispatching the task:
+
+{% codes %}
+
+```java
+final HelloWorldService helloWorldService = newService(
+    HelloWorldService.class,
+    tags = Set.of("userId" + userId, "companyId" + companyId)
+);
+```
+
+```kotlin
+val helloWorldService = newService(
+    HelloWorldService::class.java, 
+    tags = setOf("userId:$userId", "companyId:$companyId")
+)
+```
+
+{% /codes %}
+
+
+### `meta`
+
+The `meta` property of the task context is a mutable map of strings to arrays of bytes.
+Its value is defined when creating the Service stub before dispatching the task:
+
+{% codes %}
+
+```java
+final HelloWorldService helloWorldService = newService(
+    HelloWorldService.class,
+    tags = null,
+    meta = Map.of(
+            "foo", "bar".getBytes(),
+            "baz", "qux".getBytes()
+    )
+);
+```
+
+```kotlin
+private val helloWorldService = newService(
+    HelloWorldService::class.java,
+    meta = mapOf(
+        "foo" to "bar".toByteArray(),
+        "baz" to "qux".toByteArray()
+    )
+)
+```
+
+{% /codes %}
+
+{% callout  %}
+
+The `meta` property is mutable and can be read and write during the task execution and its retries. 
+
+{% /callout  %}
+
+### `retryIndex`
+
+The `retryIndex` property of the task context indicates the current number of retry attempts.
+It starts at 0 and is incremented when a task is [automatically retried](#retries-policy):
+
+![Tasks retries](/img/task-failing@2x.png)
+
+{% callout %}
+
+When a task is [manually retried](/docs/clients/retry-failed-tasks), the `retryIndex` property is reset to 0.
+
+{% /callout  %}
+
+### `retrySequence`
+
+The `retrySequence` property of the task context indicates the current number of manual retries.
+It starts at 0 and is incremented when a task is [manually retried](/docs/clients/retry-failed-tasks):
+
+![Tasks retries](/img/task-retries@2x.png)
+
+### `lastError`
+
+If not null (when `retryIndex` >= 1), the lastError property is a data object representing the exception thrown during the last task attempt. This `ExecutionError` instance has the following properties:
+
+| Name            | Type            | Description                                                                          |
+| --------------- | --------------- | ------------------------------------------------------------------------------------ |
+| `workerName` | String | Name of the worker where the previous Exception was thrown |
+| `name` | String | Name of the previous Exception |
+| `message` | String | Message of the previous Exception |
+| `stackTraceToString` | String |  Stringified stack trace of the previous Exception |
+| `cause` | `ExecutionError?` | Cause of the previous Exception |
+
+
