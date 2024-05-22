@@ -513,7 +513,7 @@ In some cases, we want to know more about the context of the execution of a task
 | [`retryIndex`  ](#retry-index)     | Integer         | Number of times the task was automatically retried                                   |
 | [`retrySequence`](#retry-sequence) | Integer         | Number of times the task was manually retried                                        |
 | [`lastError`](#last-error)         | ExecutionError? | If any, the error during the previous attempt                                        |
-| `client`        | InfiniticClient | An [InfiniticClient](/introduction/terminology#clients) that can be used inside the task                                  |
+| `client`        | InfiniticClient | An [InfiniticClient](/docs/introduction/terminology#clients) that can be used inside the task                                  |
 
 {% callout type="warning"  %}
 
