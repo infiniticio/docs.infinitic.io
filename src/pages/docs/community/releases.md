@@ -3,6 +3,25 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.13.3
+
+{% version-improvements /%}
+
+* Use non-mutable metadata when dispatching tasks
+* Use Kotlin 2.0.0
+
+* bump libraries version
+    - `kotlinx-coroutines` from 1.8.0 to 1.8.1
+    - `fasterxml.jackson` from 2.17.0 to 2.17.1
+    - `kotest` from 5.8.1 to 5.9.0
+    - `testcontainers` from 1.19.7 to 1.19.8bump
+    - `mockk` from 1.13.10 to 1.13.11
+    - `avro4k` from 1.10.0 to 1.10.1
+    - `slf4j` from 2.0.12 to 2.0.13
+    - `kotlin-logging-jvm` from 6.03 to 6.0.9
+
+* target Java version 17 
+
 ## v0.13.2
 
 {% version-bug-fixes /%}
