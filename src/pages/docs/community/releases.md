@@ -7,7 +7,7 @@ description: This section lists the release notes for Infinitic, detailing new f
 
 {% version-improvements /%}
 
-* Use non-mutable metadata when dispatching tasks
+* Can use immutable metadata when dispatching tasks
 * Use Kotlin 2.0.0
 
 * bump libraries version
