@@ -28,7 +28,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.13.0"
+    implementation "io.infinitic:infinitic-worker:0.13.3"
     ...
 }
 ```
@@ -36,7 +36,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.13.0")
+    implementation("io.infinitic:infinitic-worker:0.13.3")
     ...
 }
 ```
@@ -256,8 +256,6 @@ fun main(args: Array<String>) {
 ```
 
 {% /codes %}
-
-(cf. [withTimeout](/docs/services/syntax#withtimeout-interface) and [withRetry](/docs/services/syntax#withretry-interface))
 
 ## Logging
 
