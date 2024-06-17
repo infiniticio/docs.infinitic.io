@@ -192,17 +192,17 @@ Example of a configuration for using Redis for state storage:
 ```yaml
 storage: 
   redis:
-    host: 127.0.0.1
-    port: 6379
-    timeout: 2000
-    user: 
-    password: 
-    database: 0
-    ssl: false
+    host:         # default: "127.0.0.1"
+    port:         # default: 6379
+    timeout:      # default: 2000
+    user:         # default: null
+    password:     # default: null
+    database:     # default: 0
+    ssl:          # default: false
     poolConfig:
-      maxTotal: -1
-      maxIdle: 8
-      minIdle: 0
+      maxTotal:   # default: -1
+      maxIdle:    # default: 8
+      minIdle:    # default: 0
 ```
 
 #### MySQL state storage
@@ -212,17 +212,59 @@ Example of a configuration for using MySQL for state storage:
 ```yaml
 storage:
   mysql:
-    host: 127.0.0.1
-    port: 3306
-    user: root
-    password: 
-    database: infinitic
-    maxPoolSize: 5
+    host:               # default: "127.0.0.1"
+    port:               # default 3306
+    user:               # default "root"
+    password:           # default null
+    database:           # default "infinitic"
+    maximumPoolSize:    # HikariConfig default
+    minimumIdle:        # HikariConfig default
+    idleTimeout:        # HikariConfig default
+    connectionTimeout:  # HikariConfig default
+    maxLifetime:        # HikariConfig default
 ```
+
+Infinitic utilizes a `HikariDataSource` with the following `HikariConfig` properties: `maximumPoolSize`, `minimumIdle`, `idleTimeout`, `connectionTimeout`, and `maxLifetime`.
+
+{% callout %}
+
+The provided database will be automatically created if not yet present.
+Infinitic will create 2 tables `key_set_storage` and `key_value_storage`. 
+
+{% /callout  %}
+
+#### PostreSQL state storage
+
+Example of a configuration for using MySQL for state storage:
+
+```yaml
+storage:
+  postgres:
+    host:               # default: "127.0.0.1"
+    port:               # default 5432
+    user:               # default "postgres"
+    password:           # default null
+    database:           # default "infinitic"
+    maximumPoolSize:    # HikariConfig default
+    minimumIdle:        # HikariConfig default
+    idleTimeout:        # HikariConfig default
+    connectionTimeout:  # HikariConfig default
+    maxLifetime:        # HikariConfig default
+```
+
+Infinitic utilizes a `HikariDataSource` with the following `HikariConfig` properties: `maximumPoolSize`, `minimumIdle`, `idleTimeout`, `connectionTimeout`, and `maxLifetime`.
+
+{% callout %}
+
+The provided database will be automatically created if not yet present.
+Infinitic will create 2 tables `key_set_storage` and `key_value_storage`.
+
+{% /callout  %}
 
 #### State compression
 
 By default, the states of workflows are stored as uncompressed Avro binaries.
+
 To compress them and save storage space in exchange for CPU and a little time,
 we can add a `compression` option:
 

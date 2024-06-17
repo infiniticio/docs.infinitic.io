@@ -3,6 +3,25 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.14.0
+
+{% version-new-features /%}
+
+* **Added PostgreSQL support for storage.**
+* Expanded storage options for MySQL with the following `HikariConfig` properties: `minimumIdle`, `idleTimeout`, `connectionTimeout`, and `maxLifetime`.
+
+{% version-breaking-changes /%}
+
+* In storage configuration, the `maxPoolSize` option has been replaced by `maximumPoolSize` to ensure consistency with `HikariConfig` properties.
+
+{% version-improvements /%}
+
+* To improve the detection of configuration issues, a warning is now emitted the first time a message is produced on a topic without a consumer.
+* Resources are now properly closed when worker initialization fails.
+
+* Updated the versions of the following dependencies:
+  - Avro (1.10.0 to 1.10.1)
+
 ## v0.13.3
 
 {% version-improvements /%}
