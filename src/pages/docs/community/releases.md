@@ -3,6 +3,25 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.14.1
+
+{% version-new-features /%}
+
+* Users can now update the object mapper for fine-grained control of serialization.
+* Fix [#233](https://github.com/infiniticio/infinitic/issues/233) - Introduced `keySetTable` and `keyValueTable` settings for storage configuration, allowing custom names for storage tables.
+
+{% version-breaking-changes /%}
+
+* Renamed `Task.set` to `Task.setContext`.
+* `workflowId`, `workflowName`, `methodId`, `methodName`, `tags`, and `meta` are now static properties of the `Workflow` class.
+
+{% version-improvements /%}
+
+* Enhanced the `and` operator for `Deferred`.
+
+{% version-bug-fixes /%}
+* Fix [#239](https://github.com/infiniticio/infinitic/issues/239)
+
 ## v0.14.0
 
 {% version-new-features /%}
