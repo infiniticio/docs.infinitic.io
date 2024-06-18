@@ -153,17 +153,6 @@ interface MyWorkflow {
 
 {% /codes %}
 
-## Properties
-
-In some cases, we want to know more about the context of the execution of a workflow. An instance contains the following properties:
-
-| Name             | Type          | Description                          |
-| ---------------- | ------------- | ------------------------------------ |
-| `tags`         | Set\<String\> | tags of this workflow instance       |
-| `workflowId`   | String        | id of this workflow instance         |
-| `workflowName` | String        | name of the workflow                 |
-| `methodId`     | String        | id of this method run                |
-| `methodName`   | String        | name of the method currently running |
 
 ## Dispatch a task
 
@@ -529,6 +518,10 @@ Internally, a delayed Pulsar message is sent to wake up the workflow when the ti
 
 {% /callout  %}
 
+## Properties
+
+[Properties](/docs/workflows/properties) in workflows are saved along with the workflow state. Properties are especially useful in workflows where multiple methods are called, either sequentially or in parallel. They can represent business values updated by these methods. An example can be found in the introduction, illustrating a [Loyalty Program](/docs/introduction/examples#loyalty-program).
+
 ## Interacting with other workflows
 
 It's possible to interact with another running workflow from a workflow.
@@ -742,3 +735,73 @@ workflows:
 At each step of the execution of a workflow, its properties are automatically serialized and stored. Those properties are part of the state of the workflow.
 
 The `@Ignore` (io.infinitic.annotations.Ignore) annotation lets us tag other properties that are not part of the workflow state and should not be serialized during the workflow execution.
+
+## Workflow Context
+
+In some cases, it is useful to understand more about the context in which a workflow is executed.
+
+The `io.infinitic.workflows.Workflow` class provides the following static properties:
+
+
+| Name             | Type        | Description                          |
+| ---------------- | ----------- | ------------------------------------ |
+| `workflowId`   | String        | Unique identifier of the workflow instance  |
+| `workflowName` | String        | Name of the workflow                 |
+| `methodId`     | String        | Unique identifier of the method run  |
+| `methodName`   | String        | Name of the method currently running |
+| [`tags`](#tags)         | Set\<String\> | Tags provided when dispatching the workflow |
+| [`meta`](#meta)         | Map\<String, ByteArray\> | Metadata provided when dispatching the workflow |
+
+### `tags`
+
+The `tags` property of the workflow context is an immutable set of strings.
+Its value is defined when creating the stub before dispatching the workflow:
+
+{% codes %}
+
+```java
+final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow.class,
+    tags = Set.of("userId" + userId, "companyId" + companyId)
+);
+```
+
+```kotlin
+val helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow::class.java, 
+    tags = setOf("userId:$userId", "companyId:$companyId")
+)
+```
+
+{% /codes %}
+
+
+### `meta`
+
+The `meta` property of the workflow context is a immutable map of strings to arrays of bytes.
+Its value is defined when creating the stub before dispatching the workflow:
+
+{% codes %}
+
+```java
+final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow.class,
+    tags = null,
+    meta = Map.of(
+            "foo", "bar".getBytes(),
+            "baz", "qux".getBytes()
+    )
+);
+```
+
+```kotlin
+private val helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow::class.java,
+    meta = mapOf(
+        "foo" to "bar".toByteArray(),
+        "baz" to "qux".toByteArray()
+    )
+)
+```
+
+{% /codes %}
