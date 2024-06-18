@@ -167,9 +167,9 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation "io.infinitic:infinitic-client:0.13.3"
+    implementation "io.infinitic:infinitic-client:0.14.1"
     // infinitic worker
-    implementation "io.infinitic:infinitic-worker:0.13.3"
+    implementation "io.infinitic:infinitic-worker:0.14.1"
 }
 
 java {
@@ -191,9 +191,9 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation("io.infinitic:infinitic-client:0.13.3")
+    implementation("io.infinitic:infinitic-client:0.14.1")
     // infinitic worker
-    implementation("io.infinitic:infinitic-worker:0.13.3")
+    implementation("io.infinitic:infinitic-worker:0.14.1")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.services.KotlinCompile> {

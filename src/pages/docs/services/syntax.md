@@ -497,16 +497,16 @@ services:
 
 ## Task Context
 
-In some cases, we want to know more about the context of the execution of a task.
+In some cases, it is useful to understand more about the context in which a task is executed.
 
-`io.infinitic.tasks.Task` contains the following static properties:
+The `io.infinitic.tasks.Task` class provides the following static properties:
 
 | Name            | Type            | Description                                                                          |
 | --------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `taskId`        | String          | ID of the task                                                                       |
+| `taskId`        | String          | Unique identifier of the task                                                                      |
 | `serviceName`   | String          | Name of the Service (taken from the [@Name annotation](#name-annotation) if provided, otherwise defaulting to the service's interface name) |
 | `taskName`      | String          | Name of the task (taken from the [@Name annotation](#name-annotation) if provided, otherwise defaulting to the service's method name) |
-| `workflowId`    | String?         | ID of the workflow (if part of a workflow)                                           |
+| `workflowId`    | String?         | Unique identifier of the workflow (if part of a workflow)                                           |
 | `workflowName`  | String?         | Name of the workflow (if part of a workflow)                                         |
 | [`tags`](#tags)                    | Set\<String\>   | Tags provided when dispatching the task                                              |
 | [`meta`](#meta)                    | MutableMap\<String, ByteArray\>   | Metadata provided when dispatching the task                        |
@@ -517,7 +517,7 @@ In some cases, we want to know more about the context of the execution of a task
 
 {% callout type="warning"  %}
 
-The task context is accessible from the thread that initiated:
+The task context is only accessible from the thread that initiated:
 * the method (task) execution
 * the `getTimeoutInSeconds` execution 
 * the `getSecondsBeforeRetry` execution
@@ -526,7 +526,7 @@ The task context is accessible from the thread that initiated:
 
 {% callout type="note"  %}
 
-In tests, `io.infinitic.tasks.TaskContext` can be mocked and injected through `Task.set(mockedTaskContext)` before running a test that uses the task's context.
+In tests, `io.infinitic.tasks.TaskContext` can be mocked and injected through `Task.setContext(mockedTaskContext)` before running a test that uses the task's context.
 
 {% /callout  %}
 

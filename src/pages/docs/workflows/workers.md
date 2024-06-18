@@ -26,7 +26,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java[build.gradle]
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.13.3"
+    implementation "io.infinitic:infinitic-worker:0.14.1"
     ...
 }
 ```
@@ -34,7 +34,7 @@ dependencies {
 ```kotlin[build.gradle.kts]
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.13.3")
+    implementation("io.infinitic:infinitic-worker:0.14.1")
     ...
 }
 ```
@@ -75,8 +75,10 @@ We can also use `.fromConfigResource("/infinitic.yml")` if the configuration fil
 Here is an example of a valid `infinitic.yml` file:
 
 ```yaml
+# (Optional) worker name
 name: optional_worker_name
 
+# How to access the database storing running workflow states
 storage:
   redis:
     host: localhost
@@ -85,13 +87,14 @@ storage:
     password:
     database: 0
 
+# How to access Pulsar
 pulsar:
   brokerServiceUrl: pulsar://localhost:6650
   webServiceUrl: http://localhost:8080
   tenant: infinitic
   namespace: dev
 
-# (Optional) default values for workflows
+# (Optional) Default settings for the workflows below
 workflowDefault:
   concurrency: 10
   timeoutInSeconds: 400
@@ -99,23 +102,16 @@ workflowDefault:
     maximumRetries: 6
   checkMode: strict
 
+# List of workflows that this worker processes
 workflows:
   - name: example.booking.workflows.BookingWorkflow
     class: example.booking.workflows.BookingWorkflowImpl
     concurrency: 10
 ```
 
-This configuration defines
-
-- a worker name (optional)
-- which storage is used to store states
-- the [Pulsar settings](/docs/references/pulsar)
-- optional default values for workflow's `concurrency`, `timeoutInSeconds`, `retry`  and `checkMode`
-- the workflows
-
 {% callout type="warning"  %}
 
-Worker `name` (when provided) must be unique among all our workers and clients connected to the same Pulsar namespace.
+When provided, the worker `name` must be unique among all workers and clients connected to the same Pulsar namespace.
 
 {% /callout  %}
 
@@ -179,13 +175,18 @@ The default value is `simple`. The check mode can also be defined directly from 
 
 ### Storage
 
-#### Redis state storage
+Infinitic automaticaly store the current state of running workflows in a database. 
 
-{% callout type="warning"  %}
+{% callout type="warning" %}
 
-Redis is not recommended in production, because in case of a crash, last states may not have been saved correctly on disk.
+If you have running workflows, do not change the storage access configuration.
+If Infinitic cannot locate the workflow history for an instance, it will assume the instance has terminated,
+and all related existing messages will be discarded.
 
 {% /callout  %}
+
+
+#### Using Redis
 
 Example of a configuration for using Redis for state storage:
 
@@ -205,7 +206,13 @@ storage:
       minIdle:    # default: 0
 ```
 
-#### MySQL state storage
+{% callout type="warning"  %}
+
+Redis is not recommended in production, because in case of a crash, last states may not have been saved correctly on disk.
+
+{% /callout  %}
+
+#### Using MySQL
 
 Example of a configuration for using MySQL for state storage:
 
@@ -217,6 +224,8 @@ storage:
     user:               # default "root"
     password:           # default null
     database:           # default "infinitic"
+    keySetTable:        # default "key_set_storage"
+    keyValueTable:      # default "key_value_storage"
     maximumPoolSize:    # HikariConfig default
     minimumIdle:        # HikariConfig default
     idleTimeout:        # HikariConfig default
@@ -226,14 +235,12 @@ storage:
 
 Infinitic utilizes a `HikariDataSource` with the following `HikariConfig` properties: `maximumPoolSize`, `minimumIdle`, `idleTimeout`, `connectionTimeout`, and `maxLifetime`.
 
-{% callout %}
+The database will be automatically created if it does not already exist.
+By default, Infinitic will create two tables: `key_set_storage` and `key_value_storage`.
+You can customize the table names using the settings `keySetTable` and `keyValueTable`.
 
-The provided database will be automatically created if not yet present.
-Infinitic will create 2 tables `key_set_storage` and `key_value_storage`. 
 
-{% /callout  %}
-
-#### PostreSQL state storage
+#### Using PostreSQL
 
 Example of a configuration for using MySQL for state storage:
 
@@ -245,6 +252,8 @@ storage:
     user:               # default "postgres"
     password:           # default null
     database:           # default "infinitic"
+    keySetTable:        # default "key_set_storage"
+    keyValueTable:      # default "key_value_storage"
     maximumPoolSize:    # HikariConfig default
     minimumIdle:        # HikariConfig default
     idleTimeout:        # HikariConfig default
@@ -254,12 +263,9 @@ storage:
 
 Infinitic utilizes a `HikariDataSource` with the following `HikariConfig` properties: `maximumPoolSize`, `minimumIdle`, `idleTimeout`, `connectionTimeout`, and `maxLifetime`.
 
-{% callout %}
-
-The provided database will be automatically created if not yet present.
-Infinitic will create 2 tables `key_set_storage` and `key_value_storage`.
-
-{% /callout  %}
+The database will be automatically created if it does not already exist.
+By default, Infinitic will create two tables: `key_set_storage` and `key_value_storage`.
+You can customize the table names using the settings `keySetTable` and `keyValueTable`.
 
 #### State compression
 
@@ -276,11 +282,17 @@ storage:
 
 The possible options are `deflate`, `gzip`, and `bzip2`, and use the [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/) algorithms.
 
+{% callout %}
+
+It's possible to add, remove, or change the compression algorithm without causing backward compatibility issues.
+
+{% /callout  %}
+
 ### Cache
 
 #### Caffeine cache
 
-Infinitic lets you use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache when requesting state storage.
+Infinitic allows you to use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache for storage requests.
 
 Here is an example of configuration:
 
@@ -363,7 +375,7 @@ fun main(args: Array<String>) {
 
 {% callout type="warning"  %}
 
-Exceptions are caught within workflow workers. Let's not forget to add a Log4J implementation to our project to be able to see errors.
+Exceptions are caught within workflow workers. To view errors, ensure that a Log4J implementation is added to your project.
 
 {% /callout  %}
 

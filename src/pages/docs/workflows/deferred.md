@@ -135,16 +135,18 @@ For example:
 {% codes %}
 
 ```java
-import io.infinitic.workflows.or;
-import io.infinitic.workflows.and;
+import io.infinitic.workflows.DeferredKt.or;
+import io.infinitic.workflows.DeferredKt.and;
 ...
+// Note that the types below are set to `Deferred<Object>` 
+// If we do not do that, we won't be able to combine them 
 
 // asynchronous task processing
-Deferred<Boolean> d1 = dispatch(task::method, parameters);
+Deferred<Object> d1 = dispatch(task::method, parameters);
 // asynchronous wait for 42 minutes
-Deferred<Instant> d2 = timer(Duration.ofMinutes(42));
+Deferred<Object> d2 = timer(Duration.ofMinutes(42));
 // asynchronous wait for an external event
-Deferred<String> d3 = eventChannel.receive()
+Deferred<Object> d3 = eventChannel.receive()
 
 // waiting for at least one deferred to complete
 or(d1, d2, d3).await();

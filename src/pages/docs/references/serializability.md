@@ -17,29 +17,37 @@ For Java, Infinitic uses [FasterXML/jackson](https://github.com/FasterXML/jackso
 If `o1` is a `CarRentalCart` object used in the parameters of a task (or as a return value), we should be able to run this:
 
 ```java
-ObjectMapper objectMapper = new ObjectMapper();
+import io.infinitic.serDe.java.Json;
+...
+ObjectMapper objectMapper = Json.getMapper();
 String json = objectMapper.writeValueAsString(o1);
-CarRentalCart o2 = objectMapper.readValue(json, o1.getClass());
+String o2 = objectMapper.readValue(json, o1.getClass());
 assert o1.equals(o2);
 ```
 
-(`ObjectMapper` being `com.fasterxml.jackson.databind.ObjectMapper`)
+It's also possible to use a custom object mapper before using an Infinitic client or starting an Infinitic worker:
+
+```java
+import io.infinitic.serDe.java.Json;
+...
+// introduce a custom object mapper for current client or worker
+ObjectMapper updatedMapper = Json.getMapper().configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+Json.setMapper(updatedMapper);
+```
+
+{% callout type="warning"  %}
+
+If you use a custom object mapper, ensure it is used consistently in both clients and workers.
+Also, avoid changing the object mapper without verifying that the new one can deserialize previously serialized data,
+if there are still running workflows.
+
+{% /callout  %}
 
 ## Checking Serializability In Kotlin
 
 For Kotlin, we recommend using [kotlinx-serialization-json](https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/serialization-guide.md) in our models.
 
-If `o1` is a `CarRentalCart` object used in the parameters of a task (or as a return value), we should be able to run this:
-
-```kotlin
-val json = Json.encodeToString(CarRentalCart.serializer(), o1)
-val o2 = Json.decodeFromString(CarRentalCart.serializer(), json)
-require(o1 == o2)
-```
-
-(`Json` being `kotlinx.serialization.json.Json`)
-
-An easy way to reach this requirement is to use [data classes](https://kotlinlang.org/docs/reference/data-classes.html) with a `kotlinx.serialization.Serializable` annotation. For example :
+An easy way is to use [data classes](https://kotlinlang.org/docs/reference/data-classes.html) with a `kotlinx.serialization.Serializable` annotation. For example :
 
 ```kotlin
 @Serializable
@@ -48,4 +56,39 @@ data class CarRentalCart(
 )
 ```
 
+{% callout type="note"  %}
+
 If `kotlinx-serialization-json` is not used, the fallback serialization/deserialization method will be [FasterXML/jackson](https://github.com/FasterXML/jackson-docs) as for Java.
+
+{% /callout  %}
+
+If `o1` is a `CarRentalCart` object used in the parameters of a task (or as a return value), we should be able to run this:
+
+```kotlin
+import io.infinitic.serDe.kotlin.json
+...
+val jsonData = json.encodeToString(CarRentalCart.serializer(), o1)
+val o2 = json.decodeFromString(CarRentalCart.serializer(), jsonData)
+require(o1 == o2)
+```
+
+It's also possible to use a custom object mapper before using an Infinitic client or starting an Infinitic worker:
+
+```kotlin
+import io.infinitic.serDe.kotlin.json
+import kotlinx.serialization.json.Json
+...
+// introduce a custom object mapper for current client or worker
+json = Json {
+  classDiscriminator = "#klass"
+  ignoreUnknownKeys = true
+}
+```
+
+{% callout type="warning"  %}
+
+If you use a custom object mapper, ensure it is used consistently in both clients and workers.
+Also, avoid changing the object mapper without verifying that the new one can deserialize previously serialized data,
+if there are still running workflows.
+
+{% /callout  %}
