@@ -2,97 +2,103 @@
 title: Errors
 description: This page discusses strategies for error handling within workflows, including retrying failed tasks and managing exceptions, to ensure robust workflow execution.
 ---
-Managing errors in a distributed system are usually tedious. Infinitic makes our life easier, by automatically keeping trace of the chain of errors. Infinitic even let us code the reaction to errors directly from the workflow!
+
+Handling errors in a distributed system is typically complex. Infinitic simplifies this by automatically tracking error chains and allowing you to handle errors directly within the workflow.
 
 ## Error when processing a task
 
-Tasks are processed within workers. If an exception is thrown while processing a task, the exception is caught by the worker and the task is automatically retried according to the [retry policy](/docs/services/syntax#task-retries).
+Tasks are processed within workers. If an exception occurs while processing a task, it is caught by the worker, and the task is automatically retried according to the [retry policy](/docs/services/syntax#task-retries).
 
 ![Error when processing a task](/img/error-task@2x.png)
 
-Once all retries have failed, the worker tells the workflow the task has failed with a `WorkerException`. This exception has the properties below:
+If all retries fail, the worker notifies the workflow of the task failure with a `WorkerException`. This exception includes the following properties:
 
 | Property               | Type            | Description                                    |
 | ---------------------- | --------------- | ---------------------------------------------- |
-| `workerName`         | String          | name of the worker where the exception occured |
-| `name`               | String          | exception name                                 |
-| `message`            | String          | exception message                              |
-| `stackTraceToString` | String          | string version of the exception stacktrace     |
-| `cause`              | WorkerException | (optional) exception cause                     |
+| `workerName`         | String          | Name of the worker where the exception occured |
+| `name`               | String          | Exception name                                 |
+| `message`            | String          | Exception message                              |
+| `stackTraceToString` | String          | String representation of the exception stack trace     |
+| `cause`              | WorkerException | (optional) Cause of the exception                    |
 
 {% callout type="note"  %}
 
-Serializing exceptions is error-prone. That's why we "normalize" them into a `WorkerException` format.
+Serializing exceptions can be error-prone. Therefore, we "normalize" them into a `WorkerException` format.
 
 {% /callout  %}
 
-What happens in the workflow depends on whether it is waiting for the task to be completed or not:
+What happens next in the workflow depends on whether it is waiting for the task to complete:
 
 ### If the workflow expects the task result
 
-This is the case when we dispatch a task synchronously and also when we are [waiting the result](/docs/workflows/deferred#waiting-for-completion) of a `Deferred<T>`. In this case, a `FailedTaskException` is thrown inside the workflow with the properties below:
+This situation occurs when a task is dispatched synchronously or when [awaiting](/docs/workflows/deferred#waiting-for-completion) the result of a `Deferred<T>`. Here, a `FailedTaskException` is thrown within the workflow, containing these properties:
 
 | Property            | Type            | Description        |
 | ------------------- | --------------- | ------------------ |
-| `taskName`        | String          | task name          |
-| `taskId`          | String          | task id            |
-| `methodName`      | String          | method called      |
-| `workerException` | WorkerException | task failure cause |
+| `taskName`        | String          | Task name          |
+| `taskId`          | String          | Task id            |
+| `methodName`      | String          | Method called      |
+| `workerException` | WorkerException | Cause of task failure |
 
 ![Error when processing a sync task](/img/error-task-sync@2x.png)
 
-Also, if another client or workflow expects the result of this workflow, it will see a `FailedWorkflowException`:
+If the client expects this workflow's result, it will encounter a `FailedWorkflowException`:
+
+![Error when processing a sync task](/img/error-task-sync-client@2x.png)
+
+
+Additionally, if another workflow expects this workflow's result, it will also encounter a `FailedWorkflowException`:
 
 ![Error when processing a sync task](/img/error-task-sync-child@2x.png)
 
-`FailedWorkflowException` has the properties below:
+The `FailedWorkflowException` includes these properties:
 
 | Property              | Type              | Description            |
 | --------------------- | ----------------- | ---------------------- |
-| `workflowName`      | String            | workflow name          |
-| `workflowId`        | String            | workflow id            |
-| `methodName`        | String            | method called          |
-| `methodRunId`       | String            | method run id          |
-| `deferredException` | DeferredException | workflow failure cause |
+| `workflowName`      | String            | Workflow name          |
+| `workflowId`        | String            | Workflow id            |
+| `methodName`        | String            | Method called          |
+| `methodRunId`       | String            | Method run id          |
+| `deferredException` | DeferredException | Cause of workflow failure |
 
 In the example above, `deferredException` would be a `FailedTaskException`.
 
 ### If the workflow does not expect the task result
 
-This is the case, when we dispatch a task [asynchronously](/docs/workflows/parallel#asynchronous-tasks), or for a task in another method [running in parallel](/docs/workflows/parallel#parallel-methods).
+This occurs when a task is dispatched [asynchronously](/docs/workflows/parallel#asynchronous-tasks) or is part of a method running [in parallel](/docs/workflows/parallel#parallel-methods).
 
 ![Error when processing an async task](/img/error-task-async@2x.png)
 
-In this case, the task is failed, but the workflow continues without error, as the failed task is not on the main path.
-But if the workflow waits fot the result later, then a `FailedTaskException` will be thrown then:
+In this case, the task fails, but the workflow continues without error, as the failed task is not on the main execution path. If the workflow later waits for the result, a `FailedTaskException` will be thrown at that time:
 
 ![Error when processing an async task](/img/error-task-async-2@2x.png)
 
 ## Errors due to cancellation and more
 
-We have seen that a failure of a synchronous task will throw a `FailedTaskException`. Also the failure of a synchronous child-workflow will throw a `FailedWorkflowException`. There are similar errors due to cancelation, and some other cases:
+Failures of synchronous tasks result in `FailedTaskException`, while failures of synchronous child workflows result in `FailedWorkflowException`. Similar errors arise from cancellation and other scenarios:
 
 | Name                            | When it happens                                                                                                                                                        |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `FailedTaskException`         | the task has failed. A task has failed only after all planed retries have failed.                                                                                      |
-| `CanceledTaskException`       | the task has been canceled.                                                                                                                                            |
-| `FailedWorkflowException`     | the targeted workflow has a failed synchronous task / child-workflow.                                                                                                  |
-| `CanceledWorkflowException`   | the targeted workflow has been canceled.                                                                                                                               |
-| `UnknownWorkflowException`    | the targeted workflow has never existed or if it is already completed or canceled. This can happen when dispatching a method on a stub created by `getWorkflowById`. |
-| `FailedWorkflowTaskException` | an error occured directly from the code of the workflow.                                                                                                               |
+| `FailedTaskException`         | The task has failed after all planned retries have failed.               |
+| `CanceledTaskException`       | The task has been canceled.                                              |
+| `FailedWorkflowException`     | The targeted workflow has a failed synchronous task or child workflow    |
+| `CanceledWorkflowException`   | The targeted workflow has been canceled.                                 |
+| `UnknownWorkflowException`    | The targeted workflow never existed or is already completed or canceled. This can occur when dispatching a method on a stub created by `getWorkflowById`.  |
+| `FailedWorkflowTaskException` | An error occurred directly within the workflow code.                     |
 
 {% callout type="note"  %}
 
-All those exceptions inherit from `io.infinitic.exceptions.DeferredException`
+All these exceptions inherit from `io.infinitic.exceptions.DeferredException`
 
 {% /callout  %}
 
 ## Try/catch in workflows
 
-We may want to react to a `DeferredException` or one of its subclass. For example, if we want to react to the inability to complete a task with new tasks:
+You might want to handle a `DeferredException` or one of its subclasses, for example to react to task failures with new tasks.
 
 {% callout type="note"  %}
-Try/catch in workflows should be used only for situations when we need to react to _unexpected_ failures. If we expect some failures in our task, a better practice is to catch them directly in the task and send back a status object as a result.
+
+Use try/catch in workflows only for unexpected failures. For expected failures, catch them within the task and return a status object.
 
 {% /callout  %}
 
@@ -127,4 +133,4 @@ val str = try {
 
 {% /callout  %}
 
-If a `DeferredException` has been caught in a workflow, it can not be resumed anymore (see below).
+A `DeferredException` caught in a workflow cannot be resumed.
