@@ -81,7 +81,7 @@ The `Deferred<T>` object can be used to:
 
   {% callout type="warning"  %}
 
-  The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `UnknownWorkflowException` if the workflow is already terminated.
+  The `await()` method blocks the current thread of the client - up to the workflow termination. It will throw an `WorkflowUnknownException` if the workflow is already terminated.
 
   {% /callout  %}
 

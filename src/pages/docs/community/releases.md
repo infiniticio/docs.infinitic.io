@@ -566,7 +566,7 @@ This release fixes a configuration bug in Java compatibility in 0.9.1
 {% version-improvements /%}
 
 - improved default value when using channels in Java
-- refactored error management in workflows, with new exception: WorkerException, FailedTaskException, FailedWorkflowException, UnknowWorkflowException...
+- refactored error management in workflows, with new exception: WorkerException, TaskFailedException, WorkflowFailedException, UnknowWorkflowException...
 - bump version of plugins and libs
 
 ---

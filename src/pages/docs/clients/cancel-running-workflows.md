@@ -52,7 +52,7 @@ If we do not want this behavior, we should dispatch our child workflow from a ta
 
 {% /callout  %}
 
-The direct cancellation of a child workflow will trigger a `CanceledWorkflowException` in the parent workflow
+The direct cancellation of a child workflow will trigger a `WorkflowCanceledException` in the parent workflow
 if waiting for its completion.
 
 The `cancel` method waits for the adhoc message to be sent to Pulsar.

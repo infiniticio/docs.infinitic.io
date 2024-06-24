@@ -76,7 +76,7 @@ The abstract class `io.infinitic.workflows.Workflow` exposes a set of useful fun
 
 ## Constraints
 
-{% callout type="warning"  %}
+{% callout  %}
 
 A workflow class must
 
@@ -110,7 +110,7 @@ For example, to manage 1 million tasks, we can have a workflow dispatching 1000 
 
 {% /callout  %}
 
-## Recommendations
+## Good Practices
 
 For easier [versioning of workflows](/docs/workflows/versioning), we recommend that:
 
@@ -154,7 +154,7 @@ interface MyWorkflow {
 {% /codes %}
 
 
-## Dispatch a task
+## Dispatch A Task
 
 Workflows only need to know the interface of remote services to be able to use them.
 
@@ -219,7 +219,7 @@ class MyWorkflow : Workflow(), MyWorkflowInterface {
 
 {% callout type="warning"  %}
 
-If the return type of the task is `void`, we need to use `dispatchVoid` function instead of `dispatch`.
+JAVA ONLY: If the return type of the task is `void`, we need to use `dispatchVoid` function instead of `dispatch`.
 
 {% /callout  %}
 
@@ -243,7 +243,7 @@ A global timeout represents the maximal duration of the task dispatched by workf
 
 Defining global timeouts can be useful to ensure that a workflow is never stuck.
 
-## Dispatch a child-workflow
+## Dispatch A Child-Workflow
 
 By using the `newWorkflow` function on a workflow interface, we create a stub that behaves syntactically as an instance of the workflow but sends a message to Pulsar that will trigger the remote execution of the workflow.
 
@@ -330,7 +330,7 @@ A global timeout represents the maximal duration of the child workflow before a 
 
 Defining global timeouts can be useful to ensure that a workflow is never stuck.
 
-## Inline task
+## Inline Task
 
 As described [here](/docs/workflows/syntax), any non-deterministic instructions, or instructions with side-effect, should be in tasks, not in workflows. For very simple instructions, it can be frustrating to write such simple tasks. For those cases, we can use inline tasks:
 
@@ -366,7 +366,7 @@ If the return type of the lambda describing the inline task is `void`, we need t
 
 {% /callout  %}
 
-## Receive signal
+## Receive Signal
 
 Workflow can receive signals from "outside". Signals are typed and sent through "channels". The workflow interface must have a getter method returning a `SendChannel<Type>`. For example:
 
@@ -443,7 +443,7 @@ Channels can be of any [serializable](/docs/references/serializability) type.
 
 Per default, a signal sent to a running workflow is discarded. Before a workflow can receive a signal, it must first declare that it is waiting for it using the `receive` method on the channel.
 
-## Manage time
+## Manage Time
 
 Time can be managed using the `timer` function. A call to the `timer` function creates a `Deferred<Instant>` that will be completed at the given time:
 
@@ -522,7 +522,7 @@ Internally, a delayed Pulsar message is sent to wake up the workflow when the ti
 
 [Properties](/docs/workflows/properties) in workflows are saved along with the workflow state. Properties are especially useful in workflows where multiple methods are called, either sequentially or in parallel. They can represent business values updated by these methods. An example can be found in the introduction, illustrating a [Loyalty Program](/docs/introduction/examples#loyalty-program).
 
-## Interacting with other workflows
+## Interacting With Other Workflows
 
 It's possible to interact with another running workflow from a workflow.
 To do so, we create the stub of a running workflow from its id:
@@ -686,7 +686,7 @@ class LoyaltyImpl : Workflow(), Loyalty {
 
 {% /codes %}
 
-## @Name annotation
+## @Name Annotation
 
 A workflow instance is internally described by both its full java name (package included) and the name of the method called.
 
@@ -730,7 +730,7 @@ workflows:
     class: hello.world.workflows.HelloWorldWorkflowImpl
 ```
 
-## @Ignore annotation
+## @Ignore Annotation
 
 At each step of the execution of a workflow, its properties are automatically serialized and stored. Those properties are part of the state of the workflow.
 
@@ -805,3 +805,14 @@ private val helloWorldWorkflow = newWorkflow(
 ```
 
 {% /codes %}
+
+## Service's Exceptions
+
+As discussed in the [service syntax](/docs/services/syntax) documentation, it's recommended to handle non-technical failures through a status in the return value of services. Infinitic doesn't expect `throws` clauses in Service interfaces.
+
+If a Service interface does contain throws clauses:
+
+- In Java: Add them to the workflow class or method, or use the `@SneakyThrows` annotation from Lombok.
+- In Kotlin: No additional action is required due to Kotlin's exception handling.
+
+For more information on error handling in workflows, refer to the [error handling](/docs/workflows/errors) documentation.
