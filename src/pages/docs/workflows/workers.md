@@ -267,7 +267,7 @@ The database will be automatically created if it does not already exist.
 By default, Infinitic will create two tables: `key_set_storage` and `key_value_storage`.
 You can customize the table names using the settings `keySetTable` and `keyValueTable`.
 
-#### State compression
+#### Storage compression
 
 By default, the states of workflows are stored as uncompressed Avro binaries.
 
@@ -288,29 +288,20 @@ It's possible to add, remove, or change the compression algorithm without causin
 
 {% /callout  %}
 
-### Cache
+#### Storage cache
 
-#### Caffeine cache
-
-Infinitic allows you to use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache for storage requests.
+By default, the database has no cache, but Infinitic allows you to use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache for storage requests.
 
 Here is an example of configuration:
 
 ```yaml
-cache:
-  caffeine:
-    maximumSize: 10000
-    expireAfterAccess: 3600
-    expireAfterWrite:
-```
-
-#### No cache
-
-By default, there is no cache. The equivalent configuration is:
-
-```yaml
-cache:
-  none:
+storage:
+  ...
+  cache:
+    caffeine:
+      maximumSize: 10000
+      expireAfterAccess: 3600
+      expireAfterWrite:
 ```
 
 ## Programmatic registration
