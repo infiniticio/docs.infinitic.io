@@ -47,7 +47,7 @@ if there are still running workflows.
 
 Since version 0.15.0, Infinitic supports Jackson's `@JsonView` annotation, which helps refine object serialization.
 
-#### In Service Interface
+#### Service Interface
 
 In Infinitic, interfaces serve as contracts for remote services:
 
@@ -66,7 +66,7 @@ public interface UserService {
 - the `request` object (parameter of the RPC call) is serialized using the `View.P1.class` Jackson view.
 - the `user` object (response of the RPC call) is *deserialized* using the `View.R1.class` view.
 
-#### In Service Implementation
+#### Service Implementation
 
 In Service workers where the actual implementation runs:
 
@@ -112,7 +112,7 @@ public interface UserWorkflow {
 - the `registration` object (parameter of the RPC call) is serialized using the `View.P1.class` Jackson view.
 - the `status` object (response of the RPC call) is *deserialized* using the `View.R1.class` view.
 
-#### In Workflow Implementation
+#### Workflow Implementation
 
 In Workflow workers where the actual implementation runs:
 

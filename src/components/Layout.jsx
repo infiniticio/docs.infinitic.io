@@ -74,12 +74,12 @@ const navigation = [
       { title: 'Features', href: '/docs/dashboard/features' },
     ],
   },
-  // {
-  //   title: 'Playbooks',
-  //   links: [
-  //     { title: 'Workflow', href: '/docs/playbooks/workflow' },
-  //   ],
-  // },
+  {
+     title: 'Playbooks',
+     links: [
+       { title: 'Operations', href: '/docs/playbooks/operations' },
+     ],
+   },
   {
     title: 'References',
     links: [
