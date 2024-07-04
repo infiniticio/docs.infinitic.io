@@ -19,12 +19,12 @@ This page describes how to configure Pulsar access when using Infinitic with var
 
 ```yaml
 pulsar:
-  brokerServiceUrl: pulsar+ssl://materiamq.eu-fr-1.services.clever-cloud.com:6651
-  webServiceUrl: https://materiamq.eu-fr-1.services.clever-cloud.com:443
-  tenant: orga_f8786ef8-ac53-43ec-8c34-f81dab32b7cb
-  namespace: pulsar_f3f94e46-0a32-4430-a05f-f458abca7297
+  brokerServiceUrl: pulsar+ssl://materiamq.eu-fr-1.services.clever-cloud.com:6651 # Paste ADDON_PULSAR_BINARY_URL here
+  webServiceUrl: https://materiamq.eu-fr-1.services.clever-cloud.com:443          # Paste ADDON_PULSAR_HTTP_URL here
+  tenant: orga_f8786ef8-ac53-43ec-8c34-f81dab32b7cb              # Paste ADDON_PULSAR_TENANT here
+  namespace: pulsar_f3f94e46-0a32-4430-a05f-f458abca7297         # Paste ADDON_PULSAR_NAMESPACE here
   authentication:
-    token: EnYKDBgDIggKBggEEgIYDRIkCAASIDZFTlStxCxoVWTPpNT_K4i51-J9begIIm23SxZw********************** 
+    token: EnYKDBgDIggKBggE**********************EgIYDRIkCAASIDZ # Paste ADDON_PULSAR_TOKEN here
 ```
 
 ### [Datastax](https://www.datastax.com/)
@@ -86,9 +86,9 @@ StreamNative's offering differs from other providers in that it offers to manage
         tenant: infinitic # Your choice
         namespace: dev    # Your choice
         authentication:
-        issuerUrl: https://auth.streamnative.cloud/
-        privateKey: file:///YOUR-KEY-FILE-PATH # e.g file:///Users/gilles/.sn/infinitic-admin.json
-        audience: urn:sn:pulsar:o-ye4kl:infinitic # See Cluster Details
+          issuerUrl: https://auth.streamnative.cloud/
+          privateKey: file:///YOUR-KEY-FILE-PATH # e.g file:///Users/gilles/.sn/infinitic-admin.json
+          audience: urn:sn:pulsar:o-ye4kl:infinitic # See Cluster Details
       ```
 
     * API Key
@@ -104,7 +104,5 @@ StreamNative's offering differs from other providers in that it offers to manage
         tenant: infinitic # Your choice
         namespace: dev    # Your choice
         authentication:
-        token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
+          token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
       ```
-
-
