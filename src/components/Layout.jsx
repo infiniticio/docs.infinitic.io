@@ -74,6 +74,12 @@ const navigation = [
       { title: 'Features', href: '/docs/dashboard/features' },
     ],
   },
+  // {
+  //   title: 'Playbooks',
+  //   links: [
+  //     { title: 'Workflow', href: '/docs/playbooks/workflow' },
+  //   ],
+  // },
   {
     title: 'References',
     links: [
