@@ -75,9 +75,9 @@ StreamNative's offering differs from other providers in that it offers to manage
 
     * OAUTH2
 
-      a) Download the file and save it to a safe place (e.g. to `/Users/gilles/.sn/infinitic-admin.json`)
+      a - Download the file and save it to a safe place (e.g. to `/Users/gilles/.sn/infinitic-admin.json`)
 
-      b) Then your Infinitic pulsar configuration is:
+      b - Then your Infinitic pulsar configuration is:
 
       ```yaml
       pulsar:
@@ -93,9 +93,9 @@ StreamNative's offering differs from other providers in that it offers to manage
 
     * API Key
 
-      a) Create an API key (choose the expiration date wisely), then copy it.
+      a - Create an API key (choose the expiration date wisely), then copy it.
 
-      b) Configure Infinitic Pulsar as follows:
+      b - Configure Infinitic Pulsar as follows:
 
       ```yaml
       pulsar:
