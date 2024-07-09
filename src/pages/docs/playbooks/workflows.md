@@ -35,7 +35,7 @@ interface RecurringWorkflow {
 
 {% /codes %}
 
-The `@Name` annotation is used by Infinitic for workflow identification.
+The [`@Name`](/docs/workflows/syntax#name-annotation) annotation is used by Infinitic for Workflow and Service identification.
 
 
 We'll start by defining a `RecurringWorkflowScheduler` interface with a `schedule` method. This method takes two parameters:
@@ -212,6 +212,8 @@ val scheduler = client.getWorkflowByTag(RecurringWorkflowScheduler::class.java, 
 client.cancel(scheduler)
 ```
 
+{% /codes %}
+
 A typical output (from the worker console) should be something like:
 
 ```
@@ -223,8 +225,6 @@ A typical output (from the worker console) should be something like:
 17:19:00 - Instance: 01909813-9aa0-79cc-9841-409b15f21f6c
 17:20:00 - Instance: 01909814-8500-79c9-b651-ed1596dee3e1
 ```
-
-{% /codes %}
 
 ## Managing Asynchronous Tasks 
 
@@ -261,6 +261,8 @@ interface RemoteService {
 ```
 
 {% /codes %}
+
+The [`@Name`](/docs/workflows/syntax#name-annotation) annotation is used by Infinitic for Workflow and Service identification.
 
 For this example, our dummy implementation will be:
 {% codes %}
@@ -442,8 +444,8 @@ Let's examine its key parts:
 - The `run` method is the main entry point of the workflow. It demonstrates how to dispatch multiple asynchronous tasks and wait for their completion:
   
   - The `remoteServiceRun` method is dispatched asynchronously three times with different parameters.
-  - Each call returns a Deferred<Void> object, which represents a future result.
-  - The `and` function combines these deferreds, and `await()` is called to wait for all of them to complete.
+  - Each call returns a [Deferred<Void>](/docs/workflows/deferred) object, which represents a future result.
+  - The [`and`](/docs/workflows/deferred#combining-deferred) function combines these deferreds, and [`await()`](/docs/workflows/deferred#waiting-for-completion) is called to wait for all of them to complete.
   - After all remote methods are completed, it logs "all completed".
 
 - The `remoteServiceRun` method wraps the call to the actual remote service:
@@ -452,7 +454,7 @@ Let's examine its key parts:
   - Creates a new instance of `RemoteService` and calls its `run` method.
   - Logs the completion of the task.
 
-  At last, The `log` method is an utility method to log messages with a timestamp, workflow ID, and method ID. It used the Infinitic's [`inline()` function](/docs/workflows/inline) ensuring proper handling of operations with side-effect.
+  At last, The `log` method is an utility method to log messages with a timestamp, workflow ID, and method ID. It used the Infinitic's [`inline()`](/docs/workflows/inline) function ensuring proper handling of operations with side-effect.
 
 {% callout %}
 
@@ -532,7 +534,7 @@ private val helloWorldWorkflow = newWorkflow(
 
 {% callout %}
 
-This metadata is not automatically forwarded to tasks (services) called by the workflow.
+This metadata is not automatically forwarded to tasks by default.
 
 {% /callout %}
 

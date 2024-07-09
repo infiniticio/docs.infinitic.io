@@ -504,8 +504,8 @@ The `io.infinitic.tasks.Task` class provides the following static properties:
 | Name            | Type            | Description                                                                          |
 | --------------- | --------------- | ------------------------------------------------------------------------------------ |
 | `taskId`        | String          | Unique identifier of the task                                                                      |
-| `serviceName`   | String          | Name of the Service (taken from the [@Name annotation](#name-annotation) if provided, otherwise defaulting to the service's interface name) |
-| `taskName`      | String          | Name of the task (taken from the [@Name annotation](#name-annotation) if provided, otherwise defaulting to the service's method name) |
+| `serviceName`   | String          | Name of the Service (taken from the [@Name](#name-annotation) annotation if provided, otherwise defaulting to the service's interface name) |
+| `taskName`      | String          | Name of the task (taken from the [@Name](#name-annotation) annotation if provided, otherwise defaulting to the service's method name) |
 | `workflowId`    | String?         | Unique identifier of the workflow (if part of a workflow)                                           |
 | `workflowName`  | String?         | Name of the workflow (if part of a workflow)                                         |
 | [`tags`](#tags)                    | Set\<String\>   | Tags provided when dispatching the task                                              |
