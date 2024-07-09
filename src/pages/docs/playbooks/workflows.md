@@ -5,7 +5,7 @@ description: .
 
 This page describes how to implement common situations.
 
-## Recurring Workflows
+## Cron Schedulers
 
 In many applications, there's a need to execute workflows on a recurring basis, following a specific schedule.
 
@@ -174,7 +174,7 @@ The `schedule` method handles the scheduling logic:
 
 The recursive scheduling approach (step 4c above) is crucial for [efficient workflow history management](/docs/workflows/syntax#constraints): By dispatching a new method on the same workflow instance for each occurrence, the workflow history doesn't accumulate indefinitely, as Infinitic deletes the history for each completed method execution.
 
-{% /callout  %}
+{% /callout %}
 
 To start the scheduler:
 
@@ -212,39 +212,403 @@ val scheduler = client.getWorkflowByTag(RecurringWorkflowScheduler::class.java, 
 client.cancel(scheduler)
 ```
 
+A typical output (from the worker console) should be something like:
+
+```
+17:14:00 - Instance: 0190980f-06c0-7f98-8189-a5dcd989c862
+17:15:00 - Instance: 0190980f-f120-7d25-95f7-1201ee776fbf
+17:16:00 - Instance: 01909810-db80-7c8c-af00-225fcb7177cb
+17:17:00 - Instance: 01909811-c5e0-7cea-9e99-6085ab762239
+17:18:00 - Instance: 01909812-b040-76f7-9cf3-8e39775c78ef
+17:19:00 - Instance: 01909813-9aa0-79cc-9841-409b15f21f6c
+17:20:00 - Instance: 01909814-8500-79c9-b651-ed1596dee3e1
+```
+
 {% /codes %}
 
+## Managing Asynchronous Tasks 
 
+You may want to execute remote tasks asynchronously while still being able to handle their errors or perform actions after their completion.
 
-## Follow-up on asynchronous tasks 
+The simplest way to do this is to run the remote task within a child-workflow. It's even possible to do it within the same workflow. This is what we are going to illustrate here.
 
-## Forwarding workflow's matadata to services
+Let's consider a `RemoteService` with a `run` method that simulates a remote task:
 
-## Register programmatically Workflows
+{% codes %}
 
-## Register programmatically Services
+```java
+package io.infinitic.playbook.promises.workflows;
 
+import io.infinitic.annotations.Name;
+import java.util.concurrent.TimeUnit;
 
-
-## Connecting to a Pulsar cluster
-
-{% callout type="note"  %}
-
-If they do not exist already, tenant and namespace are automatically created by Infinitic workers at launch time.
-
-{% /callout  %}
-
-Infinitic clients and workers need to know how to connect to our Pulsar cluster.
-This is done through a `pulsar` entry within their configuration file.
-
-### Minimal configuration
-
-The minimal configuration - typically needed for development - contains:
-
-```yaml
-pulsar:
-  brokerServiceUrl: pulsar://localhost:6650
-  webServiceUrl: http://localhost:8080
-  tenant: infinitic
-  namespace: dev
+@Name(name = "RemoteService")
+public interface RemoteService {
+    void run(String id, long input);
+}
 ```
+
+```kotlin
+package io.infinitic.playbook.promises.services
+
+import io.infinitic.annotations.Name
+import java.util.concurrent.TimeUnit
+
+@Name("RemoteService")
+interface RemoteService {
+    fun run(id: String, input: Long)
+}
+```
+
+{% /codes %}
+
+For this example, our dummy implementation will be:
+{% codes %}
+
+```java
+package io.infinitic.playbook.promises.services;
+
+import io.infinitic.playbook.promises.Worker;
+import io.infinitic.tasks.Task;
+import java.time.LocalDateTime;
+
+public class RemoteServiceImpl implements RemoteService {
+    @Override
+    public void run(String id, long input)  {
+        log("start processing " + id);
+        try {
+            Thread.sleep(input*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        log("stop processing " + id);
+
+    }
+
+    private void log(String msg) {
+        System.out.println(
+                LocalDateTime.now().format(Worker.formatter) + " - Service  " + Task.getTaskId() + " - " + msg
+        );
+    }
+}
+```
+
+```kotlin
+package io.infinitic.playbook.promises.services
+
+import io.infinitic.playbook.promises.formatter
+import io.infinitic.tasks.Task
+import java.time.LocalDateTime
+
+class RemoteServiceImpl: RemoteService {
+    override fun run(id: String, input: Long) {
+        log("start processing $id")
+        Thread.sleep(input*1000)
+        log("stop processing $id")
+    }
+
+    private fun log(msg: String) =
+        println("${LocalDateTime.now().format(formatter)} - Service  ${Task.taskId} - $msg")
+}
+```
+
+{% /codes %}
+
+The `PromisesWorkflow` that use it has the following contract:
+
+{% codes %}
+
+```java
+package io.infinitic.playbook.promises.workflows;
+
+import io.infinitic.annotations.Name;
+import java.util.concurrent.TimeUnit;
+
+@Name(name = "PromisesWorkflow")
+public interface PromisesWorkflow {
+    void run();
+
+    void remoteServiceRun(String id, long input);
+}
+```
+
+```kotlin
+package io.infinitic.playbook.promises.workflows
+
+import io.infinitic.annotations.Name
+import java.util.concurrent.TimeUnit
+
+@Name("PromisesWorkflow")
+interface PromisesWorkflow {
+    fun run()
+
+    fun remoteServiceRun(id: String, input: Long)
+}
+```
+
+{% /codes %}
+
+It has a main `run` method, and we added a `remoteServiceRun` method with the same parameters than `RemoteService::run`. 
+
+Here is an implementation: 
+
+{% codes %}
+
+```java
+package io.infinitic.playbook.promises.workflows;
+
+import io.infinitic.playbook.promises.Worker;
+import io.infinitic.playbook.promises.services.RemoteService;
+import io.infinitic.workflows.Deferred;
+import io.infinitic.workflows.Workflow;
+
+import java.time.LocalDateTime;
+import static io.infinitic.workflows.DeferredKt.and;
+
+public class PromisesWorkflowImpl extends Workflow implements PromisesWorkflow {
+
+    private final PromisesWorkflow self = getWorkflowById(PromisesWorkflow.class, getWorkflowId());
+    private final RemoteService remoteService = newService(RemoteService.class);
+
+    @Override
+    public void run() {
+        Deferred<Void> deferred1 = dispatchVoid(self::remoteServiceRun, "1", 10L);
+        Deferred<Void> deferred2 = dispatchVoid(self::remoteServiceRun, "2", 10L);
+        Deferred<Void> deferred3 = dispatchVoid(self::remoteServiceRun, "3", 1L);
+
+        and(deferred1, deferred2, deferred3).await();
+        log("all completed");
+    }
+
+    @Override
+    public void remoteServiceRun(String id, long input) {
+        log(id + " starting");
+        remoteService.run(id, input);
+        log(id + " completed");
+    }
+
+    private void log(String msg) {
+        inlineVoid(() -> System.out.println(
+                LocalDateTime.now().format(Worker.formatter) +
+                        " - Workflow " + getWorkflowId() + " (method " + getMethodId() + ") - " + msg
+        ));
+    }
+}
+```
+
+```kotlin
+package io.infinitic.playbook.promises.workflows
+
+import io.infinitic.playbook.promises.formatter
+import io.infinitic.playbook.promises.services.RemoteService
+import io.infinitic.workflows.and
+import io.infinitic.workflows.Workflow
+import java.time.LocalDateTime
+
+class PromisesWorkflowImpl : Workflow(), PromisesWorkflow {
+
+    private val self = getWorkflowById(PromisesWorkflow::class.java, workflowId);
+    private val remoteService = newService(RemoteService::class.java)
+
+    override fun run() {
+        val deferred1 = dispatch(self::remoteServiceRun, "1", 10)
+        val deferred2 = dispatch(self::remoteServiceRun, "2", 10)
+        val deferred3 = dispatch(self::remoteServiceRun, "3", 1)
+
+        (deferred1 and deferred2 and deferred3).await()
+        log("all completed")
+    }
+
+    override fun remoteServiceRun(id: String, input: Long) {
+        log("$id starting")
+        remoteService.run(id, input)
+        log("$id completed")
+    }
+
+    private fun log(msg: String) = inline {
+        println("${LocalDateTime.now().format(formatter)} - Workflow $workflowId (method $methodId) - $msg")
+    }
+}
+```
+
+{% /codes %}
+
+The `PromisesWorkflowImpl` class implements the `PromisesWorkflow` interface and extends the `Workflow` class provided by Infinitic. 
+
+Let's examine its key parts:
+
+- The `self` property is a reference to the current workflow, allowing the workflow to dispatch methods to itself.
+
+- The `run` method is the main entry point of the workflow. It demonstrates how to dispatch multiple asynchronous tasks and wait for their completion:
+  
+  - The `remoteServiceRun` method is dispatched asynchronously three times with different parameters.
+  - Each call returns a Deferred<Void> object, which represents a future result.
+  - The `and` function combines these deferreds, and `await()` is called to wait for all of them to complete.
+  - After all remote methods are completed, it logs "all completed".
+
+- The `remoteServiceRun` method wraps the call to the actual remote service:
+
+  - It logs the start of the task.
+  - Creates a new instance of `RemoteService` and calls its `run` method.
+  - Logs the completion of the task.
+
+  At last, The `log` method is an utility method to log messages with a timestamp, workflow ID, and method ID. It used the Infinitic's [`inline()` function](/docs/workflows/inline) ensuring proper handling of operations with side-effect.
+
+{% callout %}
+
+Within the `remoteServiceRun, it's possible to manage errors or add follow-up tasks (like the inlined log tasks above).
+
+{% /callout %}
+
+To launch an instance :
+
+{% codes %}
+
+```java
+// create a stub for PromisesWorkflow
+PromisesWorkflow instance = client.newWorkflow(PromisesWorkflow.class);
+
+// start new workflow
+client.dispatchVoid(instance::run);
+```
+
+```kotlin
+// create a stub for PromisesWorkflow
+val workflow = client.newWorkflow(PromisesWorkflow::class.java)
+
+// start new workflow
+client.dispatch(workflow::run)
+```
+
+{% /codes %}
+
+A typical output (from the worker console):
+
+```
+03:43:55 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7aa1-9406-ae4d31fbeec1) - 1 starting
+03:43:55 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7789-876b-b53c6de8cbbd) - 2 starting
+03:43:55 - Service  019097bc-8d91-7ded-87c0-45ad7c1005cd - start processing 1
+03:43:55 - Service  019097bc-8d91-78b4-b79e-3cb2cab15a80 - start processing 2
+03:43:55 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7ed7-b1a6-920464d48e76) - 3 starting
+03:43:55 - Service  019097bc-8d91-71b0-9951-3e68ba38904e - start processing 3
+03:43:56 - Service  019097bc-8d91-71b0-9951-3e68ba38904e - stop processing 3
+03:43:56 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7ed7-b1a6-920464d48e76) - 3 completed
+03:44:05 - Service  019097bc-8d91-7ded-87c0-45ad7c1005cd - stop processing 1
+03:44:05 - Service  019097bc-8d91-78b4-b79e-3cb2cab15a80 - stop processing 2
+03:44:05 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7aa1-9406-ae4d31fbeec1) - 1 completed
+03:44:05 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7789-876b-b53c6de8cbbd) - 2 completed
+03:44:05 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8abc-739c-9e50-5f814ca3fe8a) - all completed
+```
+
+## Forwarding Workflow's Metadata To Services
+
+When dispatching a workflow, it's possible to associate some [metadata](/docs/workflows/syntax#meta).
+Example of setting metadata when creating a workflow:
+
+{% codes %}
+
+```java
+final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow.class,
+    null,
+    Map.of(
+        "foo", "bar".getBytes(),
+        "baz", "qux".getBytes()
+    )
+);
+```
+
+```kotlin
+private val helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow::class.java,
+    meta = mapOf(
+        "foo" to "bar".toByteArray(),
+        "baz" to "qux".toByteArray()
+    )
+)
+```
+
+{% /codes %}
+
+{% callout %}
+
+This metadata is not automatically forwarded to tasks (services) called by the workflow.
+
+{% /callout %}
+
+To forward the metadata, you need to explicitly pass it when creating a service stub within your workflow implementation:
+
+{% codes %}
+
+```java
+public class MyWorkflowImpl extends Workflow implements MyWorkflow {
+
+    private final MyService myService = newService(MyService.class, null, getMeta());
+    
+    ...
+}
+```
+
+```kotlin
+class MyWorkflowImpl : Workflow(), MyWorkflow {
+
+    private val myService = newService(MyService::class.java, meta = meta)
+
+    ...
+}
+```
+
+{% /codes %}
+
+## Forwarding Workflow's Tags To Services
+
+When dispatching a workflow, it's possible to associate some [tags](/docs/workflows/syntax#tags).
+Example of setting tags when creating a workflow:
+
+{% codes %}
+
+```java
+final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow.class,
+    Set.of("userId" + userId, "companyId" + companyId)
+);
+```
+
+```kotlin
+val helloWorldWorkflow = newWorkflow(
+    HelloWorldWorkflow::class.java, 
+    tags = setOf("userId:$userId", "companyId:$companyId")
+)
+```
+
+{% /codes %}
+
+{% callout %}
+
+Tags are not automatically forwarded to tasks by default.
+
+{% /callout %}
+
+To forward tags, you pass them explicitly when creating a service stub within your workflow implementation:
+
+{% codes %}
+
+```java
+public class MyWorkflowImpl extends Workflow implements MyWorkflow {
+
+    private final MyService myService = newService(MyService.class, getTags());
+    
+    ...
+}
+```
+
+```kotlin
+class MyWorkflowImpl : Workflow(), MyWorkflow {
+
+    private val myService = newService(MyService::class.java, tags = tags)
+
+    ...
+}
+```
+
+{% /codes %}

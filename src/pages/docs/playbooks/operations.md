@@ -106,3 +106,4 @@ StreamNative's offering differs from other providers in that it offers to manage
         authentication:
           token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
       ```
+

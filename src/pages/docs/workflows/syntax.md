@@ -762,7 +762,7 @@ Its value is defined when creating the stub before dispatching the workflow:
 ```java
 final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
     HelloWorldWorkflow.class,
-    tags = Set.of("userId" + userId, "companyId" + companyId)
+    Set.of("userId" + userId, "companyId" + companyId)
 );
 ```
 
@@ -786,10 +786,10 @@ Its value is defined when creating the stub before dispatching the workflow:
 ```java
 final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
     HelloWorldWorkflow.class,
-    tags = null,
-    meta = Map.of(
-            "foo", "bar".getBytes(),
-            "baz", "qux".getBytes()
+    null,
+    Map.of(
+        "foo", "bar".getBytes(),
+        "baz", "qux".getBytes()
     )
 );
 ```
