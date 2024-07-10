@@ -75,10 +75,10 @@ const navigation = [
     ],
   },
   {
-     title: 'Playbooks',
+     title: 'Playbook',
      links: [
-      { title: 'Workflows', href: '/docs/playbooks/workflows' },
-      { title: 'Operations', href: '/docs/playbooks/operations' },
+      { title: 'Workflows', href: '/docs/playbook/workflows' },
+      { title: 'Operations', href: '/docs/playbook/operations' },
     ],
    },
   {

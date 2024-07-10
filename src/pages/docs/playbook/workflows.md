@@ -3,9 +3,9 @@ title: Workflows Playbook
 description: .
 ---
 
-This page describes how to implement common situations.
+This page describes how to implement common situations. The code for this page is on [Github](https://github.com/infiniticio/playbook).
 
-## Cron Schedulers
+## Workflow Scheduler
 
 In many applications, there's a need to execute workflows on a recurring basis, following a specific schedule.
 
@@ -16,6 +16,8 @@ For this example, we will consider this contract for the recurring workflow:
 {% codes %}
 
 ```java
+package io.infinitic.playbook.java.scheduler.workflows;
+
 import io.infinitic.annotations.Name;
 
 @Name(name = "RecurringWorkflow")
@@ -25,6 +27,8 @@ public interface RecurringWorkflow {
 ```
 
 ```kotlin
+package io.infinitic.playbook.kotlin.scheduler.workflows
+
 import io.infinitic.annotations.Name
 
 @Name(name = "RecurringWorkflow")
@@ -46,6 +50,8 @@ We'll start by defining a `RecurringWorkflowScheduler` interface with a `schedul
 {% codes %}
 
 ```java
+package io.infinitic.playbook.java.scheduler.workflows;
+
 import io.infinitic.annotations.Name;
 
 @Name(name = "RecurringWorkflowScheduler")
@@ -55,6 +61,10 @@ public interface RecurringWorkflowScheduler {
 ```
 
 ```kotlin
+package io.infinitic.playbook.kotlin.scheduler.workflows
+
+import io.infinitic.annotations.Name
+
 @Name("RecurringWorkflowScheduler")
 interface RecurringWorkflowScheduler {
     fun schedule(cronExpr: String, input: RecurringWorkflowInput)
@@ -68,17 +78,21 @@ Here is an example of implementation of a fully functional recurring workflow sc
 {% codes %}
 
 ```java
+package io.infinitic.playbook.java.scheduler.workflows;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import io.infinitic.annotations.Ignore;
-import io.infinitic.workflows.*;
+import io.infinitic.workflows.Workflow;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public class RecurringWorkflowSchedulerImpl extends Workflow implements RecurringWorkflowScheduler {
 
     @Ignore
@@ -86,13 +100,19 @@ public class RecurringWorkflowSchedulerImpl extends Workflow implements Recurrin
 
     @Override
     public void schedule(String cronExpr, RecurringWorkflowInput input) {
+        // parse cron expression
         Cron myCron = parser.parse(cronExpr);
+        // get current time, must be inlined
         ZonedDateTime now = inline(() -> ZonedDateTime.now(Clock.systemUTC()));
+        // get next execution date
         Optional<ZonedDateTime> nextExecution = ExecutionTime.forCron(myCron).nextExecution(now);
 
         if (nextExecution.isPresent()) {
+            // wait up to the next occurrence
             timer(nextExecution.get().toInstant()).await();
+            // dispatch the recurring workflow
             dispatchRecurring(input);
+            // restart to wait for the next occurrence
             selfDispatch(cronExpr, input);
         }
     }
@@ -103,6 +123,7 @@ public class RecurringWorkflowSchedulerImpl extends Workflow implements Recurrin
     }
 
     private void selfDispatch(String cronExpr, RecurringWorkflowInput input) {
+        // workflowId is part of the workflow's context
         RecurringWorkflowScheduler self = getWorkflowById(RecurringWorkflowScheduler.class, getWorkflowId());
         dispatchVoid(self::schedule, cronExpr, input);
     }
@@ -110,26 +131,37 @@ public class RecurringWorkflowSchedulerImpl extends Workflow implements Recurrin
 ```
 
 ```kotlin
+package io.infinitic.playbook.kotlin.scheduler.workflows
+
 import com.cronutils.model.CronType
 import com.cronutils.model.definition.CronDefinitionBuilder
 import com.cronutils.model.time.ExecutionTime
 import com.cronutils.parser.CronParser
 import io.infinitic.annotations.Ignore
 import io.infinitic.workflows.Workflow
-import java.time.*
+import java.time.Clock
+import java.time.ZonedDateTime
 
 class RecurringWorkflowSchedulerImpl : Workflow(), RecurringWorkflowScheduler {
     @Ignore
     private val parser = CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX))
 
     override fun schedule(cronExpr: String, input: RecurringWorkflowInput) {
+        // parse cron expression
         val myCron = parser.parse(cronExpr)
+
+        // get current time (inlined because the output is not predictable)
         val now = inline { ZonedDateTime.now(Clock.systemUTC()) }
+
+        // get next execution date
         val nextExecution = ExecutionTime.forCron(myCron).nextExecution(now)
 
         if (nextExecution.isPresent) {
+            // wait up to the next occurrence
             timer(nextExecution.get().toInstant()).await()
+            // dispatch recurringWorkflow
             dispatchRecurring(input)
+            // restart to wait for the next occurrence
             selfDispatch(cronExpr, input)
         }
     }
@@ -140,6 +172,7 @@ class RecurringWorkflowSchedulerImpl : Workflow(), RecurringWorkflowScheduler {
     }
 
     private fun selfDispatch(cronExpr: String, input: RecurringWorkflowInput) {
+        // workflowId is part of the workflow's context
         val self = getWorkflowById(RecurringWorkflowScheduler::class.java, workflowId)
         dispatch(self::schedule, cronExpr, input)
     }
@@ -181,19 +214,13 @@ To start the scheduler:
 {% codes %}
 
 ```java
-// create a stub for RecurringWorkflowScheduler, with tag "RecurringWorkflow"
-RecurringWorkflowScheduler scheduler = client.newWorkflow(RecurringWorkflowScheduler.class, Set.of("RecurringWorkflow"));
-
-// start a scheduler that dispatchs a `RecurringWorkflow` every minute
-client.dispatchVoid(scheduler::schedule, "* * * * *", input);
+RecurringWorkflowScheduler workflow = client.newWorkflow(RecurringWorkflowScheduler.class, Set.of("scheduler"));
+client.dispatchVoid(workflow::schedule, "* * * * *", new RecurringWorkflowInput());
 ```
 
 ```kotlin
-// create a stub for RecurringWorkflowScheduler, with tag "RecurringWorkflow"
-val scheduler = client.newWorkflow(RecurringWorkflowScheduler::class.java, setOf("RecurringWorkflow"))
-
-// start a scheduler that dispatchs a `RecurringWorkflow` every minute
-client.dispatch(scheduler::schedule, "* * * * *", input)
+val scheduler = client.newWorkflow(RecurringWorkflowScheduler::class.java, setOf("scheduler"))
+client.dispatch(scheduler::schedule, "* * * * *", RecurringWorkflowInput())
 ```
 
 {% /codes %}
@@ -203,12 +230,12 @@ To stop the scheduler:
 {% codes %}
 
 ```java
-RecurringWorkflowScheduler scheduler = client.getWorkflowByTag(RecurringWorkflowScheduler.class,  "RecurringWorkflow");
+RecurringWorkflowScheduler scheduler = client.getWorkflowByTag(RecurringWorkflowScheduler.class, "scheduler");
 client.cancel(scheduler);
 ```
 
 ```kotlin
-val scheduler = client.getWorkflowByTag(RecurringWorkflowScheduler::class.java, "RecurringWorkflow")
+val scheduler = client.getWorkflowByTag(RecurringWorkflowScheduler::class.java, "scheduler")
 client.cancel(scheduler)
 ```
 
@@ -226,7 +253,7 @@ A typical output (from the worker console) should be something like:
 17:20:00 - Instance: 01909814-8500-79c9-b651-ed1596dee3e1
 ```
 
-## Managing Asynchronous Tasks 
+## Asynchronous Methods
 
 You may want to execute remote tasks asynchronously while still being able to handle their errors or perform actions after their completion.
 
@@ -237,24 +264,22 @@ Let's consider a `RemoteService` with a `run` method that simulates a remote tas
 {% codes %}
 
 ```java
-package io.infinitic.playbook.promises.workflows;
+package io.infinitic.playbook.java.asyncMethod.services;
 
 import io.infinitic.annotations.Name;
-import java.util.concurrent.TimeUnit;
 
-@Name(name = "RemoteService")
+@Name(name = "AsyncMethodRemoteService")
 public interface RemoteService {
     void run(String id, long input);
 }
 ```
 
 ```kotlin
-package io.infinitic.playbook.promises.services
+package io.infinitic.playbook.kotlin.asyncMethod.services
 
 import io.infinitic.annotations.Name
-import java.util.concurrent.TimeUnit
 
-@Name("RemoteService")
+@Name("AsyncMethodRemoteService")
 interface RemoteService {
     fun run(id: String, input: Long)
 }
@@ -268,9 +293,9 @@ For this example, our dummy implementation will be:
 {% codes %}
 
 ```java
-package io.infinitic.playbook.promises.services;
+package io.infinitic.playbook.java.asyncMethod.services;
 
-import io.infinitic.playbook.promises.Worker;
+import io.infinitic.playbook.java.Worker;
 import io.infinitic.tasks.Task;
 import java.time.LocalDateTime;
 
@@ -296,9 +321,9 @@ public class RemoteServiceImpl implements RemoteService {
 ```
 
 ```kotlin
-package io.infinitic.playbook.promises.services
+package io.infinitic.playbook.kotlin.asyncMethod.services
 
-import io.infinitic.playbook.promises.formatter
+import io.infinitic.playbook.kotlin.formatter
 import io.infinitic.tasks.Task
 import java.time.LocalDateTime
 
@@ -316,18 +341,17 @@ class RemoteServiceImpl: RemoteService {
 
 {% /codes %}
 
-The `PromisesWorkflow` that use it has the following contract:
+The `AsyncMethodWorkflow` that use it has the following contract:
 
 {% codes %}
 
 ```java
-package io.infinitic.playbook.promises.workflows;
+package io.infinitic.playbook.java.asyncMethod.workflows;
 
 import io.infinitic.annotations.Name;
-import java.util.concurrent.TimeUnit;
 
-@Name(name = "PromisesWorkflow")
-public interface PromisesWorkflow {
+@Name(name = "AsyncMethodWorkflow")
+public interface AsyncMethodWorkflow {
     void run();
 
     void remoteServiceRun(String id, long input);
@@ -335,13 +359,12 @@ public interface PromisesWorkflow {
 ```
 
 ```kotlin
-package io.infinitic.playbook.promises.workflows
+package io.infinitic.playbook.kotlin.asyncMethod.workflows
 
 import io.infinitic.annotations.Name
-import java.util.concurrent.TimeUnit
 
-@Name("PromisesWorkflow")
-interface PromisesWorkflow {
+@Name("AsyncMethodWorkflow")
+interface AsyncMethodWorkflow {
     fun run()
 
     fun remoteServiceRun(id: String, input: Long)
@@ -357,19 +380,19 @@ Here is an implementation:
 {% codes %}
 
 ```java
-package io.infinitic.playbook.promises.workflows;
+package io.infinitic.playbook.java.asyncMethod.workflows;
 
-import io.infinitic.playbook.promises.Worker;
-import io.infinitic.playbook.promises.services.RemoteService;
+import io.infinitic.playbook.java.Worker;
+import io.infinitic.playbook.java.asyncMethod.services.RemoteService;
 import io.infinitic.workflows.Deferred;
 import io.infinitic.workflows.Workflow;
 
 import java.time.LocalDateTime;
 import static io.infinitic.workflows.DeferredKt.and;
 
-public class PromisesWorkflowImpl extends Workflow implements PromisesWorkflow {
+public class AsyncMethodWorkflowImpl extends Workflow implements AsyncMethodWorkflow {
 
-    private final PromisesWorkflow self = getWorkflowById(PromisesWorkflow.class, getWorkflowId());
+    private final AsyncMethodWorkflow self = getWorkflowById(AsyncMethodWorkflow.class, getWorkflowId());
     private final RemoteService remoteService = newService(RemoteService.class);
 
     @Override
@@ -399,17 +422,17 @@ public class PromisesWorkflowImpl extends Workflow implements PromisesWorkflow {
 ```
 
 ```kotlin
-package io.infinitic.playbook.promises.workflows
+package io.infinitic.playbook.kotlin.asyncMethod.workflows
 
-import io.infinitic.playbook.promises.formatter
-import io.infinitic.playbook.promises.services.RemoteService
+import io.infinitic.playbook.kotlin.formatter
+import io.infinitic.playbook.kotlin.asyncMethod.services.RemoteService
 import io.infinitic.workflows.and
 import io.infinitic.workflows.Workflow
 import java.time.LocalDateTime
 
-class PromisesWorkflowImpl : Workflow(), PromisesWorkflow {
+class AsyncMethodWorkflowImpl : Workflow(), AsyncMethodWorkflow {
 
-    private val self = getWorkflowById(PromisesWorkflow::class.java, workflowId);
+    private val self = getWorkflowById(AsyncMethodWorkflow::class.java, workflowId);
     private val remoteService = newService(RemoteService::class.java)
 
     override fun run() {
@@ -435,7 +458,7 @@ class PromisesWorkflowImpl : Workflow(), PromisesWorkflow {
 
 {% /codes %}
 
-The `PromisesWorkflowImpl` class implements the `PromisesWorkflow` interface and extends the `Workflow` class provided by Infinitic. 
+The `AsyncMethodWorkflowImpl` class implements the `AsyncMethodWorkflow` interface and extends the `Workflow` class provided by Infinitic. 
 
 Let's examine its key parts:
 
@@ -467,18 +490,12 @@ To launch an instance :
 {% codes %}
 
 ```java
-// create a stub for PromisesWorkflow
-PromisesWorkflow instance = client.newWorkflow(PromisesWorkflow.class);
-
-// start new workflow
+AsyncMethodWorkflow instance = client.newWorkflow(AsyncMethodWorkflow.class, Set.of("asyncMethod"));
 client.dispatchVoid(instance::run);
 ```
 
 ```kotlin
-// create a stub for PromisesWorkflow
-val workflow = client.newWorkflow(PromisesWorkflow::class.java)
-
-// start new workflow
+val workflow = client.newWorkflow(AsyncMethodWorkflow::class.java, setOf("asyncMethod"))
 client.dispatch(workflow::run)
 ```
 
