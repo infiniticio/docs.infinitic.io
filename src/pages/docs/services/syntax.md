@@ -538,15 +538,15 @@ Its value is defined when dreating the Service stub before dispatching the task:
 {% codes %}
 
 ```java
-final HelloWorldService helloWorldService = newService(
-    HelloWorldService.class,
+final HelloService helloService = newService(
+    HelloService.class,
     tags = Set.of("userId" + userId, "companyId" + companyId)
 );
 ```
 
 ```kotlin
-val helloWorldService = newService(
-    HelloWorldService::class.java, 
+val helloService = newService(
+    HelloService::class.java, 
     tags = setOf("userId:$userId", "companyId:$companyId")
 )
 ```
@@ -562,8 +562,8 @@ Its value is defined when creating the Service stub before dispatching the task:
 {% codes %}
 
 ```java
-final HelloWorldService helloWorldService = newService(
-    HelloWorldService.class,
+final HelloService helloService = newService(
+    HelloService.class,
     tags = null,
     meta = Map.of(
             "foo", "bar".getBytes(),
@@ -573,8 +573,8 @@ final HelloWorldService helloWorldService = newService(
 ```
 
 ```kotlin
-private val helloWorldService = newService(
-    HelloWorldService::class.java,
+private val helloService = newService(
+    HelloService::class.java,
     meta = mapOf(
         "foo" to "bar".toByteArray(),
         "baz" to "qux".toByteArray()

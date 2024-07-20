@@ -26,7 +26,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java[build.gradle]
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.14.1"
+    implementation "io.infinitic:infinitic-worker:0.15.0"
     ...
 }
 ```
@@ -34,7 +34,7 @@ dependencies {
 ```kotlin[build.gradle.kts]
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.14.1")
+    implementation("io.infinitic:infinitic-worker:0.15.0")
     ...
 }
 ```

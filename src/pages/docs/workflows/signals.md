@@ -13,16 +13,16 @@ Signals are sent through channels. Our client can send a signal to a running wor
 {% codes %}
 
 ```java
-// stub targeting a running HelloWorld workflow with a specific id
-HelloWorldWorkflow w = client.getWorkflowById(HelloWorldWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c");
+// stub targeting a running HelloWorkflow workflow with a specific id
+HelloWorkflow w = client.getWorkflowById(HelloWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c");
 
 // send a signal to this instance through a channnel
 w.getNotificationChannel().send("foobar");
 ```
 
 ```kotlin
-// stub targeting a running HelloWorld workflow with a specific id
-val w : HelloWorldWorkflow = client.getWorkflowById(HelloWorldWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
+// stub targeting a running HelloWorkflow workflow with a specific id
+val w : HelloWorkflow = client.getWorkflowById(HelloWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
 
 // send a signal to this instance through a channnel
 w.notificationChannel.send("foobar")
@@ -35,7 +35,7 @@ To allow this, channels need to be present in a workflow interface as below:
 {% codes %}
 
 ```java
-public interface HelloWorld {
+public interface HelloWorkflow {
     SendChannel<String> getNotificationChannel();
 
     ...
@@ -43,7 +43,7 @@ public interface HelloWorld {
 ```
 
 ```kotlin
-interface HelloWorld {
+interface HelloWorkflow {
     val notificationChannel: SendChannel<String>
 
     ...
@@ -57,7 +57,7 @@ Our workflow implements this interface using the provided `channel` workflow met
 {% codes %}
 
 ```java
-public class HelloWorldImpl extends Workflow implements HelloWorld {
+public class HelloWorkflowImpl extends Workflow implements HelloWorkflow {
     final Channel<String> notificationChannel = channel();
 
     @Override
@@ -70,7 +70,7 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
 ```
 
 ```kotlin
-class HelloWorldImpl : Workflow(), HelloWorld {
+class HelloWorkflowImpl : Workflow(), HelloWorkflow {
     val notificationChannel = channel<String>()
 
     ...

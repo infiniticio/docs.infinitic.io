@@ -3,6 +3,36 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.15.0
+
+{% version-new-features /%}
+
+* Add support for [JsonView](/docs/references/serializability#json-view-support)
+* Workers can now be created from a YAML String, through the `fromConfigYaml` static method
+* Configuration objects `MySQL`, `Redis`, `Postgres`, `Caffeine` can now be manually created through builders.
+* `serviceDefault`, `workflowDefault`, `defaultStorage` can now be manually registered in Workers
+
+{% version-breaking-changes /%}
+
+* Worker configuration file:
+  * Under `workflows` and `workflowDefault` configuration: `workflowEngine` property is now `stateEngine`
+  * The `cache` configuration must be now under the `storage` configuration
+
+* Worker  manual registration of Service and Workflow:
+  * `registerService` method is now `registerServiceExecutor` for consistency
+  * `registerWorkflowExecutor` now uses a factory as parameter instead of a class name
+
+{% version-bug-fixes /%}
+
+* Fix [#242](https://github.com/infiniticio/infinitic/issues/242) serviceDefault is not used for manually registered services
+* Fix [#248](https://github.com/infiniticio/infinitic/issues/248) @Ignore annotation can not be used in Java
+
+{% version-improvements /%}
+
+* Add compression info to logging at worker start
+* Add log message for existing workflow with same customId tag
+
+
 ## v0.14.1
 
 {% version-new-features /%}

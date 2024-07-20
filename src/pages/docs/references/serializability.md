@@ -10,7 +10,7 @@ _Why must task and workflow parameters and return values be serializable?_
 
 Primitives (number, string, etc...) being natively serializable, this requirement must be checked only for objects contained in task parameters or return values.
 
-## Using Java
+## When Using Java
 
 For Java, Infinitic uses [FasterXML/jackson](https://github.com/FasterXML/jackson-docs) to serialize/deserialize into/from JSON.
 
@@ -120,7 +120,7 @@ In Workflow workers where the actual implementation runs:
 import io.infinitic.annotations.Name;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import hello.world.services.HelloWorldService;
+import hello.world.services.HelloService;
 import io.infinitic.workflows.Workflow;
 
 public class UserWorkflowImpl extends Workflow implements UserWorkflow {
@@ -144,7 +144,7 @@ Often, you won't need `@JsonView` annotations in the Workflow implementation, as
 
 {% /callout  %}
 
-## Using Kotlin
+## When Using Kotlin
 
 For Kotlin, we recommend using [kotlinx-serialization-json](https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/serialization-guide.md) in our models.
 

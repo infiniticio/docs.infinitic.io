@@ -10,7 +10,7 @@ This guide will walk you through building a "Hello World" workflow from scratch,
 * Deploying workers
 * Starting a workflow
 
-Our `HelloWorld` workflow will take a `name` string as input and return `"Hello $name!"`, utilizing two tasks run on distributed workers:
+Our `HelloWorkflow` workflow will take a `name` string as input and return `"Hello $name!"`, utilizing two tasks run on distributed workers:
 
 * A `sayHello` task that inputs a `name` string and outputs `"Hello $name"`
 * An `addEnthusiasm` task that inputs a `str` string and outputs `"$str!"`
@@ -27,9 +27,9 @@ You can either run Redis and Pulsar on their own, or with [Docker](https://www.d
 
 ```yaml
 services:
-  # Pulsar settings
+  # Pulsar
   pulsar-standalone:
-    image: apachepulsar/pulsar:2.11.2
+    image: apachepulsar/pulsar:3.0.4
     environment:
       - BOOKIE_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
     command: >
@@ -147,7 +147,7 @@ In our [Gradle build file](https://docs.gradle.org/current/userguide/build_file_
 
 * The Maven repository
 * The required dependencies
-* A directive to compile using Java 1.8"
+* A directive to compile using Java 17"
 
 {% codes %}
 
@@ -167,20 +167,20 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation "io.infinitic:infinitic-client:0.14.1"
+    implementation "io.infinitic:infinitic-client:0.15.0"
     // infinitic worker
-    implementation "io.infinitic:infinitic-worker:0.14.1"
+    implementation "io.infinitic:infinitic-worker:0.15.0"
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 ```
 
 ```kotlin
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.10"
+    id("org.jetbrains.kotlin.jvm") version "2.0.0"
 
     application
 }
@@ -191,13 +191,13 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation("io.infinitic:infinitic-client:0.14.1")
+    implementation("io.infinitic:infinitic-client:0.15.0")
     // infinitic worker
-    implementation("io.infinitic:infinitic-worker:0.14.1")
+    implementation("io.infinitic:infinitic-worker:0.15.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.services.KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
 }
 
 
@@ -223,14 +223,18 @@ Next, create a `services` directory:
 mkdir -p app/src/main/java/hello/world/services
 ```
 
-Within this directory, define the service in its own file:
+Within this directory, define the `HelloServiceservice in its own file:
 
 {% codes %}
 
 ```java
 package hello.world.services;
 
-public interface HelloWorldService {
+import io.infinitic.annotations.Name;
+
+@Name(name = "HelloService")
+public interface HelloService {
+
     String sayHello(String name);
 
     String addEnthusiasm(String str);
@@ -240,7 +244,10 @@ public interface HelloWorldService {
 ```kotlin
 package hello.world.services
 
-interface HelloWorldService {
+import io.infinitic.annotations.Name
+
+@Name("HelloService")
+interface HelloService {
     fun sayHello(name: String): String
 
     fun addEnthusiasm(str: String): String
@@ -249,14 +256,14 @@ interface HelloWorldService {
 
 {% /codes %}
 
-Within the same services directory, next define the `HelloWorldServiceImpl`, which will contain our tasks:
+Within the same services directory, next define the `HelloServiceImpl` file, which will contain our tasks:
 
 {% codes %}
 
 ```java
 package hello.world.services;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+public class HelloServiceImpl implements HelloService {
     @Override
     public String sayHello(String name) {
         return "Hello " + ((name == null) ? "World" : name);
@@ -272,7 +279,7 @@ public class HelloWorldServiceImpl implements HelloWorldService {
 ```kotlin
 package hello.world.services
 
-class HelloWorldServiceImpl : HelloWorldService {
+class HelloServiceImpl : HelloService {
     override fun sayHello(name: String) = "Hello $name"
 
     override fun addEnthusiasm(str: String) = "$str!"
@@ -289,14 +296,17 @@ Set up a `workflows` directory:
 mkdir -p app/src/main/java/hello/world/workflows
 ```
 
-Within it, add the `HelloWorldWorkflow` interface:
+Within it, add the `HelloWorkflow` interface:
 
 {% codes %}
 
 ```java
 package hello.world.workflows;
 
-public interface HelloWorldWorkflow {
+import io.infinitic.annotations.Name;
+
+@Name(name = "HelloWorkflow")
+public interface HelloWorkflow {
     String greet(String name);
 }
 ```
@@ -304,14 +314,17 @@ public interface HelloWorldWorkflow {
 ```kotlin
 package hello.world.workflows
 
-interface HelloWorldWorkflow {
+import io.infinitic.annotations.Name
+
+@Name("HelloWorkflow")
+interface HelloWorkflow {
     fun greet(name: String): String
 }
 ```
 
 {% /codes %}
 
-And its `HelloWorldWorkflowImpl` implementation:
+And its `HelloWorkflowImpl` implementation:
 
 {% callout type="warning"  %}
 
@@ -324,20 +337,20 @@ This implementation must extend `io.infinitic.workflows.Workflow`
 ```java
 package hello.world.workflows;
 
-import hello.world.services.HelloWorldService;
+import hello.world.services.HelloService;
 import io.infinitic.workflows.Workflow;
 
-public class HelloWorldWorkflowImpl extends Workflow implements HelloWorld {
-    // create a stub for the HelloWorldService
-    private final HelloWorldService helloWorldService = newService(HelloWorldService.class);
+public class HelloWorkflowImpl extends Workflow implements HelloWorkflow {
+    // create a stub for the HelloService
+    private final HelloService helloService = newService(HelloService.class);
 
     @Override
     public String greet(String name) {
-        // synchronous call of HelloWorldService::sayHello
-        String str = helloWorldService.sayHello(name);
+        // synchronous call of HelloService::sayHello
+        String str = helloService.sayHello(name);
 
-        // synchronous call of HelloWorldService::addEnthusiasm
-        String greeting =  helloWorldService.addEnthusiasm(str);
+        // synchronous call of HelloService::addEnthusiasm
+        String greeting =  helloService.addEnthusiasm(str);
 
         // inline task to display the result
         inlineVoid(() -> System.out.println(greeting));
@@ -350,19 +363,19 @@ public class HelloWorldWorkflowImpl extends Workflow implements HelloWorld {
 ```kotlin
 package hello.world.workflows
 
-import hello.world.services.HelloWorldService
+import hello.world.services.HelloService
 import io.infinitic.workflows.Workflow
 
-class HelloWorldWorkflowImpl: Workflow(), HelloWorld {
-    // create a stub for the HelloWorldService
-    private val helloWorldService = newService(HelloWorldService::class.java)
+class HelloWorkflowImpl: Workflow(), HelloWorkflow {
+    // create a stub for the HelloService
+    private val helloService = newService(HelloService::class.java)
 
     override fun greet(name: String): String {
-        // synchronous call of HelloWorldService::sayHello
-        val str = helloWorldService.sayHello(name)
+        // synchronous call of HelloService::sayHello
+        val str = helloService.sayHello(name)
 
-        // synchronous call of HelloWorldService::addEnthusiasm
-        val greeting =  helloWorldService.addEnthusiasm(str)
+        // synchronous call of HelloService::addEnthusiasm
+        val greeting =  helloService.addEnthusiasm(str)
 
         // inline task to display the result
         inline { println(greeting) }
@@ -374,9 +387,9 @@ class HelloWorldWorkflowImpl: Workflow(), HelloWorld {
 
 {% /codes %}
 
-Note: the `newService` function creates a stub from the `HelloWorldService` interface.
+Note: the `newService` function creates a stub from the `HelloService` interface.
 
-Syntax-wise, this stub functions like an implementation of `HelloWorldService`. However, instead of executing a method directly, it sends a message to carry out the execution. This is why running a workflow without deploying any workers will result in no action being taken.
+Syntax-wise, this stub functions like an implementation of `HelloService`. However, instead of executing a method directly, it sends a message to carry out the execution. This is why running a workflow without deploying any workers will result in no action being taken.
 
 ## Pulsar configuration
 
@@ -409,12 +422,12 @@ pulsar:
   namespace: dev
 
 services:
-  - name: hello.world.services.HelloWorldService
-    class: hello.world.services.HelloWorldServiceImpl
+  - name: HelloService
+    class: hello.world.services.HelloServiceImpl
 
 workflows:
-  - name: hello.world.workflows.HelloWorld
-    class: hello.world.workflows.HelloWorldImpl
+  - name: HelloWorkflow
+    class: hello.world.workflows.HelloWorkflowImpl
 ```
 
 Replace the App file with:
@@ -487,7 +500,7 @@ Here, we already have the `infinitic.yml` file that we can reuse:
 ```java
 package hello.world;
 
-import hello.world.workflows.HelloWorldWorkflow;
+import hello.world.workflows.HelloWorkflow;
 import io.infinitic.client.Deferred;
 import io.infinitic.client.InfiniticClient;
 
@@ -496,14 +509,14 @@ public class Client {
         String name = args.length > 0 ? args[0] : "World";
 
         try(InfiniticClient client = InfiniticClient.fromConfigFile("infinitic.yml")) {
-            // create a stub from HelloWorldWorkflow interface
-            HelloWorldWorkflow helloWorld = client.newWorkflow(HelloWorldWorkflow.class);
+            // create a stub from HelloWorkflow interface
+            HelloWorkflow helloWorld = client.newWorkflow(HelloWorkflow.class);
 
             // asynchronous dispatch of a workflow
             Deferred<String> deferred = client.dispatch(w::greet, name);
 
             // let's see what happens
-            System.out.println("workflow " + HelloWorldWorkflow.class.getName() + " " + deferred.getId() + " dispatched!");
+            System.out.println("workflow " + HelloWorkflow.class.getName() + " " + deferred.getId() + " dispatched!");
         }
     }
 }
@@ -512,7 +525,7 @@ public class Client {
 ```kotlin
 package hello.world
 
-import hello.world.workflows.HelloWorldWorkflow
+import hello.world.workflows.HelloWorkflow
 import io.infinitic.client.Deferred
 import io.infinitic.client.InfiniticClient
 
@@ -520,14 +533,14 @@ fun main(args: Array<String>) {
     val name = args.firstOrNull() ?: "World"
 
     InfiniticClient.fromConfigFile("infinitic.yml").use { client ->
-        // create a stub from HelloWorld interface
-        val helloWorld = client.newWorkflow(HelloWorldWorkflow::class.java)
+        // create a stub from HelloWorkflow interface
+        val helloWorld = client.newWorkflow(HelloWorkflow::class.java)
 
         // dispatch workflow
         val deferred : Deferred<String> = client.dispatch(w::greet, name)
 
         // let's see what happens
-        println("workflow ${HelloWorldWorkflow::class} ${deferred.id} dispatched!")
+        println("workflow ${HelloWorkflow::class} ${deferred.id} dispatched!")
     }
 }
 

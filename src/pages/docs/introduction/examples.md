@@ -4,19 +4,23 @@ description: This page showcases a variety of scenarios, illustrating how Infini
 ---
 Infinitic's power and flexibility can be best understood through examples. Here, we provide several workflow examples to showcase its capabilities.
 
-## Bookings and Saga
+You'll find all sources in the Infinitic's [examples](https://github.com/infiniticio/examples) repository. We encourage you to explore the implementations and play with them.
+
+## Saga Workflow
 
 Consider a booking process that includes a car rental, a flight, and a hotel reservation. All these bookings must either succeed or fail together. If any booking fails, the others that succeeded should be canceled.
 
 ![Bookings and Saga](/img/booking-saga@2x.png)
-
-### The Services
 
 Each service involved in this process, like `HotelBookingService`, has methods to `book` and `cancel` a booking.
 
 {% codes %}
 
 ```java
+import io.infinitic.annotations.Name;
+
+@Name(name = "HotelBooking")
+
 public interface HotelBookingService {
     HotelBookingResult book(HotelBookingCart cart);
 
@@ -25,6 +29,10 @@ public interface HotelBookingService {
 ```
 
 ```kotlin
+import io.infinitic.annotations.Name
+
+@Name("HotelBooking")
+
 interface HotelBookingService {
     fun book(cart: HotelBookingCart): HotelBookingResult
 
@@ -265,9 +273,9 @@ A workflow should not have [too many tasks](/docs/workflows/syntax#constraints),
 
 Consider a loyalty program where users earn points for various actions:
 
-- 10 points weekly
-- 100 points for completing a form
-- 100 points for completing an order
+- 1 point every 10 seconds
+- 200 points for completing a form
+- 500 points for completing an order
 - Users can also burn points
 
 ![Loyalty program](/img/loyalty@2x.png)
@@ -275,46 +283,53 @@ Consider a loyalty program where users earn points for various actions:
 `LoyaltyWorkflowImpl` is all we need to manages this program:
 
 - Points are stored and updated within the workflow.
-- Different methods update points for different actions.
-- The workflow runs as long as the user is active.
+- an `addBonus` method is used to tell the instance that the user did some actions 
+- a `burn` method lets the user burn some points (if enough)
 
 {% codes %}
 
 ```java
 public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
-  
-    // create stub for UserService
-    private final UserService userService = newService(UserService.class);
-  
-    // we store the number of points there
-    private Int points = 0;
+    // workflow stub that targets itself
+    private final LoyaltyWorkflow self = getWorkflowById(LoyaltyWorkflow.class, getWorkflowId());
+
+    @Ignore
+    private final long secondsForPointReward = 10;
+
+    private long points = 0;
 
     @Override
-    public void start(User user) {
-        // while this user is subscribed
-        while (userService.isActive(user)) {
-            // wait one week
-            timer(Duration.of(1, ChronoUnit.WEEKS)).await();
-            // add points
-            points += 10;
+    public long getPoints() {
+        return points;
+    }
+
+    @Override
+    public void start() {
+        // every `secondsForPointReward` seconds, a new point is added
+        timer(Duration.ofSeconds(secondsForPointReward)).await();
+        points++;
+
+        // Loop
+        dispatchVoid(self::start);
+    }
+
+    @Override
+    public void addBonus(BonusEvent event) {
+        switch (event) {
+            case FORM_COMPLETED:
+                points+= 200;
+                break;
+
+            case ORDER_COMPLETED:
+                points+= 500;
+                break;
         }
     }
 
     @Override
-    public void formCompleted() {
-        points += 100;
-    }
-
-    @Override
-    public void orderCompleted() {
-        points += 500;
-    }
-
-    @Override
-    public PointStatus burn(Int amount) {
-        if (point - amount >= 0) {
+    public PointStatus burn(long amount) {
+        if (points - amount >= 0) {
             points -= amount;
-
             return PointStatus.OK;
         } else {
             return PointStatus.INSUFFICIENT;
@@ -325,35 +340,35 @@ public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
 
 ```kotlin
 class LoyaltyWorkflowImpl : Workflow(), LoyaltyWorkflow {
-  
-    // create stub for UserService
-    val userService = newService(UserService::class.java)
-  
-    // we store the number of points there
-    var points = 0
+    // workflow stub that targets itself
+    private val self = getWorkflowById(LoyaltyWorkflow::class.java, workflowId)
 
-    override fun start(user: User) {
-        // while this user is subscribed
-        while (userService.isActive(user)) {
-            // wait one week
-            timer(Duration.of(1, ChronoUnit.WEEKS)).await()
-            // add points
-            points += 10
+    @Ignore
+    private val secondsForPointReward: Long = 10
+
+    private var points: Long = 0
+
+    override fun getPoints() = points
+
+    override fun start() {
+        // every `secondsForPointReward` seconds, a new point is added
+        timer(Duration.ofSeconds(secondsForPointReward)).await()
+        points++
+
+        // Loop
+        dispatch(self::start)
+    }
+
+    override fun addBonus(event: BonusEvent) {
+        points += when (event) {
+            BonusEvent.FORM_COMPLETED -> 200
+            BonusEvent.ORDER_COMPLETED -> 500
         }
     }
 
-    override formCompleted() {
-        points += 100
-    }
-
-    override orderCompleted() {
-        points += 500
-    }
-
-    override burn(Int amount) = 
-        if (point - amount >= 0) {
+    override fun burn(amount: Long) =
+        if (points - amount >= 0) {
             points -= amount
-
             PointStatus.OK
         } else {
             PointStatus.INSUFFICIENT
@@ -375,7 +390,7 @@ An Infinitic client, or another workflow, can [invoke methods](/docs/clients/sta
 
 {% /callout  %}
 
-A workflow shouldn't have [too many tasks](/docs/workflows/syntax#constraints), which is why it's advisable to steer clear of loops. In this scenario, the number of iterations is controlled (for example, operating over 10 years results in just 560 iterations) with only 2 tasks in each iteration. This amount is acceptable and manageable.
+A workflow shouldn't have [too many tasks](/docs/workflows/syntax#constraints), which is why we restart the `start` method instead of looping within it.
 
 ## Location Booking
 
@@ -393,128 +408,142 @@ Imagine an Airbnb-like service where travelers request bookings from hosts.
 
 ```java
 public class LoyaltyWorkflowImpl extends Workflow implements LoyaltyWorkflow {
-  
-    // create stub for HostService
-    private final HostService hostService = newService(HostService.class);
+    @Ignore
+    private final long DAY_IN_SECONDS = 24L * 3600; 
 
-    // create stub for TravelerService
-    private final TravelerService travelerService = newService(TravelerService.class);
+    // create channel for BookingRequestStatus
+    private final Channel<BookingRequestStatus> responseChannel = channel();
+
+    // create stub for HostService
+    private final NotificationService notificationService = newService(NotificationService.class);
 
     // create stub for PaymentWorkflow
     private final PaymentWorkflow paymentWorkflow = newWorkflow(PaymentWorkflow.class);
 
-    // create channel for BookingStatus
-    final Channel<BookingStatus> responseChannel = channel();
-  
     @Override
-    public Channel<BookingStatus> getResponseChannel() {
+    public Channel<BookingRequestStatus> getResponseChannel() {
         return responseChannel;
     }
 
     @Override
-    public void start(Traveler traveler, Host host, LocationRequest request) {
-        Object response;
+    public void start(BookingRequest request) {
+        // start accepting one signal in the channel
+        Deferred<BookingRequestStatus> deferredResponse = responseChannel.receive(1);
 
-        for (int i = 0; i < 3; i++) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
             // notify host of traveler request
-            dispatch(hostService::notifyOfRequest, traveler, host, request);
+            dispatchVoid(notificationService::notifyHostOfRequest, request, attempt);
+
             // start a timer for a day
-            Deferred<Instant> timer = timer(Duration.of(1, ChronoUnit.DAYS));
-            // start receiving signal in the channel
-            Deferred<BookingStatus> signal = responseChannel.receive(1);
-            // wait for the timer or the signal
-            response = or(timer, signal).await();
-            //  exit loop if we received a signal
-            if (response instanceof BookingStatus) break;
+            Deferred<Instant> timer = timer(Duration.ofSeconds(DAY_IN_SECONDS));
+
+            // Checks the completion of one of them
+            or(timer, deferredResponse).await();
+
+            // exit loop if we received a response from the host
+            if (deferredResponse.isCompleted()) break;
         }
 
         // we did not receive host's response
-        if (!(response instanceof BookingStatus)) {
-            // notify host of traveler request
-            dispatch(hostService::notifyExpiration, traveler, host, request);
-            // notify host of traveler request
-            dispatch(travelerService::notifyExpiration, traveler, host, request);
+        if (!deferredResponse.isCompleted()) {
+            // notify host of request expiration
+            dispatchVoid(notificationService::notifyHostOfRequestExpiration, request);
+            // notify traveler of request expiration
+            dispatchVoid(notificationService::notifyTravelerOfRequestExpiration, request);
             // workflow stops here
             return;
         }
 
-        // host did not accept the request
-        if (response == BookingStatus.DENIED) {
-            // notify host of traveler request
-            dispatch(travelerService::notifyDenial, traveler, host, request);
-            // workflow stops here
-            return;
+        BookingRequestStatus response = deferredResponse.await();
+        switch (response) {
+            case ACCEPTED:
+                bookingAccepted(request);
+                break;
+            case DENIED:
+                bookingDenied(request);
+                break;
         }
+    }
 
+    private void bookingAccepted(BookingRequest request) {
         // trigger deposit workflow and wait for it
-        paymentWorkflow.getDeposit(traveler, host, request);
+        paymentWorkflow.getDeposit(request);
 
-        // notify host of the succesful booking
-        dispatch(hostService::notifyBooking, traveler, host, request);
+        // notify host of the successful payment
+        dispatchVoid(notificationService::notifyHostOfPaymentSuccess, request);
 
-        // notify traveler of the succesful booking
-        dispatch(travelerService::notifyBooking, traveler, host, request);
+        // notify traveler of the successful booking
+        dispatchVoid(notificationService::notifyTravelerOfBookingSuccess, request);
+    }
+
+    private void bookingDenied(BookingRequest request) {
+        // notify traveler of host denial
+        dispatchVoid(notificationService::notifyTravelerOfBookingDenial, request);
     }
 }
 ```
 
 ```kotlin
 public class LoyaltyWorkflowImpl: Workflow(), LoyaltyWorkflow {
-  
-    // create stub for HostService
-    val hostService = newService(HostService.class)
+    @Ignore
+    private val DAY_IN_SECONDS = 24L * 3600 
 
-    // create stub for TravelerService
-    val travelerService = newService(TravelerService.class)
+    // create stub for HostService
+    private val notificationService = newService(NotificationService::class.java)
 
     // create stub for PaymentWorkflow
-    val paymentWorkflow = newWorkflow(PaymentWorkflow.class)
+    private val paymentWorkflow: PaymentWorkflow = newWorkflow(PaymentWorkflow::class.java)
 
-    // create channel for BookingStatus
-    val responseChannel = channel<BookingStatus>()
+    // create channel for BookingRequestStatus
+    private val responseChannel = channel<BookingRequestStatus>()
 
-    override fun start(traveler: Traveler, host: Host, request: LocationRequest) {
-        var response: Any
+    override fun getResponseChannel() = responseChannel
 
-        for (int i = 0; i < 3; i++) {
+    override fun start(request: BookingRequest) {
+        // start accepting one signal in the channel
+        val deferredResponse = responseChannel.receive(1)
+
+        repeat(3) { attempt ->
             // notify host of traveler request
-            dispatch(hostService::notifyOfRequest, traveler, host, request)
+            dispatch(notificationService::notifyHostOfRequest, request, attempt + 1)
             // start a timer for a day
-            val timer = timer(Duration.of(1, ChronoUnit.DAYS))
-            // start receiving signal in the channel
-            val signal = responseChannel.receive(1)
+            val timer = timer(Duration.ofSeconds(DAY_IN_SECONDS))
             // wait for the timer or the signal
-            response = (timer or signal).await();
-            //  exit loop if we received a signal
-            if (response instanceof BookingStatus) break;
+            (timer or deferredResponse).await()
+            //  exit loop if we received a response from the host
+            if (deferredResponse.isCompleted()) return@repeat
         }
 
         // we did not receive host's response
-        if (response !instanceof BookingStatus) {
-            // notify host of traveler request
-            dispatch(hostService::notifyExpiration, traveler, host, request)
-            // notify host of traveler request
-            dispatch(travelerService::notifyExpiration, traveler, host, request)
+        if (!deferredResponse.isCompleted()) {
+            // notify host of request expiration
+            dispatch(notificationService::notifyHostOfRequestExpiration, request)
+            // notify traveler of request expiration
+            dispatch(notificationService::notifyTravelerOfRequestExpiration, request)
             // workflow stops here
             return
         }
 
-        // host did not accept the request
-        if (response  == BookingStatus.DENIED) {
-            // notify host of traveler request
-            dispatch(travelerService::notifyDenial, traveler, host, request)
-            // workflow stops here
-            return
+        when(deferredResponse.await()) {
+            BookingRequestStatus.ACCEPTED -> bookingAccepted(request)
+            BookingRequestStatus.DENIED -> bookingDenied(request)
         }
+    }
 
+    private fun bookingAccepted(request: BookingRequest) {
         // trigger deposit workflow and wait for it
-        paymentWorkflow.getDeposit(traveler, host, request)
+        paymentWorkflow.getDeposit(request)
 
-        // notify host of the succesful booking
-        dispatch(hostService::notifyBooking, traveler, host, request)
+        // notify host of the successful payment
+        dispatch(notificationService::notifyHostOfPaymentSuccess, request)
 
-        // notify traveler of the succesful booking
-        dispatch(travelerService::notifyBooking, traveler, host, request)
+        // notify traveler of the successful booking
+        dispatch(notificationService::notifyTravelerOfBookingSuccess, request)
+    }
+
+    private fun bookingDenied(request: BookingRequest) {
+        // notify traveler of host denial
+        dispatch(notificationService::notifyTravelerOfBookingDenial, request)
     }
 }
 ```
@@ -531,9 +560,3 @@ We have the ability to dispatch [external signals](/docs/workflows/signals) to a
 
 This example with the `PaymentWorkflow`` demonstrates that a workflow can launch another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow), either in a synchronous or asynchronous manner. This capability unlocks endless possibilities.
 
-## Repositories examples
-
-- *Hello World*: a simple workflow with 2 sequential task. ([java](https://github.com/infiniticio/infinitic-example-java-hello-world), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-hello-world))
-- *Booking Workflow*: a saga pattern implementation with three tasks. ([java](https://github.com/infiniticio/infinitic-example-java-booking), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-booking))
-- *Loyalty Workflow*: A loyalty program with points updated through methods. ([java](https://github.com/infiniticio/infinitic-example-java-loyalty), [kotlin](https://github.com/infiniticio/infinitic-example-kotlin-loyalty))
-- *Sync Workflow*: this workflow continuously receives events, with each event initiating a sequence of three tasks. These tasks must be completed before the workflow can proceed to handle the next event ([java](https://github.com/infiniticio/infinitic-example-java-loyalty-signals))

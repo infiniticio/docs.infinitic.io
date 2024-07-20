@@ -259,7 +259,7 @@ You may want to execute remote tasks asynchronously while still being able to ha
 
 The simplest way to do this is to run the remote task within a child-workflow. It's even possible to do it within the same workflow. This is what we are going to illustrate here.
 
-Let's consider a `RemoteService` with a `run` method that simulates a remote task:
+Let's consider a `RemoteService` with two `foo` and `bar` methods:
 
 {% codes %}
 
@@ -270,7 +270,9 @@ import io.infinitic.annotations.Name;
 
 @Name(name = "AsyncMethodRemoteService")
 public interface RemoteService {
-    void run(String id, long input);
+    String foo(long input);
+
+    String bar(long input);
 }
 ```
 
@@ -281,7 +283,9 @@ import io.infinitic.annotations.Name
 
 @Name("AsyncMethodRemoteService")
 interface RemoteService {
-    fun run(id: String, input: Long)
+    fun foo(input: Long): String
+
+    fun bar(input: Long): String
 }
 ```
 
@@ -301,15 +305,25 @@ import java.time.LocalDateTime;
 
 public class RemoteServiceImpl implements RemoteService {
     @Override
-    public void run(String id, long input)  {
-        log("start processing " + id);
+    public String foo(long input)  {
+        return dummy("foo", input);
+    }
+
+    @Override
+    public String bar(long input)  {
+        return dummy("bar", input);
+    }
+
+    private String dummy(String method, long input) {
+        log("start processing '" + method + "(" + input + ")'");
         try {
-            Thread.sleep(input*1000);
+            Thread.sleep(input);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log("stop processing " + id);
+        log("stop  processing '" + method + "(" + input + ")'");
 
+        return  "'" + method + "(" + input + ")' completed";
     }
 
     private void log(String msg) {
@@ -324,24 +338,37 @@ public class RemoteServiceImpl implements RemoteService {
 package io.infinitic.playbook.kotlin.asyncMethod.services
 
 import io.infinitic.playbook.kotlin.formatter
-import io.infinitic.tasks.Task
+import io.infinitic.tasks.Task.taskId
 import java.time.LocalDateTime
 
 class RemoteServiceImpl: RemoteService {
-    override fun run(id: String, input: Long) {
-        log("start processing $id")
-        Thread.sleep(input*1000)
-        log("stop processing $id")
+    override fun foo(input: Long): String {
+        return dummy("foo", input)
     }
 
-    private fun log(msg: String) =
-        println("${LocalDateTime.now().format(formatter)} - Service  ${Task.taskId} - $msg")
+    override fun bar(input: Long): String {
+        return dummy("bar", input)
+    }
+
+    private fun dummy(method: String, input: Long): String {
+        log("start processing '$method($input)'")
+        Thread.sleep(input)
+        log("stop  processing '$method($input)'")
+
+        return "'$method($input)' completed"
+    }
+
+    private fun log(msg: String) {
+        println(
+            LocalDateTime.now().format(formatter) + " - Service  " + taskId + " - " + msg
+        )
+    }
 }
 ```
 
 {% /codes %}
 
-The `AsyncMethodWorkflow` that use it has the following contract:
+The `AsyncMethodWorkflow` that use this service has the following contract:
 
 {% codes %}
 
@@ -352,9 +379,9 @@ import io.infinitic.annotations.Name;
 
 @Name(name = "AsyncMethodWorkflow")
 public interface AsyncMethodWorkflow {
-    void run();
+    String run();
 
-    void remoteServiceRun(String id, long input);
+    String remoteServiceFoo(long input);
 }
 ```
 
@@ -365,15 +392,15 @@ import io.infinitic.annotations.Name
 
 @Name("AsyncMethodWorkflow")
 interface AsyncMethodWorkflow {
-    fun run()
+    fun run(): String
 
-    fun remoteServiceRun(id: String, input: Long)
+    fun remoteServiceFoo(input: Long): String
 }
 ```
 
 {% /codes %}
 
-It has a main `run` method, and we added a `remoteServiceRun` method with the same parameters than `RemoteService::run`. 
+It has a main `run` method, and we added a `remoteServiceFoo` method with the same parameters than `RemoteService::foo`. 
 
 Here is an implementation: 
 
@@ -384,11 +411,9 @@ package io.infinitic.playbook.java.asyncMethod.workflows;
 
 import io.infinitic.playbook.java.Worker;
 import io.infinitic.playbook.java.asyncMethod.services.RemoteService;
-import io.infinitic.workflows.Deferred;
 import io.infinitic.workflows.Workflow;
 
 import java.time.LocalDateTime;
-import static io.infinitic.workflows.DeferredKt.and;
 
 public class AsyncMethodWorkflowImpl extends Workflow implements AsyncMethodWorkflow {
 
@@ -396,26 +421,31 @@ public class AsyncMethodWorkflowImpl extends Workflow implements AsyncMethodWork
     private final RemoteService remoteService = newService(RemoteService.class);
 
     @Override
-    public void run() {
-        Deferred<Void> deferred1 = dispatchVoid(self::remoteServiceRun, "1", 10L);
-        Deferred<Void> deferred2 = dispatchVoid(self::remoteServiceRun, "2", 10L);
-        Deferred<Void> deferred3 = dispatchVoid(self::remoteServiceRun, "3", 1L);
+    public String run() {
+        // Asynchronous dispatch self::remoteServiceFoo
+        dispatch(self::remoteServiceFoo, 1000L);
+        // Synchronous execution of remoteService::bar
+        long input = 100L;
+        log( "Dispatching 'bar(" + input +")'");
+        String out = remoteService.bar(input);
+        log("Receiving: " + out);
 
-        and(deferred1, deferred2, deferred3).await();
-        log("all completed");
+        return out;
     }
 
     @Override
-    public void remoteServiceRun(String id, long input) {
-        log(id + " starting");
-        remoteService.run(id, input);
-        log(id + " completed");
+    public String remoteServiceFoo(long input) {
+        log( "Dispatching 'foo(" + input +")'");
+        String out = remoteService.foo(input);
+        log("Receiving: " + out);
+
+        return out;
     }
 
     private void log(String msg) {
         inlineVoid(() -> System.out.println(
                 LocalDateTime.now().format(Worker.formatter) +
-                        " - Workflow " + getWorkflowId() + " (method " + getMethodId() + ") - " + msg
+                        " - Workflow " + getWorkflowId() + " - " + msg
         ));
     }
 }
@@ -424,9 +454,8 @@ public class AsyncMethodWorkflowImpl extends Workflow implements AsyncMethodWork
 ```kotlin
 package io.infinitic.playbook.kotlin.asyncMethod.workflows
 
-import io.infinitic.playbook.kotlin.formatter
 import io.infinitic.playbook.kotlin.asyncMethod.services.RemoteService
-import io.infinitic.workflows.and
+import io.infinitic.playbook.kotlin.formatter
 import io.infinitic.workflows.Workflow
 import java.time.LocalDateTime
 
@@ -435,23 +464,28 @@ class AsyncMethodWorkflowImpl : Workflow(), AsyncMethodWorkflow {
     private val self = getWorkflowById(AsyncMethodWorkflow::class.java, workflowId);
     private val remoteService = newService(RemoteService::class.java)
 
-    override fun run() {
-        val deferred1 = dispatch(self::remoteServiceRun, "1", 10)
-        val deferred2 = dispatch(self::remoteServiceRun, "2", 10)
-        val deferred3 = dispatch(self::remoteServiceRun, "3", 1)
+    override fun run(): String {
+        // Asynchronous dispatch self::remoteServiceFoo
+        dispatch(self::remoteServiceFoo, 1000L)
+        // Synchronous execution of remoteService::bar
+        val input = 100L
+        log("Dispatching 'bar($input)'")
+        val out = remoteService.bar(input)
+        log("Receiving: $out")
 
-        (deferred1 and deferred2 and deferred3).await()
-        log("all completed")
+        return out
     }
 
-    override fun remoteServiceRun(id: String, input: Long) {
-        log("$id starting")
-        remoteService.run(id, input)
-        log("$id completed")
+    override fun remoteServiceFoo(input: Long): String {
+        log("Dispatching 'foo($input)'")
+        val out = remoteService.foo(input)
+        log("Receiving: $out")
+
+        return out
     }
 
     private fun log(msg: String) = inline {
-        println("${LocalDateTime.now().format(formatter)} - Workflow $workflowId (method $methodId) - $msg")
+        println("${LocalDateTime.now().format(formatter)} - Workflow $workflowId - $msg")
     }
 }
 ```
@@ -463,27 +497,17 @@ The `AsyncMethodWorkflowImpl` class implements the `AsyncMethodWorkflow` interfa
 Let's examine its key parts:
 
 - The `self` property is a reference to the current workflow, allowing the workflow to dispatch methods to itself.
-
-- The `run` method is the main entry point of the workflow. It demonstrates how to dispatch multiple asynchronous tasks and wait for their completion:
-  
-  - The `remoteServiceRun` method is dispatched asynchronously three times with different parameters.
-  - Each call returns a [Deferred<Void>](/docs/workflows/deferred) object, which represents a future result.
-  - The [`and`](/docs/workflows/deferred#combining-deferred) function combines these deferreds, and [`await()`](/docs/workflows/deferred#waiting-for-completion) is called to wait for all of them to complete.
-  - After all remote methods are completed, it logs "all completed".
-
-- The `remoteServiceRun` method wraps the call to the actual remote service:
-
-  - It logs the start of the task.
-  - Creates a new instance of `RemoteService` and calls its `run` method.
-  - Logs the completion of the task.
+- The `remoteService` property is a stub of `RemoteService`. 
+- The `run` method is the main entry point of the workflow, it:
+  - dispatches the `remoteServiceFoo` method asynchronously.
+  - calls `RemoteService.bar` synchronously, with a log before and after
+  - returns the output of the `RemoteService.bar` call.
+- The `remoteServiceFoo` method, which is asynchronously called:
+  -  calls `RemoteService.bar` synchronously, with a log before and after
+  -  and returns its result (but  one is listening) as the call was asynchronous.
 
   At last, The `log` method is an utility method to log messages with a timestamp, workflow ID, and method ID. It used the Infinitic's [`inline()`](/docs/workflows/inline) function ensuring proper handling of operations with side-effect.
 
-{% callout %}
-
-Within the `remoteServiceRun, it's possible to manage errors or add follow-up tasks (like the inlined log tasks above).
-
-{% /callout %}
 
 To launch an instance :
 
@@ -504,20 +528,23 @@ client.dispatch(workflow::run)
 A typical output (from the worker console):
 
 ```
-03:43:55 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7aa1-9406-ae4d31fbeec1) - 1 starting
-03:43:55 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7789-876b-b53c6de8cbbd) - 2 starting
-03:43:55 - Service  019097bc-8d91-7ded-87c0-45ad7c1005cd - start processing 1
-03:43:55 - Service  019097bc-8d91-78b4-b79e-3cb2cab15a80 - start processing 2
-03:43:55 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7ed7-b1a6-920464d48e76) - 3 starting
-03:43:55 - Service  019097bc-8d91-71b0-9951-3e68ba38904e - start processing 3
-03:43:56 - Service  019097bc-8d91-71b0-9951-3e68ba38904e - stop processing 3
-03:43:56 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7ed7-b1a6-920464d48e76) - 3 completed
-03:44:05 - Service  019097bc-8d91-7ded-87c0-45ad7c1005cd - stop processing 1
-03:44:05 - Service  019097bc-8d91-78b4-b79e-3cb2cab15a80 - stop processing 2
-03:44:05 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7aa1-9406-ae4d31fbeec1) - 1 completed
-03:44:05 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8d91-7789-876b-b53c6de8cbbd) - 2 completed
-03:44:05 - Workflow 019097bc-8abc-739c-9e50-5f814ca3fe8a (method 019097bc-8abc-739c-9e50-5f814ca3fe8a) - all completed
+04:33:52:087 - Workflow 0190d090-38fc-7dbb-a09f-90c497e24b93 - Dispatching 'bar(100)'
+04:33:52:178 - Workflow 0190d090-38fc-7dbb-a09f-90c497e24b93 - Dispatching 'foo(1000)'
+04:33:52:178 - Service  0190d090-3baa-7c35-9084-50a06044b868 - start processing 'bar(100)'
+04:33:52:202 - Service  0190d090-3baa-7911-a4c3-af416a4ffc3c - start processing 'foo(1000)'
+04:33:52:281 - Service  0190d090-3baa-7c35-9084-50a06044b868 - stop  processing 'bar(100)'
+04:33:52:314 - Workflow 0190d090-38fc-7dbb-a09f-90c497e24b93 - Receiving: 'bar(100)' completed
+04:33:53:208 - Service  0190d090-3baa-7911-a4c3-af416a4ffc3c - stop  processing 'foo(1000)'
+04:33:53:243 - Workflow 0190d090-38fc-7dbb-a09f-90c497e24b93 - Receiving: 'foo(1000)' completed
 ```
+
+As you can see, the `run()` methods returns before the end of the `foo` task. 
+
+{% callout %}
+
+The `remoteServiceFoo` could be updated to handle any error of the `foo` method, or simply to continue the execution with more tasks. 
+
+{% /callout %}
 
 ## Forwarding Workflow's Metadata To Services
 
@@ -527,8 +554,8 @@ Example of setting metadata when creating a workflow:
 {% codes %}
 
 ```java
-final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow.class,
+final HelloWorkflow helloWorkflow = newWorkflow(
+    HelloWorkflow.class,
     null,
     Map.of(
         "foo", "bar".getBytes(),
@@ -538,8 +565,8 @@ final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
 ```
 
 ```kotlin
-private val helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow::class.java,
+private val helloWorkflow = newWorkflow(
+    HelloWorkflow::class.java,
     meta = mapOf(
         "foo" to "bar".toByteArray(),
         "baz" to "qux".toByteArray()
@@ -587,15 +614,15 @@ Example of setting tags when creating a workflow:
 {% codes %}
 
 ```java
-final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow.class,
+final HelloWorkflow helloWorkflow = newWorkflow(
+    HelloWorkflow.class,
     Set.of("userId" + userId, "companyId" + companyId)
 );
 ```
 
 ```kotlin
-val helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow::class.java, 
+val helloWorkflow = newWorkflow(
+    HelloWorkflow::class.java, 
     tags = setOf("userId:$userId", "companyId:$companyId")
 )
 ```

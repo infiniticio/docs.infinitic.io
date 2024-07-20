@@ -136,7 +136,7 @@ Here is a typical CloudEvent example:
     "workflowName" : "HelloWorkflow",
     "workflowVersion" : 0,
     "workerName" : "standalone-13907-104",
-    "infiniticVersion" : ":0.14.1"
+    "infiniticVersion" : ":0.15.0"
   }
 }
 ```

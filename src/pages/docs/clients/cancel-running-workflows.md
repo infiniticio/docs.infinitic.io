@@ -9,15 +9,15 @@ We can cancel running workflows by using a stub that target them by id:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = 
-    client.getWorkflowById(HelloWorldWorkflow.class, id);
+HelloWorkflow w = 
+    client.getWorkflowById(HelloWorkflow.class, id);
 
 client.cancel(w);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = 
-    client.getWorkflowById(HelloWorldWorkflow::class.java, id)
+val w : HelloWorkflow = 
+    client.getWorkflowById(HelloWorkflow::class.java, id)
 
 client.cancel(w)
 ```
@@ -29,15 +29,15 @@ or by tag:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = 
-    client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorkflow w = 
+    client.getWorkflowByTag(HelloWorkflow.class, "foo");
 
 client.cancel(w);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = 
-    client.getWorkflowByTag(HelloWorldWorkflow::class.java, "foo")
+val w : HelloWorkflow = 
+    client.getWorkflowByTag(HelloWorkflow::class.java, "foo")
 
 client.cancel(w)
 ```
