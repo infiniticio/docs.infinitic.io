@@ -5,6 +5,13 @@ description: This section lists the release notes for Infinitic, detailing new f
 
 ## v0.15.0
 
+{% callout type="warning"  %}
+
+Please ensure to terminate all running workers prior to upgrading to version 0.15.0. This is crucial because prior versions earlier than 0.15.0, are unable to deserialize messages produced by the new version 0.15.0.
+
+{% /callout  %}
+
+
 {% version-new-features /%}
 
 * Add support for [JsonView](/docs/references/serializability#json-view-support)
