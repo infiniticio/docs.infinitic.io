@@ -426,7 +426,7 @@ public class AsyncMethodWorkflowImpl extends Workflow implements AsyncMethodWork
         dispatch(self::remoteServiceFoo, 1000L);
         // Synchronous execution of remoteService::bar
         long input = 100L;
-        log( "Dispatching 'bar(" + input +")'");
+        log("Dispatching: 'bar(" + input +")'");
         String out = remoteService.bar(input);
         log("Receiving: " + out);
 
@@ -435,7 +435,7 @@ public class AsyncMethodWorkflowImpl extends Workflow implements AsyncMethodWork
 
     @Override
     public String remoteServiceFoo(long input) {
-        log( "Dispatching 'foo(" + input +")'");
+        log("Dispatching: 'foo(" + input +")'");
         String out = remoteService.foo(input);
         log("Receiving: " + out);
 
