@@ -103,8 +103,8 @@ Use try/catch of `DeferredException` in workflows to ensure that the workflow co
 ```java
 String str;
 try {
-    // synchronous call of HelloWorldService::sayHello
-    str = helloWorldService.sayHello(name);
+    // synchronous call of HelloService::sayHello
+    str = helloService.sayHello(name);
 } catch (DeferredException e) {
     // react
     ...
@@ -112,9 +112,9 @@ try {
 ```
 
 ```kotlin
-// synchronous call of HelloWorldService::sayHello
+// synchronous call of HelloService::sayHello
 val str = try {
-    helloWorldService.sayHello(name)
+    helloService.sayHello(name)
 } catch (e: DeferredException) {
     // react
     ...

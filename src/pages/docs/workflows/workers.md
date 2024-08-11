@@ -26,7 +26,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java[build.gradle]
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.14.1"
+    implementation "io.infinitic:infinitic-worker:0.15.0"
     ...
 }
 ```
@@ -34,7 +34,7 @@ dependencies {
 ```kotlin[build.gradle.kts]
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.14.1")
+    implementation("io.infinitic:infinitic-worker:0.15.0")
     ...
 }
 ```
@@ -267,7 +267,7 @@ The database will be automatically created if it does not already exist.
 By default, Infinitic will create two tables: `key_set_storage` and `key_value_storage`.
 You can customize the table names using the settings `keySetTable` and `keyValueTable`.
 
-#### State compression
+#### Storage compression
 
 By default, the states of workflows are stored as uncompressed Avro binaries.
 
@@ -288,34 +288,25 @@ It's possible to add, remove, or change the compression algorithm without causin
 
 {% /callout  %}
 
-### Cache
+#### Storage cache
 
-#### Caffeine cache
-
-Infinitic allows you to use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache for storage requests.
+By default, the database has no cache, but Infinitic allows you to use [Caffeine](https://github.com/ben-manes/caffeine) as an in-memory cache for storage requests.
 
 Here is an example of configuration:
 
 ```yaml
-cache:
-  caffeine:
-    maximumSize: 10000
-    expireAfterAccess: 3600
-    expireAfterWrite:
+storage:
+  ...
+  cache:
+    caffeine:
+      maximumSize: 10000
+      expireAfterAccess: 3600
+      expireAfterWrite:
 ```
 
-#### No cache
+## Programmatic registration
 
-By default, there is no cache. The equivalent configuration is:
-
-```yaml
-cache:
-  none:
-```
-
-## Workflow registration
-
-We can register a service directly with a worker. It can be useful if we need to inject some dependencies in our service:
+We can register a workflow directly with a worker. It can be useful if we need to inject some utility classes in our workflow:
 
 {% codes %}
 
@@ -325,20 +316,33 @@ import io.infinitic.workers.InfiniticWorker;
 public class App {
     public static void main(String[] args) {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
+            
+            // executor registration
             worker.registerWorkflowExecutor(
                 // workflow name
                 BookingWorkflow.class.getName(),                                    
-                // workflow implementation class
-                BookingWorkflowImpl.class,
+                // workflow factory
+                () -> new BookingWorkflowImpl(/* injections here*/),
                 // number of parallel processings (default: 1)
-                50,
-                // instance of WithTimeout (default: null)
-                withTimeout,
-                // instance of WithRetry (default: null)
-                withRetry,
-                // workflow check mode (default: simple)
-                WorkflowCheckMode.strict
+                50
             );
+
+            // state engine registration
+            worker.registerWorkflowStateEngine(
+                // workflow name
+                BookingWorkflow.class.getName(),                                    
+                // number of parallel processings (default: 1)
+                50
+            );
+
+            // tag engine registration
+             worker.registerTagEngine(
+                // workflow name
+                BookingWorkflow.class.getName(),                                    
+                // number of parallel processings (default: 1)
+                50
+            );
+
             worker.start();
         }
     }
@@ -350,20 +354,123 @@ import io.infinitic.workers.InfiniticWorker
 
 fun main(args: Array<String>) {
     InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
+
+        // executor registration
         worker.registerWorkflowExecutor(
             // workflow name
-            BookingWorkflow::class.java.name, 
-            // workflow implementation class
-            BookingWorkflowImpl::class.java
+            BookingWorkflow::class.java.name,                                    
+            // workflow factory
+            { BookingWorkflowImpl(/* injections here*/) } ,
             // number of parallel processings (default: 1)
-            50,
-            // instance of WithTimeout (default: null)
-            withTimeout,
-            // instance of WithRetry (default: null)
-            withRetry,
-            // workflow check mode (default: simple)
-            WorkflowCheckMode.strict
+            50
         )
+
+        // state engine registration
+        worker.registerWorkflowStateEngine(
+            // workflow name
+            BookingWorkflow::class.java.name,                                    
+            // number of parallel processings (default: 1)
+            50
+        )
+
+        // tag engine registration
+          worker.registerTagEngine(
+            // workflow name
+            BookingWorkflow::class.java.name,                                    
+            // number of parallel processings (default: 1)
+            50
+        )
+
+        worker.start()
+    }
+}
+```
+
+{% /codes %}
+
+If you have multiple [versions](/docs/workflows/versioning) of the same wortkflow:
+
+{% codes %}
+
+```java
+import io.infinitic.workers.InfiniticWorker;
+
+public class App {
+    public static void main(String[] args) {
+        try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
+            
+            // executor registration
+            worker.registerWorkflowExecutor(
+                // workflow name
+                BookingWorkflow.class.getName(),                                    
+                // List of workflow factories
+                List.of(
+                  () -> new BookingWorkflowImpl(/* injections here*/),
+                  () -> new BookingWorkflowImpl_1(/* injections here*/),
+                  () -> new BookingWorkflowImpl_2(/* injections here*/),
+                )
+                // number of parallel processings (default: 1)
+                50
+            );
+
+            // state engine registration
+            worker.registerWorkflowStateEngine(
+                // workflow name
+                BookingWorkflow.class.getName(),                                    
+                // number of parallel processings (default: 1)
+                50
+            );
+
+            // tag engine registration
+             worker.registerTagEngine(
+                // workflow name
+                BookingWorkflow.class.getName(),                                    
+                // number of parallel processings (default: 1)
+                50
+            );
+
+            worker.start();
+        }
+    }
+}
+```
+
+```kotlin
+import io.infinitic.workers.InfiniticWorker
+
+fun main(args: Array<String>) {
+    InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
+
+        // executor registration
+        worker.registerWorkflowExecutor(
+            // workflow name
+            BookingWorkflow::class.java.name,                                    
+            // List of workflow factories
+            listOf(
+              { BookingWorkflowImpl(/* injections here*/) } ,
+              { BookingWorkflowImpl_1(/* injections here*/) } ,
+              { BookingWorkflowImpl_2(/* injections here*/) } 
+            )
+            // number of parallel processings (default: 1)
+            50
+        )
+
+        // state engine registration
+        worker.registerWorkflowStateEngine(
+            // workflow name
+            BookingWorkflow::class.java.name,                                    
+            // number of parallel processings (default: 1)
+            50
+        )
+
+        // tag engine registration
+          worker.registerTagEngine(
+            // workflow name
+            BookingWorkflow::class.java.name,                                    
+            // number of parallel processings (default: 1)
+            50
+        )
+
         worker.start()
     }
 }

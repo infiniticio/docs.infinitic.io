@@ -46,7 +46,7 @@ The `timer` function immediately starts and returns a `Deferred<Instant>`. The w
 ```java
 Deferred<Instant> timer = timer(Duration.ofSeconds(60));
 
-helloWorldService.sayHello(name);
+helloService.sayHello(name);
 
 Instant now = timer.await();
 ```
@@ -54,7 +54,7 @@ Instant now = timer.await();
 ```kotlin
 val timer = timer(Duration.ofHours(48))
 
-helloWorldService.sayHello(name)
+helloService.sayHello(name)
 
 val now = timer.await()
 ```

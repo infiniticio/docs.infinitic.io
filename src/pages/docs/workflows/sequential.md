@@ -10,17 +10,17 @@ Within workflows, we should know only the interface of the class, used by the `n
 {% codes %}
 
 ```java
-public class HelloWorldImpl extends Workflow implements HelloWorld {
-    // create a stub for the HelloWorldService
-    private final HelloWorldService helloWorldService = newService(HelloWorldService.class);
+public class HelloWorkflowImpl extends Workflow implements HelloWorkflow {
+    // create a stub for the HelloService
+    private final HelloService helloService = newService(HelloService.class);
 
     @Override
     public String greet(String name) {
-        // synchronous call of HelloWorldService::sayHello
-        String str = helloWorldService.sayHello(name);
+        // synchronous call of HelloService::sayHello
+        String str = helloService.sayHello(name);
 
-        // synchronous call of HelloWorldService::addEnthusiasm
-        String greeting =  helloWorldService.addEnthusiasm(str);
+        // synchronous call of HelloService::addEnthusiasm
+        String greeting =  helloService.addEnthusiasm(str);
 
         // inline task to display the result
         inlineVoid(() -> System.out.println(greeting));
@@ -31,16 +31,16 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
 ```
 
 ```kotlin
-class HelloWorldImpl : Workflow(), HelloWorld {
-    // create a stub for the HelloWorldService
-    private val helloWorldService = newService(HelloWorldService::class.java)
+class HelloWorkflowImpl : Workflow(), HelloWorkflow {
+    // create a stub for the HelloService
+    private val helloService = newService(HelloService::class.java)
 
     override fun greet(name: String): String {
-        // synchronous call of HelloWorldService::sayHello
-        val str = helloWorldService.sayHello(name)
+        // synchronous call of HelloService::sayHello
+        val str = helloService.sayHello(name)
 
-        // synchronous call of HelloWorldService::addEnthusiasm
-        val greeting =  helloWorldService.addEnthusiasm(str)
+        // synchronous call of HelloService::addEnthusiasm
+        val greeting =  helloService.addEnthusiasm(str)
 
         // inline task to display the result
         inline { println(greeting) }
@@ -57,21 +57,21 @@ Functionally, the stub behave as follows:
 - when the return value of the task is not known yet, this stub dispatches a message to Pulsar towards the workers asking for the task execution
 - when the return value is known in the workflow history, the stub returns this value.
 
-For example, let's consider this line (from the `HelloWorldImpl` workflow above).
+For example, let's consider this line (from the `HelloWorkflowImpl` workflow above).
 
 {% codes %}
 
 ```java
-String str = helloWorldService.sayHello(name);
+String str = helloService.sayHello(name);
 ```
 
 ```kotlin
-val str = helloWorldService.sayHello(name)
+val str = helloService.sayHello(name)
 ```
 
 {% /codes %}
 
-Here `helloWorldService` is a stub of the `HelloWorldService` interface. When a workflow worker processes the workflow and reaches this line for the first time, it will dispatch a `HelloWorldService::sayHello` task and stop its execution here.
+Here `helloService` is a stub of the `HelloService` interface. When a workflow worker processes the workflow and reaches this line for the first time, it will dispatch a `HelloService::sayHello` task and stop its execution here.
 
 After completion of this task, a workflow worker will process the workflow again, but with an updated workflow history. When reaching this line, the stub will - this time - provide the deserialized return value of the task, and the workflow will continue its execution.
 
@@ -82,13 +82,13 @@ As we can guess now, the code below will guarantee that `sayHello` and `addEnthu
 {% codes %}
 
 ```java
-String str = helloWorldService.sayHello(name);
-String greeting =  helloWorldService.addEnthusiasm(str);
+String str = helloService.sayHello(name);
+String greeting =  helloService.addEnthusiasm(str);
 ```
 
 ```kotlin
-val str = helloWorldService.sayHello(name)
-val greeting =  helloWorldService.addEnthusiasm(str)
+val str = helloService.sayHello(name)
+val greeting =  helloService.addEnthusiasm(str)
 ```
 
 {% /codes %}

@@ -189,22 +189,22 @@ To run a method on a running workflow, we can target
 
 ```java
 // create a stub targeting by id a running workflow
-HelloWorldWorkflow w = client.getWorkflowById(HelloWorldWorkflow.class, id);
+HelloWorkflow w = client.getWorkflowById(HelloWorkflow.class, id);
 
 or
 
 // create a stub targeting by tag some running workflows
-HelloWorldWorkflow w = client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorkflow w = client.getWorkflowByTag(HelloWorkflow.class, "foo");
 ```
 
 ```kotlin
 // create a stub targeting by id running workflow
-val w : HelloWorldWorkflow = client.getWorkflowById(HelloWorldWorkflow::class.java, id)
+val w : HelloWorkflow = client.getWorkflowById(HelloWorkflow::class.java, id)
 
 or
 
 // create a stub targeting by tag some running workflows
-val w : HelloWorldWorkflow = client.getWorkflowByTag(HelloWorldWorkflow::class.java, tag = "foo")
+val w : HelloWorkflow = client.getWorkflowByTag(HelloWorkflow::class.java, tag = "foo")
 ```
 
 {% /codes %}
@@ -241,8 +241,8 @@ To dispatch another method on the same workflow, we can define a stub targeting 
 
 ```java
 // create a stub targeting the current workflow
-@Ignore private HelloWorldWorkflow self() {
-    return getWorkflowById(HelloWorldWorkflow.class, getWorkflowId());
+@Ignore private HelloWorkflow self() {
+    return getWorkflowById(HelloWorkflow.class, getWorkflowId());
 }
 
 ...
@@ -254,7 +254,7 @@ dispatch(self()::other, parameters);
 ```kotlin
 // create a stub targeting the current workflow
 @Ignore private val self by lazy {
-    getWorkflowById(HelloWorldWorkflow::class.java, workflowId)
+    getWorkflowById(HelloWorkflow::class.java, workflowId)
 }
 
 ...

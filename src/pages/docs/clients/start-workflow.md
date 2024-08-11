@@ -13,16 +13,16 @@ We can start a new workflow using this stub:
 {% codes %}
 
 ```java
-// Stub of a new HelloWorld workflow
-HelloWorldWorkflow w = client.newWorkflow(HelloWorldWorkflow.class);
+// Stub of a new HelloWorkflow workflow
+HelloWorkflow w = client.newWorkflow(HelloWorkflow.class);
 
 // synchronous dispatch of a new workflow
 Deferred<String> deferred = client.dispatch(w::greet, "Infinitic");
 ```
 
 ```kotlin
-// Stub of a new HelloWorld workflow
-val w : HelloWorldWorkflow = client.newWorkflow(HelloWorldWorkflow::class.java)
+// Stub of a new HelloWorkflow workflow
+val w : HelloWorkflow = client.newWorkflow(HelloWorkflow::class.java)
 
 // asynchronous dispatch of a new workflow
 val deferred : Deferred<String> = client.dispatch(w::greet, "Infinitic") }
@@ -96,16 +96,16 @@ We can dispatch a workflow and wait for its completion synchronously using the s
 {% codes %}
 
 ```java
-// Stub of a new HelloWorld workflow
-HelloWorldWorkflow w = client.newWorkflow(HelloWorldWorkflow.class);
+// Stub of a new HelloWorkflow workflow
+HelloWorkflow w = client.newWorkflow(HelloWorkflow.class);
 
 // synchronous dispatch of a new workflow
 String greeting = w.greet("Infinitic");
 ```
 
 ```kotlin
-// Stub of a new HelloWorld workflow
-val w : HelloWorldWorkflow = client.newWorkflow(HelloWorldWorkflow::class.java)
+// Stub of a new HelloWorkflow workflow
+val w : HelloWorkflow = client.newWorkflow(HelloWorkflow::class.java)
 
 // synchronous dispatch of a new workflow
 val greeting = w.greet("Infinitic")

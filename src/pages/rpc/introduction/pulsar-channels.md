@@ -45,7 +45,7 @@ public class HelloWorldClient {
 
   private final GreeterGrpc.GreeterBlockingStub blockingStub;
 
-  /** Construct client for accessing HelloWorld server using the existing channel. */
+  /** Construct client for accessing HelloWorkflow server using the existing channel. */
   public HelloWorldClient(Channel channel) {
     // 'channel' here is a Channel, not a ManagedChannel, so it is not this code's responsibility to
     // shut it down.

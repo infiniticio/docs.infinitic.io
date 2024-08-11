@@ -3,6 +3,48 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.15.0
+
+{% version-new-features /%}
+
+* Add support for [JsonView](/docs/references/serializability#json-view-support)
+* Workers can now be created from a YAML String, through the `fromConfigYaml` static method
+* All configuration objects (`PulsarConfig`, `MySQLConfig`, `RedisConfig`, `PostgresConfig`, `CaffeineConfig`...) can now be manually created through builders. 
+* `serviceDefault`, `workflowDefault`, `defaultStorage` can now be manually registered in Workers
+
+{% version-breaking-changes /%}
+
+* Serialization:
+  * Both serialization of arguments and deserialization are now conducted in accordance with the types defined in the interfaces. This contrasts with our prior implementation, which performed these operations based on the actual type of objects involved.
+  * The revamped approach broadens applicability, aptly resolving the concerns cited in issue #80. Nonetheless, when faced with situations involving polymorphism, the responsibility now lies with the user to furnish deserializers with adequate information. 
+
+* Worker: configuration file:
+  * The configuration parameters, `brokerServiceUrl` and `webServiceUrl`, must now be explicitly specified in PulsarConfig. Previously, the system would default to the settings of a local Pulsar cluster when these values were not provided. Despite its convenience in local development, this implicit default behavior could potentially lead to complications while deploying the project in a production environment.
+  * In the configurations for `workflows` and `workflowDefault`, we have revised the property name `workflowEngine` to `stateEngine`. We believe this new terminology more accurately reflects the function of this property.
+  * The configuration for `cache` now needs to be nested within the `storage` configuration. This update aligns logically with the intended usage, as the cache is exclusively utilized for storage-related functions.
+  * The execution policy for tasks has been revised: by default, **failed tasks will no longer be subject to automatic retries**. To implement retry functionality, users are required to explicitly configure a retry policy. We believe this change will help alleviate potential confusion for new users, who may be perplexed by tasks appearing to fail after 10 minutes due to the previously implicit retry mechanism.
+  * Renaming all config files by putting a `Config` suffix on them.
+
+* Worker: manual registration of Service and Workflow:
+  * `registerService` method is now `registerServiceExecutor` for consistency
+  * `registerWorkflowExecutor` now uses a factory as parameter instead of a class name
+
+* Workflows behavior: the use of `Deferred` objects in workflow properties or arguments is now prohibited. Should a Deferred object appear in these contexts, an explicit exception will be thrown. This measure was put into place due to some issues identified in certain edge cases of the previous implementation. More importantly, allowing the transmission of Deferred objects to other workflows seems wrong. 
+
+{% version-bug-fixes /%}
+
+* Fix [#254](https://github.com/infiniticio/infinitic/issues/254) An exception raised directly in the workflow does not appear in logs
+* Fix [#242](https://github.com/infiniticio/infinitic/issues/242) serviceDefault is not used for manually registered services
+* Fix [#248](https://github.com/infiniticio/infinitic/issues/248) @Ignore annotation can not be used in Java
+* Fix [#80](https://github.com/infiniticio/infinitic/issues/80) Can not return a list, map, set from tasks and workflows
+
+{% version-improvements /%}
+
+* Add compression info to logging at worker start
+* Add log message for existing workflow with same customId tag
+* Improve performance by adding a cache to  Method and Class introspection that occurs at each task and workflow processing
+* Add more test to ensure that backward compatibility
+
 ## v0.14.1
 
 {% version-new-features /%}

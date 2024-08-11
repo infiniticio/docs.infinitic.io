@@ -7,20 +7,20 @@ Here is an example of workflow implementation, from our [Hello World app](/docs/
 {% codes %}
 
 ```java
-import hello.world.services.HelloWorldService;
+import hello.world.services.HelloService;
 import io.infinitic.workflows.Workflow;
 
-public class HelloWorldImpl extends Workflow implements HelloWorld {
-    // create a stub from HelloWorldService interface
-    private final HelloWorldService helloWorldService = newService(HelloWorldService.class);
+public class HelloWorkflowImpl extends Workflow implements HelloWorkflow {
+    // create a stub from HelloService interface
+    private final HelloService helloService = newService(HelloService.class);
 
     @Override
     public String greet(String name) {
-        // dispatch HelloWorldService::sayHello task and wait for its completion
-        String str = helloWorldService.sayHello(name);
+        // dispatch HelloService::sayHello task and wait for its completion
+        String str = helloService.sayHello(name);
 
-        // dispatch HelloWorldService::addEnthusiasm task and wait for its completion
-        String greeting = helloWorldService.addEnthusiasm(str);
+        // dispatch HelloService::addEnthusiasm task and wait for its completion
+        String greeting = helloService.addEnthusiasm(str);
 
         // run an inline task (returning void)
         inlineVoid(() -> System.out.println(greeting));
@@ -32,19 +32,19 @@ public class HelloWorldImpl extends Workflow implements HelloWorld {
 ```
 
 ```kotlin
-import hello.world.services.HelloWorldService
+import hello.world.services.HelloService
 import io.infinitic.workflows.Workflow
 
-class HelloWorldImpl : Workflow(), HelloWorld {
-    // create a stub from HelloWorldService interface
-    private val helloWorldService = newService(HelloWorldService::class.java)
+class HelloWorkflowImpl : Workflow(), HelloWorkflow {
+    // create a stub from HelloService interface
+    private val helloService = newService(HelloService::class.java)
 
     override fun greet(name: String?): String {
-        // dispatch HelloWorldService::sayHello task and wait for its completion
-        val str = helloWorldService.sayHello(name)
+        // dispatch HelloService::sayHello task and wait for its completion
+        val str = helloService.sayHello(name)
 
-        // dispatch HelloWorldService::addEnthusiasm task and wait for its completion
-        val greeting = helloWorldService.addEnthusiasm(str)
+        // dispatch HelloService::addEnthusiasm task and wait for its completion
+        val greeting = helloService.addEnthusiasm(str)
 
         // run an inline task
         inline { println(greeting) }
@@ -530,11 +530,11 @@ To do so, we create the stub of a running workflow from its id:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = getWorkflowById(HelloWorldWorkflow.class, id);
+HelloWorkflow w = getWorkflowById(HelloWorkflow.class, id);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = getWorkflowById(HelloWorldWorkflow::class.java, id)
+val w : HelloWorkflow = getWorkflowById(HelloWorkflow::class.java, id)
 ```
 
 {% /codes %}
@@ -544,11 +544,11 @@ Alternatively, we can create a stub targeting all running workflow having a give
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorkflow w = getWorkflowByTag(HelloWorkflow.class, "foo");
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = getWorkflowByTag(HelloWorldWorkflow::class.java, tag = "foo")
+val w : HelloWorkflow = getWorkflowByTag(HelloWorkflow::class.java, tag = "foo")
 ```
 
 {% /codes %}
@@ -702,19 +702,19 @@ package hello.world.workflows;
 import io.infinitic.annotations.Name;
 
 @Name("HelloWorkflow")
-public interface HelloWorldWorkflow {
+public interface HelloWorkflow {
     @Name(name = "greeting")
     String greet(String name);
 }
 ```
 
-```kotlin[app/src/main/kotlin/hello/world/workflows/HelloWorldWorkflow.kt]
+```kotlin[app/src/main/kotlin/hello/world/workflows/HelloWorkflow.kt]
 package hello.world.workflows
 
 import io.infinitic.annotations.Name;
 
 @Name("HelloWorkflow")
-interface HelloWorldWorkflow {
+interface HelloWorkflow {
     @Name("greeting")
     fun greet(name: String): String
 }
@@ -727,7 +727,7 @@ When using this annotation, the Service `name` setting in [Workflow workers](/do
 ```yaml
 workflows:
   - name: HelloWorkflow
-    class: hello.world.workflows.HelloWorldWorkflowImpl
+    class: hello.world.workflows.HelloWorkflowImpl
 ```
 
 ## @Ignore Annotation
@@ -760,15 +760,15 @@ Its value is defined when creating the stub before dispatching the workflow:
 {% codes %}
 
 ```java
-final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow.class,
-    tags = Set.of("userId" + userId, "companyId" + companyId)
+final HelloWorkflow helloWorkflow = newWorkflow(
+    HelloWorkflow.class,
+    Set.of("userId" + userId, "companyId" + companyId)
 );
 ```
 
 ```kotlin
-val helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow::class.java, 
+val helloWorkflow = newWorkflow(
+    HelloWorkflow::class.java, 
     tags = setOf("userId:$userId", "companyId:$companyId")
 )
 ```
@@ -784,19 +784,19 @@ Its value is defined when creating the stub before dispatching the workflow:
 {% codes %}
 
 ```java
-final HelloWorldWorkflow helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow.class,
-    tags = null,
-    meta = Map.of(
-            "foo", "bar".getBytes(),
-            "baz", "qux".getBytes()
+final HelloWorkflow helloWorkflow = newWorkflow(
+    HelloWorkflow.class,
+    null,
+    Map.of(
+        "foo", "bar".getBytes(),
+        "baz", "qux".getBytes()
     )
 );
 ```
 
 ```kotlin
-private val helloWorldWorkflow = newWorkflow(
-    HelloWorldWorkflow::class.java,
+private val helloWorkflow = newWorkflow(
+    HelloWorkflow::class.java,
     meta = mapOf(
         "foo" to "bar".toByteArray(),
         "baz" to "qux".toByteArray()

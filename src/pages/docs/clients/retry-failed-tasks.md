@@ -7,9 +7,9 @@ It is possible to retry one or more tasks from running workflows. Those tasks ca
 {% codes %}
 
 ```java
-// stub targeting a running HelloWorld workflow with a specific id
-HelloWorldWorkflow w =
-    client.getWorkflowById(HelloWorldWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c);
+// stub targeting a running HelloWorkflow workflow with a specific id
+HelloWorkflow w =
+    client.getWorkflowById(HelloWorkflow.class, "05694902-5aa4-469f-824c-7015b0df906c);
 
 // retry a specific task from this instance
 client.retryTasks(w, "f2ebeb38-5329-4348-90d4-615b4a5c2214");
@@ -17,15 +17,15 @@ client.retryTasks(w, "f2ebeb38-5329-4348-90d4-615b4a5c2214");
 // retry all failed tasks
 client.retryTasks(w, DeferredStatus.FAILED);
 
-// retry all failed HelloWorldService tasks
-client.retryTasks(w, DeferredStatus.FAILED, HelloWorldService.class);
+// retry all failed HelloService tasks
+client.retryTasks(w, DeferredStatus.FAILED, HelloService.class);
 
 ```
 
 ```kotlin
-// stub targeting a running HelloWorld workflow with a specific id
-val w : HelloWorldWorkflow =
-    client.getWorkflowById(HelloWorldWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
+// stub targeting a running HelloWorkflow workflow with a specific id
+val w : HelloWorkflow =
+    client.getWorkflowById(HelloWorkflow::class.java, "05694902-5aa4-469f-824c-7015b0df906c")
 
 // retry a specific task from this instance
 client.retryTasks(w, "f2ebeb38-5329-4348-90d4-615b4a5c2214")
@@ -33,8 +33,8 @@ client.retryTasks(w, "f2ebeb38-5329-4348-90d4-615b4a5c2214")
 // retry all failed tasks of this instance
 client.retryTasks(w, DeferredStatus.FAILED)
 
-// retry all failed HelloWorldService tasks of this instance
-client.retryTasks(w, DeferredStatus.FAILED, HelloWorldService::class.java)
+// retry all failed HelloService tasks of this instance
+client.retryTasks(w, DeferredStatus.FAILED, HelloService::class.java)
 ```
 
 {% /codes %}

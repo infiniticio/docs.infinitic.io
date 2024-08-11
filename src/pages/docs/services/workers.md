@@ -28,7 +28,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.14.1"
+    implementation "io.infinitic:infinitic-worker:0.15.0"
     ...
 }
 ```
@@ -36,7 +36,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.14.1")
+    implementation("io.infinitic:infinitic-worker:0.15.0")
     ...
 }
 ```
@@ -203,7 +203,7 @@ The retry policy can also be defined directly from the Service, through a [`With
 
 {% /callout  %}
 
-## Service registration
+## Programmatic registration
 
 We can register a service directly with a worker. It can be useful if you need to inject some dependencies in our service:
 
@@ -215,11 +215,12 @@ import io.infinitic.workers.InfiniticWorker;
 public class App {
     public static void main(String[] args) {
         try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
+            
             worker.registerServiceExecutor(
                 // service name
                 CarRentalService.class.getName(),                          
                 // function providing an instance of the service
-                () -> new CarRentalServiceFake(/* some injection here*/),
+                () -> new CarRentalServiceFake(/* injections here*/),
                 // number of parallel processings (default: 1)
                 50,
                 // instance of WithTimeout (default: null)
@@ -227,6 +228,14 @@ public class App {
                 // instance of WithRetry (default: null)
                 withRetry
             );
+
+            worker.registerServiceTagEngine(
+                // service name
+                CarRentalService.class.getName(), 
+                // number of parallel processings (default: 1)
+                50
+            );
+
             worker.start();
         }
     }
@@ -238,11 +247,12 @@ import io.infinitic.workers.InfiniticWorker
 
 fun main(args: Array<String>) {
     InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
+
         worker.registerServiceExecutor(
             // service name
             CarRentalService.class.getName(), 
             // function providing an instance of the service                
-            { CarRentalServiceFake(/* some injection here*/) },
+            { CarRentalServiceFake(/* injections here*/) },
             // number of parallel processings (default: 1)
             50,
             // instance of WithTimeout (default: null)
@@ -250,6 +260,14 @@ fun main(args: Array<String>) {
             // instance of WithRetry (default: null)
             withRetry
         )
+
+        worker.registerServiceTagEngine(
+            // service name
+            CarRentalService.class.getName(), 
+            // number of parallel processings (default: 1)
+            50
+        )
+
         worker.start()
     }
 }

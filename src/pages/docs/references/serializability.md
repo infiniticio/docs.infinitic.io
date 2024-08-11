@@ -10,7 +10,7 @@ _Why must task and workflow parameters and return values be serializable?_
 
 Primitives (number, string, etc...) being natively serializable, this requirement must be checked only for objects contained in task parameters or return values.
 
-## Checking Serializability In Java
+## When Using Java
 
 For Java, Infinitic uses [FasterXML/jackson](https://github.com/FasterXML/jackson-docs) to serialize/deserialize into/from JSON.
 
@@ -43,7 +43,108 @@ if there are still running workflows.
 
 {% /callout  %}
 
-## Checking Serializability In Kotlin
+### JsonView support
+
+Since version 0.15.0, Infinitic supports Jackson's `@JsonView` annotation, which helps refine object serialization.
+
+#### Service Interface
+
+In Infinitic, interfaces serve as contracts for remote services:
+
+```java
+import com.fasterxml.jackson.annotation.JsonView;
+import io.infinitic.annotations.Name;
+
+@Name(name = "UserService")
+public interface UserService {
+    
+    @JsonView(View.R1.class)
+    User getUser(@JsonView(View.P1.class) Request request);
+}
+```
+
+- the `request` object (parameter of the RPC call) is serialized using the `View.P1.class` Jackson view.
+- the `user` object (response of the RPC call) is *deserialized* using the `View.R1.class` view.
+
+#### Service Implementation
+
+In Service workers where the actual implementation runs:
+
+```java
+import com.fasterxml.jackson.annotation.JsonView;
+
+public class UserServiceImpl implements UserService {
+    
+    @Override
+    @JsonView(View.R2.class)
+    public String getUser(@JsonView(View.P2.class) Request request) {
+        ...
+        return user
+    }
+}
+```
+
+- the `request` object (parameter of the RPC call) is *deserialized* using the `View.P2.class` Jackson view.
+- the `user` object (response of the RPC call) is *serialized* using the `View.R2.class` view.
+
+{% callout %}
+
+Often, you won't need `@JsonView` annotations in the Service implementation, as Infinitic will use the same views defined in the interface. If you do not want to use any view, simply add an empty `@JsonView` annotation.
+
+{% /callout  %}
+
+#### Workflow Interface
+
+Interfaces also serve as contracts for remote workflows:
+
+```java
+import com.fasterxml.jackson.annotation.JsonView;
+import io.infinitic.annotations.Name;
+
+@Name(name = "UserWorkflow")
+public interface UserWorkflow {
+
+    @JsonView(View.R1.class)
+    Status welcome(@JsonView(View.P1.class) Registration registration);
+}
+```
+ 
+- the `registration` object (parameter of the RPC call) is serialized using the `View.P1.class` Jackson view.
+- the `status` object (response of the RPC call) is *deserialized* using the `View.R1.class` view.
+
+#### Workflow Implementation
+
+In Workflow workers where the actual implementation runs:
+
+```java
+import io.infinitic.annotations.Name;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import hello.world.services.HelloService;
+import io.infinitic.workflows.Workflow;
+
+public class UserWorkflowImpl extends Workflow implements UserWorkflow {
+
+    @Override
+    @JsonView(View.R2.class)
+    Status welcome(@JsonView(View.P2.class) Registration registration) {
+
+        ...
+        return status;
+    }
+}
+```
+
+- the `registration` object (parameter of the RPC call) is *deserialized* using the `View.P2.class` Jackson view.
+- the `status` object (response of the RPC call) is *serialized* using the `View.R2.class` view.
+
+{% callout %}
+
+Often, you won't need `@JsonView` annotations in the Workflow implementation, as Infinitic will use the same views defined in the interface. If you do not want to use any view, simply add an empty `@JsonView` annotation.
+
+{% /callout  %}
+
+## When Using Kotlin
 
 For Kotlin, we recommend using [kotlinx-serialization-json](https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/serialization-guide.md) in our models.
 

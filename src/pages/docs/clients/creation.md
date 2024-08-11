@@ -16,7 +16,7 @@ file:
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-client:0.14.1"
+    implementation "io.infinitic:infinitic-client:0.15.0"
     ...
 }
 ```
@@ -24,7 +24,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-client:0.14.1")
+    implementation("io.infinitic:infinitic-client:0.15.0")
     ...
 }
 ```

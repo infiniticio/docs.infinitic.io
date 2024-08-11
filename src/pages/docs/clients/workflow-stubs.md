@@ -9,13 +9,13 @@ Here is an example of workflow interface from our [Hello World](/docs/introducti
 {% codes %}
 
 ```java
-public interface HelloWorldWorkflow {
+public interface HelloWorkflow {
     String greet(String name);
 }
 ```
 
 ```kotlin
-interface HelloWorldWorkflow {
+interface HelloWorkflow {
     fun greet(name: String): String
 }
 ```
@@ -37,13 +37,13 @@ The client has a `newWorkflow` method to create the stub of a new workflow:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = 
-    client.newWorkflow(HelloWorldWorkflow.class);
+HelloWorkflow w = 
+    client.newWorkflow(HelloWorkflow.class);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = 
-    client.newWorkflow(HelloWorldWorkflow::class.java)
+val w : HelloWorkflow = 
+    client.newWorkflow(HelloWorkflow::class.java)
 ```
 
 {% /codes %}
@@ -53,13 +53,13 @@ We can also add tags to this stub. Those tags will be attached to workflow insta
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = 
-    client.newWorkflow(HelloWorldWorkflow.class, Set.of("foo", "bar"));
+HelloWorkflow w = 
+    client.newWorkflow(HelloWorkflow.class, Set.of("foo", "bar"));
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = 
-    client.newWorkflow(HelloWorldWorkflow::class.java, tags = setOf("foo", "bar"))
+val w : HelloWorkflow = 
+    client.newWorkflow(HelloWorkflow::class.java, tags = setOf("foo", "bar"))
 ```
 
 {% /codes %}
@@ -76,13 +76,13 @@ We can create the stub of a running workflow from its `id`:
 {% codes %}
 
 ```java
-HelloWorldWorkflow w = 
-    client.getWorkflowById(HelloWorldWorkflow.class, id);
+HelloWorkflow w = 
+    client.getWorkflowById(HelloWorkflow.class, id);
 ```
 
 ```kotlin
-val w : HelloWorldWorkflow = 
-    client.getWorkflowById(HelloWorldWorkflow::class.java, id)
+val w : HelloWorkflow = 
+    client.getWorkflowById(HelloWorkflow::class.java, id)
 ```
 
 {% /codes %}
@@ -92,13 +92,13 @@ Alternatively, we can create a stub targeting all running workflow having a give
 {% codes %}
 
 ```java
-HelloWorldWorkflow w =
-    client.getWorkflowByTag(HelloWorldWorkflow.class, "foo");
+HelloWorkflow w =
+    client.getWorkflowByTag(HelloWorkflow.class, "foo");
 ```
 
 ```kotlin
-val w: HelloWorldWorkflow = 
-    client.getWorkflowByTag(HelloWorldWorkflow::class.java, tag = "foo")
+val w: HelloWorkflow = 
+    client.getWorkflowByTag(HelloWorkflow::class.java, tag = "foo")
 ```
 
 {% /codes %}
