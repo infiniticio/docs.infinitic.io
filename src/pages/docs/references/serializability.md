@@ -78,7 +78,9 @@ assert foo2.equals(foo);
     interface Foo {
     ```
 
-4. Complex Types: If `Foo` is a complex type (e.g., collections, arrays, maps), the test should be adapted to extract the type from the method signature:
+4. Complex Types: 
+
+    If `Foo` is a complex type (e.g., collections, arrays, maps), it should be serializable if all its components are serializable. Note that the test must be updated to extract the generic type from the method signature:
 
     ```java
     Type fooType = Arrays.stream(klass.getMethod("myMethod", Foo.class)
@@ -87,7 +89,8 @@ assert foo2.equals(foo);
         .orElseThrow();
     ```
 
-    If `Bar` is a complex type (e.g., collections, arrays, maps), the test should be adapted to extract the type from the method signature:
+    If `Bar` is a complex type (e.g., collections, arrays, maps), it should be serializable if all its components are serializable. Note that the test must be updated to extract the generic type from the method signature:
+
     ```java
     Type barType = klass.getMethod("myMethod", Foo.class).getGenericReturnType();
     ```
