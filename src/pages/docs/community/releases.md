@@ -21,7 +21,7 @@ Please ensure to terminate all running workers prior to upgrading to version 0.1
 
 {% version-breaking-changes /%}
 
-* Serialization:
+* [Serialization](/docs/references/serializability):
   * Both serialization of arguments and deserialization are now conducted in accordance with the types defined in the interfaces. This contrasts with our prior implementation, which performed these operations based on the actual type of objects involved.
   * The revamped approach broadens applicability, aptly resolving the concerns cited in issue #80. Nonetheless, when faced with situations involving polymorphism, the responsibility now lies with the user to furnish deserializers with adequate information. 
 
