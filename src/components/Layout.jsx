@@ -78,7 +78,6 @@ const navigation = [
      title: 'Playbook',
      links: [
       { title: 'Workflows', href: '/docs/playbook/workflows' },
-      { title: 'Operations', href: '/docs/playbook/operations' },
     ],
    },
   {
