@@ -4,8 +4,11 @@ description: This page explains the importance of serializability in Infinitic f
 ---
 _Why must task and workflow arguments and return values be serializable?_
 
-Serialization is crucial for the distributed execution of tasks and workflows.
-Let's consider the following method from a Service or Workflow interface:
+Serialization is fundamental to the distributed nature of tasks and workflows in Infinitic. It enables data transfer between different components of the system. Let's examine how serialization is used in different scenarios.
+
+## How Infinitic uses serialization
+
+Consider a method `myMethod` in a Service or Workflow interface:
 
 {% codes %}
 
@@ -19,26 +22,54 @@ fun myMethod(foo: Foo): Bar;
 
 {% /codes %}
 
+### In Workflows
 
-- When this method is dispatched (from a [client](/docs/introduction/terminology#client) or in a [Workflow](/docs/introduction/terminology#worker) worker), the argument will be serializable as type `Foo`, and the output will be deserialized as type `Bar`.
-- When this method is processed (in a [Service](/docs/introduction/terminology#worker) or [Workflow](/docs/introduction/terminology#worker) worker), the received data will be deserialized as type `Foo`, and the output will be serialized as type `Bar`.
+When `myMethod` is part of a Workflow interface and an Infinitic Client synchronously dispatches this method:
 
-Primitive types (e.g., numbers, strings) are inherently serializable. Therefore, the requirements below primarily apply to complex objects within task arguments or return values. Ensuring all such objects are serializable is essential for smooth data flow throughout the distributed system.
+* The Client serializes the `Foo` argument to JSON, and sent it in a command to a Workflow worker.
 
-## Java Serialization with Jackson
+* The Workflow worker receiving the command, deserializes the JSON to a `Foo` object and executes `myMethod`  using this deserialized object.
+
+* Once the method completed, the Workflow worker serializes the `Bar` result to JSON, and send it in an event back to the initial Client.
+
+* When receiving the event, the Client deserializes the JSON to a `Bar` object, and uses it.
+
+
+### In Services
+
+When `myMethod` is part of a Service interface and an Infinitic Workflow worker synchronously dispatches this method as a task:
+
+* The Workflow worker serializes the `Foo` argument to JSON, and send it in a command to a Service worker.
+
+* The Service worker receiving the event deserializes the JSON to a `Foo` object and executes `myMethod`  using this deserialized object.
+
+* Once the method completed, the Service worker serializes the `Bar` result to JSON, and send it in an event to a Workflow worker.
+
+* The Workflow worker receiving the event deserializes the JSON to a `Bar` object, and continues the workflow execution.
+
+
+### Key Points
+
+* Serialization occurs at every transition between system components (client, workflow worker, service worker).
+* JSON is used as the serialization format for data transfer.
+* Both method arguments (`Foo`) and return values (`Bar`) must be serializable.
+* Proper serialization/deserialization ensures data integrity across the distributed system.
+* While serialization enables distributed processing, it can impact performance for large data structures or high-frequency operations
+
+## Java Serialization
 
 For Java, Infinitic uses [FasterXML/jackson](https://github.com/FasterXML/jackson-docs) to serialize/deserialize into/from JSON.
 
 ### Serialization Testing
 
-To verify if type `Foo` is properly serializable, use the following test pattern with `foo` being an instance of `Foo` (the same applies for type `Bar`) :
+To verify if `Foo` is properly serializable, use the following test pattern with `foo` being an object of type `Foo` (the same applies for `Bar`) :
 
 ```java
 import io.infinitic.serDe.java.Json;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ObjectReader;
 ...
-// Get Foo type object
+// Get Foo Type object
 Type fooType = Foo.class;
 // get writer for Foo 
 ObjectWriter objectWriter = Json.getMapper().writerFor(fooType);
@@ -83,16 +114,15 @@ assert foo2.equals(foo);
     If `Foo` is a complex type (e.g., collections, arrays, maps), it should be serializable if all its components are serializable. Note that the test above must be updated to extract the generic type from the method signature:
 
     ```java
-    Type fooType = Arrays.stream(klass.getMethod("myMethod", Foo.class)
-        .getGenericParameterTypes())
-        .findFirst()
-        .orElseThrow();
+    Method method = klass.getMethod("myMethod", Foo.class);
+    Type fooType = Arrays.stream(method).getGenericParameterTypes()).findFirst().orElseThrow();
     ```
 
     If `Bar` is a complex type (e.g., collections, arrays, maps), it should be serializable if all its components are serializable. Note that the test above must be updated to extract the generic type from the method signature:
 
     ```java
-    Type barType = klass.getMethod("myMethod", Foo.class).getGenericReturnType();
+    Method method = klass.getMethod("myMethod", Foo.class);
+    Type barType = method.getGenericReturnType();
     ```
 
 
@@ -130,7 +160,7 @@ Key points:
 - Ensure it is used consistently with existing messages
 
 
-### JsonView support
+### JsonView Support
 
 Since version 0.15.0, Infinitic supports Jackson's `@JsonView` annotation, which helps refine object serialization.
 
@@ -240,7 +270,7 @@ If `kotlinx-serialization-json` is not used (i.e. your class does not have a ser
 
 ### Serialization Testing
 
-To verify if type `Foo` is properly serializable, use the following test pattern with `foo` being an instance of `Foo` (the same applies for type `Bar`) :
+To verify if `Foo` is properly serializable, use the following test pattern with `foo` being an instance of `Foo` (the same applies for `Bar`) :
 
 ```kotlin
 import kotlinx.serialization.serializer
@@ -279,7 +309,11 @@ require(foo2 == foo)
     ```
     {% callout type="note"  %}
 
-    If `Foo` is not sealed, you need to provide the polymorphic info to the serializer. For example if `Foo` only has 2 subclasses `FooA` and `FooB`:
+    If `Foo` is not sealed, you need to provide the polymorphic info to the serializer. 
+    
+    {% /callout  %}
+    
+    For example if `Foo` is not sealed and only has 2 subclasses `FooA` and `FooB`:
 
     ```kotlin
     import kotlinx.serialization.Serializable
@@ -293,8 +327,6 @@ require(foo2 == foo)
         }
     ```
 
-    {% /callout  %}
-
 3. Interfaces: If `Foo` is an interface, the easiest way to use a `sealed interface`:
 
     ```kotlin
@@ -306,7 +338,11 @@ require(foo2 == foo)
 
     {% callout type="note"  %}
 
-    If `Foo` is not sealed, you need to provide the polymorphic info to the serializer. For example, if `Foo` is only implemented by classes `FooA` and `FooB`:
+    If `Foo` is not sealed, you need to provide the polymorphic info to the serializer. 
+
+    {% /callout  %}
+    
+    For example, if `Foo` is not sealed and only implemented by classes `FooA` and `FooB`:
 
     ```kotlin
     import kotlinx.serialization.Serializable
@@ -320,11 +356,11 @@ require(foo2 == foo)
         }
     ```
 
-     {% /callout  %}
+     
 
 4. Complex Types: If `Foo` is a complex type (e.g., collections, arrays, maps), it should be serializable as soon as its components are serializable using Kotlin serializer. 
 
-### Custom Object Mapper
+### Custom Kotlin Serializer
 
 Infinitic allows you to customize the `io.infinitic.serDe.kotlin.json` object used for serialization and deserialization. This feature is useful when you need to adjust serialization behavior to match your specific requirements, for example to add polymorphic info as described above. Here's how to implement a custom one:
 
