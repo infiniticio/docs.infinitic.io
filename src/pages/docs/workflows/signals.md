@@ -81,7 +81,7 @@ class HelloWorkflowImpl : Workflow(), HelloWorkflow {
 
 {% callout type="note"  %}
 
-In the examples above, `Channel<String>` is used as an example. But `Channel<T>` supports any [serializable](tasks/serializability) `T` type, not only `String`.
+In the examples above, `Channel<String>` is used as an example. But `Channel<T>` supports any [serializable](/docs/references/serialization) `T` type, not only `String`.
 
 {% /callout  %}
 

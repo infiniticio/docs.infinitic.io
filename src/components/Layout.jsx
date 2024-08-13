@@ -84,7 +84,7 @@ const navigation = [
     title: 'References',
     links: [
       { title: 'Pulsar', href: '/docs/references/pulsar' },
-      { title: 'Serializability', href: '/docs/references/serializability' },
+      { title: 'Serialization', href: '/docs/references/serialization' },
     ],
   },
   {

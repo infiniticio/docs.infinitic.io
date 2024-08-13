@@ -82,7 +82,7 @@ A workflow class must
 
 - extend `io.infinitic.workflows.Workflow`
 - be public and have an empty constructor
-- have [serializable](/docs/references/serializability) parameters and return value for its methods
+- have [serializable](/docs/references/serialization) parameters and return value for its methods
 
 {% /callout  %}
 
@@ -437,7 +437,7 @@ class ProcessImpl : Workflow(), Process {
 
 {% callout type="note"  %}
 
-Channels can be of any [serializable](/docs/references/serializability) type.
+Channels can be of any [serializable](/docs/references/serialization) type.
 
 {% /callout  %}
 

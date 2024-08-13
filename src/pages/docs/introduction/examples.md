@@ -554,7 +554,7 @@ This workflow showcases complex decision-making and communication between multip
 
 {% callout type="note"  %}
 
-We have the ability to dispatch [external signals](/docs/workflows/signals) to a workflow to inform it of an event or change. A signal is a type of [serializable](/docs/references/serializability) object. For a workflow to receive and process a signal, it needs to be equipped with a [channel](/docs/workflows/signals#implementing-channels).
+We have the ability to dispatch [external signals](/docs/workflows/signals) to a workflow to inform it of an event or change. A signal is a type of [serializable](/docs/references/serialization) object. For a workflow to receive and process a signal, it needs to be equipped with a [channel](/docs/workflows/signals#implementing-channels).
 
 {% /callout  %}
 

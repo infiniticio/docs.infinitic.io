@@ -25,7 +25,7 @@ interface HelloWorkflow {
 
 {% /codes %}
 
-This signal can be any [serializable](/docs/references/serializability) object of the type described in the workflow interface.
+This signal can be any [serializable](/docs/references/serialization) object of the type described in the workflow interface.
 
 We can send an object to a running instance targeted by id:
 

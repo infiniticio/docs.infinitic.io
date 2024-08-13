@@ -14,14 +14,14 @@ Please ensure to terminate all running workers prior to upgrading to version 0.1
 
 {% version-new-features /%}
 
-* Add support for [JsonView](/docs/references/serializability#json-view-support)
+* Add support for [JsonView](/docs/references/serialization#json-view-support)
 * Workers can now be created from a YAML String, through the `fromConfigYaml` static method
 * All configuration objects (`PulsarConfig`, `MySQLConfig`, `RedisConfig`, `PostgresConfig`, `CaffeineConfig`...) can now be manually created through builders. 
 * `serviceDefault`, `workflowDefault`, `defaultStorage` can now be manually registered in Workers
 
 {% version-breaking-changes /%}
 
-* [Serialization](/docs/references/serializability):
+* [Serialization](/docs/references/serialization):
   * Both serialization of arguments and deserialization are now conducted in accordance with the types defined in the interfaces. This contrasts with our prior implementation, which performed these operations based on the actual type of objects involved.
   * The revamped approach broadens applicability, aptly resolving the concerns cited in issue #80. Nonetheless, when faced with situations involving polymorphism, the responsibility now lies with the user to furnish deserializers with adequate information. 
 

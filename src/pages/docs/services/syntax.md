@@ -8,7 +8,7 @@ Upon receiving a message instructing to execute a task, a service worker instant
 
 {% callout type="warning"  %}
 
-The parameters and return value of a method used as task must be [serializable](/docs/references/serializability).
+The parameters and return value of a method used as task must be [serializable](/docs/references/serialization).
 
 {% /callout  %}
 

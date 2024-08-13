@@ -1,12 +1,11 @@
 ---
-title: Serializability
-description: This page explains the importance of serializability in Infinitic for tasks and workflows, detailing the requirements and best practices for ensuring data is correctly serialized and deserialized across distributed systems.
+title: Serialization
+description: This page explains the importance of serialization in Infinitic for tasks and workflows, detailing the requirements and best practices for ensuring data is correctly serialized and deserialized across distributed systems.
 ---
-_Why must task and workflow arguments and return values be serializable?_
-
-Serialization is fundamental to the distributed nature of tasks and workflows in Infinitic. It enables data transfer between different components of the system. Let's examine how serialization is used in different scenarios.
 
 ## How Infinitic uses serialization
+
+Serialization is fundamental to the distributed nature of tasks and workflows in Infinitic. It enables data transfer between different components of the system. Let's examine how serialization is used in different scenarios.
 
 Consider a method `myMethod` in a Service or Workflow interface:
 
@@ -264,7 +263,7 @@ For Kotlin, we recommend using [kotlinx-serialization-json](https://github.com/K
 
 {% callout type="note"  %}
 
-If `kotlinx-serialization-json` is not used (i.e. your class does not have a serializer), the fallback serialization/deserialization method will be [FasterXML/jackson](/docs/references/serializability#java-serialization-with-jackson) as for Java.
+If `kotlinx-serialization-json` is not used (i.e. your class does not have a serializer), the fallback serialization/deserialization method will be [FasterXML/jackson](/docs/references/serialization#java-serialization-with-jackson) as for Java.
 
 {% /callout  %}
 
