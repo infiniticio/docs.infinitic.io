@@ -136,7 +136,7 @@ pulsar:
     audience: https://dev-kt-aa9ne.us.auth0.com/api/v2/
 ```
 
-## Using Infintic With Pulsar Third-Party Providers
+## Using Infinitic With Third-Party Providers
 
 Infinitic has been tested successfully with the following providers:
 
@@ -235,11 +235,13 @@ StreamNative's offering differs from other providers in that it offers to manage
           token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
       ```
 
-## Modify Settings
+## Pulsar Client Settings
 
-### For Producers
+Infinitic allows you to customize Pulsar producer and consumer settings to optimize performance for your specific use case. Below are the configuration options for both producers and consumers.
 
-We can provide default settings for all producers. All are optional. Pulsar default will be used if not provided.
+### Producer Settings
+
+You can provide default settings for all producers in the `pulsar.producer` section of your configuration file. All settings are optional; Pulsar defaults will be used if not specified.
 
 ```yaml
 pulsar:
@@ -266,8 +268,14 @@ pulsar:
     sendTimeoutSeconds: # Double
 ```
 
-### For Consumers
+The `blockIfQueueFull` setting for producers defaults to true in Infinitic, which differs from Pulsar's default.
 
+Consult the Apache Pulsar documentation for detailed explanations of each setting.
+
+
+### Consumer Settings
+
+Similarly, you can configure default settings for all consumers in the `pulsar.consumer` section. All settings are optional, with Pulsar defaults used if not provided.
 We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
 
 ```yaml
@@ -297,3 +305,7 @@ pulsar:
     startPaused: # Boolean
     maxRedeliverCount: # Int (Infinitic default: 3)
 ```
+
+The `maxRedeliverCount` for consumers is set to 3 by default in Infinitic.
+
+Consult the Apache Pulsar documentation for detailed explanations of each setting.
