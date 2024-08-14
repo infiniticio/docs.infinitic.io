@@ -77,7 +77,10 @@ const navigation = [
   {
      title: 'Playbook',
      links: [
-      { title: 'Workflows', href: '/docs/playbook/workflows' },
+      { title: 'Building A Workflow Scheduler', href: '/docs/playbook/workflow-scheduler' },
+      { title: 'Promises On Asynchronous Tasks', href: '/docs/playbook/promises' },
+      { title: 'Forwarding Workflow Metadata To Services', href: '/docs/playbook/services-metadata' },
+      { title: 'Forwarding Workflow Tags To Services', href: '/docs/playbook/services-tags' },
     ],
    },
   {

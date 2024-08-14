@@ -2,9 +2,17 @@
 title: Workflow Examples
 description: This page showcases a variety of scenarios, illustrating how Infinitic can be leveraged in Java and Kotlin to streamline complex workflow processes in distributed systems. From simple "Hello World" applications to more intricate use cases like booking systems, monthly invoicing, and loyalty programs, these examples provide valuable insights into implementing effective task orchestration and workflow management with Infinitic.
 ---
+
+
+{% callout type="note"  %}
+
+The code for those examples are available on [Github](https://github.com/infiniticio/docs.examples).
+
+{% /callout %}
+
 Infinitic's power and flexibility can be best understood through examples. Here, we provide several workflow examples to showcase its capabilities.
 
-You'll find all sources in the Infinitic's [examples](https://github.com/infiniticio/examples) repository. We encourage you to explore the implementations and play with them.
+You'll find all sources in the Infinitic's [examples](https://github.com/infiniticio/docs.examples) repository. We encourage you to explore the implementations and play with them.
 
 ## Saga Workflow
 
