@@ -5,7 +5,7 @@ description: .
 
 {% callout type="note"  %}
 
-The code examples for pages in this section are available on [Github](https://github.com/infiniticio/playbook).
+The code examples for pages in this section are available on [Github](https://github.com/infiniticio/docs.playbook).
 
 {% /callout %}
 
