@@ -2,28 +2,62 @@
 title: Pulsar
 description: This page provides a comprehensive guide on installing and setting up Apache Pulsar for use with Infinitic. It covers recommendations for managed Pulsar clusters, retention policies, and the creation of dedicated tenants and namespaces for environment separation. Additionally, it details the configuration needed to connect Infinitic clients and workers to a Pulsar cluster, including minimal setup for development, transport encryption, authentication methods, and default settings for producers and consumers to ensure reliable message handling.
 ---
-## Pulsar installation
 
-To install Pulsar, refer to the [Pulsar](http://pulsar.apache.org/docs/en/standalone/) documentation.
+{% callout %}
 
-{% callout type="note"  %}
-
-Infinitic can run on managed Pulsar cluster. It has been tested on [StreamNative](/docs/references/pulsar#stream-native), [Datastax](/docs/references/pulsar#datastax) and [CleverCloud](/docs/references/pulsar#clever-cloud). We recommend using them if you are new to Pulsar.
+Infinitic can run on Pulsar clusters managed by third parties. It has been tested on [StreamNative](/docs/references/pulsar#stream-native), [Datastax](/docs/references/pulsar#datastax) and [CleverCloud](/docs/references/pulsar#clever-cloud).
+We recommend these services for users new to Pulsar.
 
 {% /callout  %}
 
-## Pulsar setup
 
-Infinitic does not require specific settings, nevertheless, it's recommended to set up [retention policies](https://pulsar.apache.org/docs/en/cookbooks-retention-expiry/) to avoid losing messages when workers are not connected.
+## Pulsar Installation And Setup
 
-We recommend using Infinitic using a dedicated Pulsar [tenant](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/#tenants) and using [namespaces](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/#namespaces) to distinguish the production environment from dev or staging.
-For example, we may want to create one namespace per developer, plus one for staging and one for production.
+For Pulsar installation instructions, please refer to the official Apache Pulsar [documentation](http://pulsar.apache.org/docs/en/standalone/).
 
-{% callout type="note"  %}
 
-If they do not exist already, tenant and namespace are automatically created by Infinitic workers at launch time.
+### Recommended Configuration
+
+While Infinitic doesn't require specific Pulsar settings, we recommend the following namespace / topic configuration:
+
+| Parameter | Recommended Value | Description |
+|-----------|-------------------|-------------|
+| retentionTimeInMinutes | 10080  | (7 days) Ensures messages are kept for a week |
+| retentionSizeInMB | 1024 | (1GB)  Limits the total size of retained messages |
+| messageTTLInSeconds | 1209600  or 31622400 | (14 days or 1 year) Sets message lifetime before expiration|
+| delayedDeliveryTickTimeMillis | 1000|  (1 second)  Controls the frequency of checking for delayed messages |
+
+**Rationale for These Settings:**
+
+* Retention Parameters: The retention time and size ensure that Pulsar doesn't delete messages before a worker has a chance to process them, even in cases of temporary worker downtime or backlog.
+
+* Message TTL: 
+   - For standard topics: 14 days provides a generous window for message processing.
+   - For topics with delayed messages: 1 year allows for long-term scheduled tasks.
+
+* Delayed Delivery Tick Time: The 1-second interval balances responsiveness with CPU usage, particularly beneficial for scenarios involving large delays.
+
+{% callout type="note" %}
+
+Infinitic workers automatically create the tenant, namespace and topics at launch if they don't exist, with the recommended configuration.
 
 {% /callout  %}
+
+
+### Multi-tenancy Support
+
+Pulsar has native multi-tenancy capabilities, allowing for efficient resource isolation and management across different environments or teams within a single Pulsar cluster.
+
+This multi-tenancy capabilities extend to Infinitic. For example:
+
+  * Dedicate a tenant for Infinitic (e.g., `infinitic`)
+  * Use namespaces to separate environments (e.g., development, staging, production):
+
+    - `infinitic/dev_alice`
+    - `infinitic/dev_bob`
+    - `infinitic/staging`
+    - `infinitic/production`
+
 
 ## Connecting to a Pulsar cluster
 
@@ -102,71 +136,9 @@ pulsar:
     audience: https://dev-kt-aa9ne.us.auth0.com/api/v2/
 ```
 
-## Default producer settings
+## Using Infintic With Pulsar Third-Party Providers
 
-We can provide default settings for all producers. All are optional. Pulsar default will be used if not provided.
-
-```yaml
-pulsar:
-  ...
-  producer:
-    autoUpdatePartitions: # Boolean
-    autoUpdatePartitionsIntervalSeconds: # Double
-    batchingMaxBytes: # Int
-    batchingMaxMessages: # Int
-    batchingMaxPublishDelaySeconds: # Double
-    blockIfQueueFull: # Boolean (Infinitic default: true)
-    compressionType: # CompressionType
-    cryptoFailureAction: # ProducerCryptoFailureAction
-    defaultCryptoKeyReader: # String
-    encryptionKey: # String
-    enableBatching: # Boolean
-    enableChunking: # Boolean
-    enableLazyStartPartitionedProducers: # Boolean
-    enableMultiSchema: # Boolean
-    hashingScheme: # HashingScheme
-    messageRoutingMode: # MessageRoutingMode
-    properties: # Map<String, String>
-    roundRobinRouterBatchingPartitionSwitchFrequency: # Int
-    sendTimeoutSeconds: # Double
-```
-
-## Default consumer settings
-
-We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
-
-```yaml
-pulsar:
-  ...
-  consumer:
-    loadConf: # Map<String, String>
-    subscriptionProperties: # Map<String, String>
-    ackTimeoutSeconds: # Double
-    isAckReceiptEnabled: # Boolean
-    ackTimeoutTickTimeSeconds: # Double
-    negativeAckRedeliveryDelaySeconds: # Double
-    defaultCryptoKeyReader: # String
-    cryptoFailureAction: # ConsumerCryptoFailureAction
-    receiverQueueSize: # Int
-    acknowledgmentGroupTimeSeconds: # Double
-    replicateSubscriptionState: # Boolean
-    maxTotalReceiverQueueSizeAcrossPartitions: # Int
-    priorityLevel: # Int
-    properties: # Map<String, String>
-    autoUpdatePartitions: # Boolean
-    autoUpdatePartitionsIntervalSeconds: # Double
-    enableBatchIndexAcknowledgment: # Boolean
-    maxPendingChunkedMessage: # Int
-    autoAckOldestChunkedMessageOnQueueFull: # Boolean
-    expireTimeOfIncompleteChunkedMessageSeconds: # Double
-    startPaused: # Boolean
-    maxRedeliverCount: # Int (Infinitic default: 3)
-```
-
-
-## Using Managed Pulsar
-
-How to configure Pulsar access when using Infinitic with various managed Pulsar services:
+Infinitic has been tested successfully with the following providers:
 
 ### [Clever-Cloud](https://clever-cloud.com)
 
@@ -213,10 +185,6 @@ pulsar:
 As of July 2024, you need to enable the "Auto Topic Creation" setting in the "Settings" tab of your namespace (see "Namespace and Topics"). If not enabled, the Infinitic worker will be unable to programmatically create the needed topics.
 
 {% /callout  %}
-
-### [Pandio](https://pandio.com)
-
-As of July 2024, Infinitic does not work on Pandio due to limitations on programmatic topic creation.
 
 ### [StreamNative](https://streamnative.io)
 
@@ -267,3 +235,65 @@ StreamNative's offering differs from other providers in that it offers to manage
           token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
       ```
 
+## Modify Settings
+
+### For Producers
+
+We can provide default settings for all producers. All are optional. Pulsar default will be used if not provided.
+
+```yaml
+pulsar:
+  ...
+  producer:
+    autoUpdatePartitions: # Boolean
+    autoUpdatePartitionsIntervalSeconds: # Double
+    batchingMaxBytes: # Int
+    batchingMaxMessages: # Int
+    batchingMaxPublishDelaySeconds: # Double
+    blockIfQueueFull: # Boolean (Infinitic default: true)
+    compressionType: # CompressionType
+    cryptoFailureAction: # ProducerCryptoFailureAction
+    defaultCryptoKeyReader: # String
+    encryptionKey: # String
+    enableBatching: # Boolean
+    enableChunking: # Boolean
+    enableLazyStartPartitionedProducers: # Boolean
+    enableMultiSchema: # Boolean
+    hashingScheme: # HashingScheme
+    messageRoutingMode: # MessageRoutingMode
+    properties: # Map<String, String>
+    roundRobinRouterBatchingPartitionSwitchFrequency: # Int
+    sendTimeoutSeconds: # Double
+```
+
+### For Consumers
+
+We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
+
+```yaml
+pulsar:
+  ...
+  consumer:
+    loadConf: # Map<String, String>
+    subscriptionProperties: # Map<String, String>
+    ackTimeoutSeconds: # Double
+    isAckReceiptEnabled: # Boolean
+    ackTimeoutTickTimeSeconds: # Double
+    negativeAckRedeliveryDelaySeconds: # Double
+    defaultCryptoKeyReader: # String
+    cryptoFailureAction: # ConsumerCryptoFailureAction
+    receiverQueueSize: # Int
+    acknowledgmentGroupTimeSeconds: # Double
+    replicateSubscriptionState: # Boolean
+    maxTotalReceiverQueueSizeAcrossPartitions: # Int
+    priorityLevel: # Int
+    properties: # Map<String, String>
+    autoUpdatePartitions: # Boolean
+    autoUpdatePartitionsIntervalSeconds: # Double
+    enableBatchIndexAcknowledgment: # Boolean
+    maxPendingChunkedMessage: # Int
+    autoAckOldestChunkedMessageOnQueueFull: # Boolean
+    expireTimeOfIncompleteChunkedMessageSeconds: # Double
+    startPaused: # Boolean
+    maxRedeliverCount: # Int (Infinitic default: 3)
+```
