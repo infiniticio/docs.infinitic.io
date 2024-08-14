@@ -259,11 +259,18 @@ Often, you won't need `@JsonView` annotations in the Workflow implementation, as
 ## Kotlin Serialization
 
 
-For Kotlin, we recommend using [kotlinx-serialization-json](https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/serialization-guide.md).
+For Kotlin, we recommend using [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/serialization-guide.md), a native serialization library developed by JetBrains.
 
-{% callout type="note"  %}
+To use `kotlinx.serialization` in your Infinitic project:
 
-If `kotlinx-serialization-json` is not used (i.e. your class does not have a serializer), the fallback serialization/deserialization method will be [FasterXML/jackson](/docs/references/serialization#java-serialization-with-jackson) as for Java.
+* Add the `kotlinx.serialization` plugin to your build script.
+* Apply the `@Serializable` annotation to your data classes.
+
+See the [Kotlin documentation](https://kotlinlang.org/docs/serialization.html) for more details.
+
+{% callout type="warning"  %}
+
+If `kotlinx.serialization` is not used (i.e., your classes don't have a built-in Kotlin serializer), Infinitic will fall back to  [FasterXML/jackson](/docs/references/serialization#java-serialization) for serialization/deserialization, as it does for Java. In this case, the guidelines below do not apply.
 
 {% /callout  %}
 
