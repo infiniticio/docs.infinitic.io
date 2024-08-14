@@ -322,15 +322,17 @@ require(foo2 == foo)
     For example if `Foo` is not sealed and only has 2 subclasses `FooA` and `FooB`:
 
     ```kotlin
-    import kotlinx.serialization.Serializable
+    import io.infinitic.serDe.kotlin.json
     import kotlinx.serialization.json.Json
+    import kotlinx.serialization.modules.SerializersModule
     ...
-    val json = Json {
-          serializersModule = SerializersModule {
+    // set a custom Json serializer
+    json = Json {
+        serializersModule = SerializersModule {
             polymorphic(Foo::class, FooA::class, FooA.serializer())
             polymorphic(Foo::class, FooB::class, FooB.serializer())
-          }
         }
+    }
     ```
 
 3. Interfaces: If `Foo` is an interface, the easiest way to use a `sealed interface`:
@@ -351,22 +353,24 @@ require(foo2 == foo)
     For example, if `Foo` is not sealed and only implemented by classes `FooA` and `FooB`:
 
     ```kotlin
-    import kotlinx.serialization.Serializable
+    import io.infinitic.serDe.kotlin.json
     import kotlinx.serialization.json.Json
-
-    val json = Json {
-          serializersModule = SerializersModule {
+    import kotlinx.serialization.modules.SerializersModule
+    ...
+    // set a custom Json serializer
+    json = Json {
+        serializersModule = SerializersModule {
             polymorphic(Foo::class, FooA::class, FooA.serializer())
             polymorphic(Foo::class, FooB::class, FooB.serializer())
-          }
         }
+    }
     ```
 
      
 
 4. Complex Types: If `Foo` is a complex type (e.g., collections, arrays, maps), it should be serializable as soon as its components are serializable using Kotlin serializer. 
 
-### Custom Kotlin Serializer
+### Custom Json Serializer
 
 Infinitic allows you to customize the `io.infinitic.serDe.kotlin.json` object used for serialization and deserialization. This feature is useful when you need to adjust serialization behavior to match your specific requirements, for example to add polymorphic info as described above. Here's how to implement a custom one:
 
@@ -374,7 +378,7 @@ Infinitic allows you to customize the `io.infinitic.serDe.kotlin.json` object us
 import io.infinitic.serDe.kotlin.json
 import kotlinx.serialization.json.Json
 ...
-// set a custom object mapper
+// set a custom Json serializer
 json = Json {
   classDiscriminator = "#klass"
   ignoreUnknownKeys = true
