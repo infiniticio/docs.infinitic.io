@@ -2,6 +2,7 @@
 title: Delegated Task
 description:
 ---
+
 ## Delegated task purpose
 
 In certain situations, completing a task within the Service worker may not be feasible. For instance, when the task is overseen by a system external to Infinitic, and the worker cannot synchronously wait for its conclusion. In such cases, the Service worker delegates the task's completion, yet Infinitic still requires awareness of when the task is finished and the corresponding return value.

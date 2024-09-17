@@ -1,72 +1,7 @@
 ---
-title: Service Syntax
-description: This documentation details the syntax and operational constraints for defining and implementing services in Infinitic. It emphasizes task methods must be serializable and thread-safe, with guidelines for versioning services, handling task failures, setting runtime timeouts, and customizing retry policies.
+title: Task Failure
+description: .
 ---
-## Constraints
-
-Upon receiving a message instructing to execute a task, a service worker instantiates the service class, deserializes the parameters, executes the requested method and returns the serialized result:
-
-{% callout type="warning"  %}
-
-The parameters and return value of a method used as task must be [serializable](/docs/references/serialization).
-
-{% /callout  %}
-
-If we chose to have several executions in parallel (`concurrency` > 1), they must not interfere with each other:
-
-{% callout type="warning"  %}
-
-A method used as a task must be thread-safe.
-
-{% /callout  %}
-
-If our method uses multi-threading, **we should keep in mind that a task is considered completed when the method returns**. Any exception occurring on another thread than the one that initiated the execution of the task will be ignored.
-
-## Recommendations
-
-For an easier [versioning of services](/docs/services/versioning), we recommend:
-
-{% callout type="note"  %}
-
-Each service should be given a simple name through the [@Name](#name-annotation) annotation.
-
-Methods used as tasks should have:
- - One parameter of a dedicated type object
- - A return value of a dedicated type object
-
-{% /callout  %}
-
-For example,
-
-{% codes %}
-
-```java
-package com.company.services;
-
-import io.infinitic.annotations.Name;
-
-@Name(name = "MyService")
-public interface MyService {
-    MyFirstTaskOutput myFirstTask(MyFirstTaskInput input);
-
-    MySecondTaskOutput mySecondTask(MySecondTaskInput input);
-}
-```
-
-```kotlin
-package com.company.services
-
-import io.infinitic.annotations.Name
-
-@Name("MyService")
-interface MyService {
-    fun myFirstTask(input: MyFirstTaskInput): MyFirstTaskOutput
-
-    fun mySecondTask(input: MySecondTaskInput): MySecondTaskOutput
-}
-```
-
-{% /codes %}
 
 ## Task Failure
 
@@ -113,7 +48,7 @@ The timeout policy used will be the first found in this order:
 
 ### `WithTimeout` Interface
 
-The `WithTimeout` interface requires a `getTimeoutInSeconds` method. When present, Infinitic will call this method to know which timeout to apply for all tasks of the service:
+The `WithTimeout` interface requires a `getTimeoutSeconds` method. When present, Infinitic will call this method to know which timeout to apply for all tasks of the service:
 
 {% codes %}
 
@@ -127,7 +62,7 @@ public class MyServiceImpl implements MyService, WithTimeout {
 
     MySecondTaskOutput mySecondTask(MySecondTaskInput input) { /* */ }
 
-    public Double getTimeoutInSeconds() {
+    public Double getTimeoutSeconds() {
         return 100.0;
     }
 }
@@ -143,7 +78,7 @@ class MyServiceImpl : MyService, WithTimeout {
 
     override mySecondTask(MySecondTaskInput input) { /* */ }
 
-    override fun getTimeoutInSeconds() = 100.0
+    override fun getTimeoutSeconds() = 100.0
 }
 ```
 
@@ -164,7 +99,7 @@ public class MyServiceImpl implements MyService, WithTimeout {
 
     MySecondTaskOutput mySecondTask(MySecondTaskInput input) { /* */ }
 
-    public Double getTimeoutInSeconds() {
+    public Double getTimeoutSeconds() {
         if(Task.getTaskName().equals("myFirstTask"))
             return 200.0;
         else
@@ -184,7 +119,7 @@ class MyServiceImpl : MyService, WithTimeout {
 
     override mySecondTask(MySecondTaskInput input) { /* */ }
 
-    override fun getTimeoutInSeconds() = when (Task.taskName) {
+    override fun getTimeoutSeconds() = when (Task.taskName) {
         ::myFirstTask.name -> 200.0
         else -> 100.0
     }
@@ -442,184 +377,4 @@ class MyServiceImpl : MyService {
 ```
 
 {% /codes %}
-
-## @Name Annotation
-
-A task instance is internally described by both its full java name (package included) and the name of the method called.
-
-We may want to avoid coupling this name with the underlying implementation, for example if we want to rename the class or method, or if we mix programming languages.
-
-Infinitic provides a `@Name` annotation that let us declare explicitly the names that Infinitic should use internally. For example:
-
-{% codes %}
-
-```java
-package com.company.services;
-
-import io.infinitic.annotations.Name;
-
-@Name(name = "MyNewServiceName")
-public interface MyService {
-
-    @Name(name = "FirstTask")
-    MyFirstTaskOutput myFirstTask(MyFirstTaskInput input);
-
-    @Name(name = "SecondTask")
-    MySecondTaskOutput mySecondTask(MySecondTaskInput input);
-}
-```
-
-```kotlin
-package com.company.services
-
-import io.infinitic.annotations.Name
-
-@Name("MyNewServiceName")
-interface MyService {
-    
-    @Name("FirstTask")
-    fun myFirstTask(input: MyFirstTaskInput): MyFirstTaskOutput
-
-    @Name("SecondTask")
-    fun mySecondTask(input: MySecondTaskInput): MySecondTaskOutput
-}
-```
-
-{% /codes %}
-
-When using this annotation, the Service `name` setting in [Service worker](/docs/services/workers) configuration file should be the one provided by the annotation:
-
-```yaml
-services:
-  - name: MyNewServiceName
-    class: com.company.services.MyServiceImpl
-```
-
-## Task Context
-
-In some cases, it is useful to understand more about the context in which a task is executed.
-
-The `io.infinitic.tasks.Task` class provides the following static properties:
-
-| Name            | Type            | Description                                                                          |
-| --------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `taskId`        | String          | Unique identifier of the task                                                                      |
-| `serviceName`   | String          | Name of the Service (taken from the [@Name](#name-annotation) annotation if provided, otherwise defaulting to the service's interface name) |
-| `taskName`      | String          | Name of the task (taken from the [@Name](#name-annotation) annotation if provided, otherwise defaulting to the service's method name) |
-| `workflowId`    | String?         | Unique identifier of the workflow (if part of a workflow)                                           |
-| `workflowName`  | String?         | Name of the workflow (if part of a workflow)                                         |
-| [`tags`](#tags)                    | Set\<String\>   | Tags provided when dispatching the task                                              |
-| [`meta`](#meta)                    | MutableMap\<String, ByteArray\>   | Metadata provided when dispatching the task                        |
-| [`retryIndex`  ](#retry-index)     | Integer         | Number of times the task was automatically retried                                   |
-| [`retrySequence`](#retry-sequence) | Integer         | Number of times the task was manually retried                                        |
-| [`lastError`](#last-error)         | ExecutionError? | If any, the error during the previous attempt                                        |
-| `client`        | InfiniticClient | An [InfiniticClient](/docs/introduction/terminology#clients) that can be used inside the task                                  |
-
-{% callout type="warning"  %}
-
-The task context is only accessible from the thread that initiated:
-* the method (task) execution
-* the `getTimeoutInSeconds` execution 
-* the `getSecondsBeforeRetry` execution
-
-{% /callout  %}
-
-{% callout type="note"  %}
-
-In tests, `io.infinitic.tasks.TaskContext` can be mocked and injected through `Task.setContext(mockedTaskContext)` before running a test that uses the task's context.
-
-{% /callout  %}
-
-### `tags`
-
-The `tags` property of the task context is an immutable set of strings.
-Its value is defined when dreating the Service stub before dispatching the task:
-
-{% codes %}
-
-```java
-final HelloService helloService = newService(
-    HelloService.class,
-    tags = Set.of("userId" + userId, "companyId" + companyId)
-);
-```
-
-```kotlin
-val helloService = newService(
-    HelloService::class.java, 
-    tags = setOf("userId:$userId", "companyId:$companyId")
-)
-```
-
-{% /codes %}
-
-
-### `meta`
-
-The `meta` property of the task context is a mutable map of strings to arrays of bytes.
-Its value is defined when creating the Service stub before dispatching the task:
-
-{% codes %}
-
-```java
-final HelloService helloService = newService(
-    HelloService.class,
-    tags = null,
-    meta = Map.of(
-            "foo", "bar".getBytes(),
-            "baz", "qux".getBytes()
-    )
-);
-```
-
-```kotlin
-private val helloService = newService(
-    HelloService::class.java,
-    meta = mapOf(
-        "foo" to "bar".toByteArray(),
-        "baz" to "qux".toByteArray()
-    )
-)
-```
-
-{% /codes %}
-
-{% callout  %}
-
-The `meta` property is mutable and can be read and write during the task execution and its retries. 
-
-{% /callout  %}
-
-### `retryIndex`
-
-The `retryIndex` property of the task context indicates the current number of retry attempts.
-It starts at 0 and is incremented when a task is [automatically retried](#retries-policy):
-
-![Tasks retries](/img/task-failing@2x.png)
-
-{% callout %}
-
-When a task is [manually retried](/docs/clients/retry-failed-tasks), the `retryIndex` property is reset to 0.
-
-{% /callout  %}
-
-### `retrySequence`
-
-The `retrySequence` property of the task context indicates the current number of manual retries.
-It starts at 0 and is incremented when a task is [manually retried](/docs/clients/retry-failed-tasks):
-
-![Tasks retries](/img/task-retries@2x.png)
-
-### `lastError`
-
-If not null (when `retryIndex` >= 1), the lastError property is a data object representing the exception thrown during the last task attempt. This `ExecutionError` instance has the following properties:
-
-| Name            | Type            | Description                                                                          |
-| --------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `workerName` | String | Name of the worker where the previous Exception was thrown |
-| `name` | String | Name of the previous Exception |
-| `message` | String | Message of the previous Exception |
-| `stackTraceToString` | String |  Stringified stack trace of the previous Exception |
-| `cause` | `ExecutionError?` | Cause of the previous Exception |
-
 

@@ -26,7 +26,7 @@ First, let's add the `infinitic-worker` dependency into our project:
 ```java[build.gradle]
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.15.0"
+    implementation "io.infinitic:infinitic-worker:0.16.0"
     ...
 }
 ```
@@ -34,7 +34,7 @@ dependencies {
 ```kotlin[build.gradle.kts]
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.15.0")
+    implementation("io.infinitic:infinitic-worker:0.16.0")
     ...
 }
 ```
@@ -97,7 +97,7 @@ pulsar:
 # (Optional) Default settings for the workflows below
 workflowDefault:
   concurrency: 10
-  timeoutInSeconds: 400
+  timeoutSeconds: 400
   retry:
     maximumRetries: 6
   checkMode: strict
@@ -122,7 +122,7 @@ When provided, the worker `name` must be unique among all workers and clients co
 | `name`             | string            | name of the workflow (its interface per default)                 |
 | `class`            | string            | name of the class to instantiate                                 |
 | `concurrency`      | integer           | maximum number of messages processed in parallel                 |
-| `timeoutInSeconds` | double            | maximum duration of a workflow task execution before timeout     |
+| `timeoutSeconds` | double            | maximum duration of a workflow task execution before timeout     |
 | `retry`            | RetryPolicy       | retry policy for the workflow tasks of this workflow             |
 | `checkMode`        | WorkflowCheckMode | mode used to check if a workflow is modified while still running |
 
@@ -154,7 +154,7 @@ The `concurrency` value describes how many workflows (at most) this worker moves
 Per default, workflow tasks have a timeout of 60 seconds.
 Except in the case of a very long history with thousands of tasks and complex (de)/serialization, there is no reason why a workflow task should take so long.
 
-Nevertheless - [like for services](/docs/services/syntax#task-timeout) - it's possible to change this behavior through the `timeoutInSeconds` parameter, or directly from the Workflow, through a `WithTimeout` interface or a `@Timeout` annotation
+Nevertheless - [like for services](/docs/services/syntax#task-timeout) - it's possible to change this behavior through the `timeoutSeconds` parameter, or directly from the Workflow, through a `WithTimeout` interface or a `@Timeout` annotation
 
 #### Retries policy
 

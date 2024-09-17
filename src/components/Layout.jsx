@@ -12,7 +12,7 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
-const CURRENT_VERSION = 'v0.15.0'
+const CURRENT_VERSION = 'v0.16.0'
 
 const navigation = [
   {
@@ -42,18 +42,23 @@ const navigation = [
   {
     title: 'Services',
     links: [
-      { title: 'Service Workers', href: '/docs/services/workers' },
-      { title: 'Service Syntax', href: '/docs/services/syntax' },
-      { title: 'Using APIs', href: '/docs/services/apis' },
+      { title: 'Introduction', href: '/docs/services/introduction' },
+      { title: 'Service Executors', href: '/docs/services/executors' },
+      { title: 'Good Practices', href: '/docs/services/practices' },
+     // { title: 'Task Tags', href: '/docs/services/tagEngines' },
+      { title: 'Task Context', href: '/docs/services/context' },
+      { title: 'Task Failure', href: '/docs/services/failure' },
+      { title: 'Task Integrating APIs', href: '/docs/services/apis' },
       { title: 'Delegated Task', href: '/docs/services/delegated' },
       { title: 'Service Versioning', href: '/docs/services/versioning' },
       { title: 'Service Events', href: '/docs/services/events' },
+      { title: 'Service Logging', href: '/docs/services/logging' },
     ],
   },
   {
     title: 'Workflows',
     links: [
-      { title: 'Workflow Workers', href: '/docs/workflows/workers' },
+      { title: 'Workflow Executors', href: '/docs/workflows/executors' },
       { title: 'Workflow Syntax', href: '/docs/workflows/syntax' },
       { title: 'Sequential Tasks', href: '/docs/workflows/sequential' },
       { title: 'Parallelization', href: '/docs/workflows/parallel' },
@@ -63,8 +68,9 @@ const navigation = [
       { title: 'Inline Tasks', href: '/docs/workflows/inline' },
       { title: 'Deferred', href: '/docs/workflows/deferred' },
       { title: 'Errors', href: '/docs/workflows/errors' },
-      { title: 'Workflow Versioning', href: '/docs/workflows/versioning' },
-      { title: 'Workflow Events', href: '/docs/workflows/events' },
+      { title: 'Versioning', href: '/docs/workflows/versioning' },
+      { title: 'Events', href: '/docs/workflows/events' },
+      { title: 'Tag Engines', href: '/docs/workflows/tagEngines' },
     ],
   },
   {

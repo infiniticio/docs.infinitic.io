@@ -22,9 +22,9 @@ While Infinitic doesn't require specific Pulsar settings, we recommend the follo
 
 | Parameter | Recommended Value | Description |
 |-----------|-------------------|-------------|
-| retentionTimeInMinutes | 10080  | (7 days) Ensures messages are kept for a week |
-| retentionSizeInMB | 1024 | (1GB)  Limits the total size of retained messages |
-| messageTTLInSeconds | 1209600  or 31622400 | (14 days or 1 year) Sets message lifetime before expiration|
+| retentionTimeMinutes | 10080  | (7 days) Ensures messages are kept for a week |
+| retentionSizeMB | 1024 | (1GB)  Limits the total size of retained messages |
+| messageTTLSeconds | 1209600  or 31622400 | (14 days or 1 year) Sets message lifetime before expiration|
 | delayedDeliveryTickTimeMillis | 1000|  (1 second)  Controls the frequency of checking for delayed messages |
 
 **Rationale for These Settings:**

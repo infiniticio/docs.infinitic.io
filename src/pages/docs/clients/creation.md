@@ -16,7 +16,7 @@ file:
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-client:0.15.0"
+    implementation "io.infinitic:infinitic-client:0.16.0"
     ...
 }
 ```
@@ -24,7 +24,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-client:0.15.0")
+    implementation("io.infinitic:infinitic-client:0.16.0")
     ...
 }
 ```
@@ -71,7 +71,7 @@ The infinitic.yml configuration file should contain:
 
 - `name` (optional): Specifies the name of the client
 - `pulsar`:  Details the connection parameters for [Pulsar](/docs/references/pulsar)
-- `shutdownGracePeriodInSeconds` (optional): Defines the grace period allotted to the client to complete its current actions before shutting down (default is `10.0` seconds).
+- `shutdownGracePeriodSeconds` (optional): Defines the grace period allotted to the client to complete its current actions before shutting down (default is `10.0` seconds).
 
 ```yaml
 # optional
@@ -85,7 +85,7 @@ pulsar:
   ...
 
 # optional
-shutdownGracePeriodInSeconds: 10.0
+shutdownGracePeriodSeconds: 10.0
 ```
 
 {% callout type="warning"  %}
