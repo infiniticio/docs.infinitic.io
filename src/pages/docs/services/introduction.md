@@ -1,6 +1,6 @@
 ---
 title: Service Introduction
-description:
+description: Learn about Infinitic services, their implementation, and how they facilitate distributed and asynchronous execution of business logic through event-based RPC mechanisms. Discover the benefits of using service interfaces as contracts and best practices for managing service versions.
 ---
 
 ## What Are Services?
@@ -56,14 +56,14 @@ Services are invoked through an event-based Remote Procedure Call (RPC) mechanis
    - The serialized method arguments
    - The potential tags and metadata
 
-2. **Event Publishing**: The task command is published to a message broker. This decouples the caller from the Service implementation, allowing for asynchronous processing.
+2. **Command Publishing**: The task command is published to a message broker. This decouples the caller from the Service implementation, allowing for asynchronous processing.
 
-3. **Event Consumption**: Service Executors subscribe to these task commands. When a relevant command is received, the Executor:
+3. **Task Execution**: Service Executors subscribe to these task commands. When a relevant command is received, the Executor:
    - Deserializes the task information
    - Instantiates the appropriate Service, based on the Service name
    - Invokes the specified method with the provided arguments after deserializing them
 
-4. **Result Handling**: After method execution, the result (or any exception) is serialized and published back to the message broker as a new task event.
+4. **Event Publishing**: After method execution, the result (or any exception) is serialized and published back to the message broker as a new task event.
 
 5. **Result Retrieval**: The original caller can then retrieve the result asynchronously.
 

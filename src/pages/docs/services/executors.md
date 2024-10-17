@@ -10,12 +10,13 @@ Service Executors are Infinitic Workers configured to execute tasks, by:
  - [Deserializing](/docs/references/serialization) task arguments.
  - Instantiating the Service class and executing the requested task method with the provided arguments.
  - [Serializing](/docs/references/serialization) the return value and sending it back through Pulsar.
- - Handling [timeouts](#timeout), [exceptions](#retry-policy), and managing [task retries](#retry-policy).
+ - Handling [timeouts](/docs/services/references#task-timeout), [exceptions](/docs/services/references#retry-policy), and managing [task retries](docs/services/references#retry-policy).
 
 ![Service workers](/img/concept-service.png)
 
-The code of Service Executors is provided by Infinitic. However, you need to configure these executors with the specific Service classes that you want to execute.
-This configuration tells the executor which Services it should be responsible for and how to instantiate them.
+The code of Service Executors is provided by Infinitic. However, you need to configure an executor to tell which Services it should be responsible for and how to instantiate them.
+
+## Creating a Service Executor
 
 To build a Service Executor, like for all Infinitic Workers, you need first to add the `infinitic-worker` dependency into your project:
 
@@ -39,143 +40,29 @@ dependencies {
 
 {% /codes %}
 
-## Setup
-
 A Service Executor can be set up throuh [code](#code-based-configuration) or using [YAML](#yaml-based-configuration). 
-With both methods, you'll need to:
 
-1. Specify the [Service name](#service-and-task-name) that the executor should handle.
+Whatever the chosen method, you'll need to:
 
-2. Provide a way to instantiate these Service classes. This can be done:
+1. Specify how to connect to the event broker. 
 
-   - By providing the fully qualified name of the Service class, if the Service can be instantiated with a no-argument constructor.
-   - Through a factory method that creates and returns an instance of the Service.
+2. Specify the names of all Services you want the Service Executor to handle. A service name indicates which topic to listen for execution commands.
 
+3. Provide a way to instantiate the corresponding Service classes. This can be done:
 
-3. Define optional settings:
+   - For YAML-based configuration, by providing the fully qualified name of the Service class (only if the Service can be instantiated with a no-argument constructor).
+   - For code-based configuration, through a factory method that creates and returns an instance of the Service.
 
-   - Adjust [concurrency](#concurrency) levels to control the number of tasks executed simultaneously by a single executor.
-   - Set [timeout](#timeout) policies to prevent indefinite processing.
-   - Configure [retry](#retries) policies to handle transient failures and improve task resilience.
+4. Provide some optional settings relative to the execution, such as:
 
+   - the [concurrency](/docs/services/references#concurrency) to control the number of tasks executed simultaneously by this executor.
+   - an optional, but recommended, [retry policy](/docs/services/references#retry-policy) to handle transient failures.
+   - an optional [timeout](/docs/services/references#task-timeout) to prevent indefinite processing.
 
-Before building a Service Executor, you need to add the `infinitic-worker` dependency into your project:
-
-{% codes %}
-
-```java
-dependencies {
-    ...
-    implementation "io.infinitic:infinitic-worker:0.16.0"
-    ...
-}
-```
-
-```kotlin
-dependencies {
-    ...
-    implementation("io.infinitic:infinitic-worker:0.16.0")
-    ...
-}
-```
-
-{% /codes %}
-
-### Service and Task Name 
-
-The name of the Service is used to identify the Pulsar topic that the Service Executor will listen to.
-The name of the task is used to identify the method that the Service Executor will execute.
-
-By default, **the Service name is the fully qualified name of the Service interface**, and **the task name is the name of the method**.
-
-The name of the Service, as well as the name of the tasks, must not change after the Service Executors have been deployed.
-
-If you want to decouple this name from the underlying implementation, 
-for example if you want to rename the class or method,
-you can use an `@Name` annotation. 
-
-{% callout type="warning" %}
-
-The `@Name` annotation must be used on the Service interface (not on the Service implementation).
-
-{% /callout  %}
-
-{% codes %}
-
-```java
-package com.company.services;
-
-import io.infinitic.annotations.Name;
-
-@Name(name = "MyService")
-public interface MyNewService {
-
-    @Name(name = "firstTask")
-    FirstTaskOutput newFirstTask(FirstTaskInput input);
-
-    @Name(name = "secondTask")
-    SecondTaskOutput newSecondTask(SecondTaskInput input);
-}
-```
-
-```kotlin
-package com.company.services
-
-import io.infinitic.annotations.Name
-
-@Name("MyService")
-interface MyNewService {
-    
-    @Name("firstTask")
-    fun newFirstTask(input: FirstTaskInput): FirstTaskOutput
-
-    @Name("secondTask")
-    fun newSecondTask(input: SecondTaskInput): SecondTaskOutput
-}
-```
-
-{% /codes %}
-
-
-### Concurrency Level
-
-**By default, tasks are executed sequentially, one after another, within the same Service Executor.** However, we can increase the level of parallelism with a `concurrency` parameter (see below). For example, with `concurrency = 50`, a Service Executor will execute up to 50 tasks concurrently. If more than 50 tasks are running, the worker will stop consuming messages until a slot becomes available. 
-
-{% callout  %}
-
-This parallel execution can significantly improve throughput, but it's important to consider the resource implications and potential contention issues when setting a high concurrency value.
-
-{% /callout  %}
-
-### Timeout Policy
-
-**By default, tasks have no timeout defined.** A timeout refers to a maximum duration allowed for a task to complete its execution. If a task exceeds this specified time limit, a `io.infinitic.exceptions.tasks.TimeoutException` exception will be thrown (but the task execution will NOT be forcibly terminated). When timed-out, the task will be automatically retried - or not - based on its retry policy.
-
-{% callout  %}
-
-This timeout exception will not be triggered if the worker terminates unexpectedly (e.g., due to a system crash or forced shutdown). This limitation is why we generally recommend implementing timeout policies at the workflow level instead of relying solely on task-level timeouts.
-
-When setting a timeout at the workflow level, it's important to account for the cumulative time of all potential retry attempts.
-
-{% /callout  %}
-
-### Retry Policy
-
-**By default, failed tasks are not retried.** But Infinitic provides a robust retry mechanism for tasks that fail during execution. This mechanism handles transient errors and improves the overall reliability of your services. 
-
-{% callout  %}
-
-The workflow that dispatched a task remains unaware of any retry attempts occurring for that task. From the workflow's perspective, it only receives the final outcome: either the task has succeeded after potentially multiple retry attempts, or it has ultimately failed once all retry attempts have been exhausted. This abstraction allows the workflow to focus on the overall task completion status rather than the intricacies of the retry mechanism.
-
-{% /callout  %}
 
 ### Code-based Configuration
 
-A ServiceExecutor can be created with builders. 
-In the example below, we create an Infinitic Worker containing 3 Service Executors:
--  for the `CarRentalService` service, with a concurrency of 5, no timeout and no retry policy.
--  for the `FlightBookingService` service, with a concurrency of 5, no timeout and no retry policy.
--  for the `HotelBookingService` service, with a concurrency of 5, a timeout of 100 seconds and a retry policy of exponential backoff with a maximum of 11 retries.
+In the example below, we create an Infinitic Worker containing a Service Executor for the `HotelBookingService` service, with a concurrency of 5, a timeout of 100 seconds and a retry policy of exponential backoff with a maximum of 11 retries.
 
 {% codes %}
 
@@ -196,18 +83,6 @@ WithRetryBuilder withRetry = WithExponentialBackoffRetry.builder()
 InfiniticWorker worker = InfiniticWorker.builder()
   .setName("gilles_worker")
   .setTransport(transport)
-  .addServiceExecutor(
-    ServiceExecutorConfig.builder()
-      .setServiceName("CarRentalService")
-      .setFactory(() -> new CarRentalServiceImpl(/* injections here*/))
-      .setConcurrency(5)
-  )
-  .addServiceExecutor(
-    ServiceExecutorConfig.builder()
-      .setServiceName("FlightBookingService")
-      .setFactory(() -> new FlightBookingServiceImpl(/* injections here*/))
-      .setConcurrency(5)
-  )
   .addServiceExecutor(
     ServiceExecutorConfig.builder()
       .setServiceName("HotelBookingService")
@@ -239,20 +114,8 @@ val worker = InfiniticWorker.builder()
   .setTransport(transport)
   .addServiceExecutor(
     ServiceExecutorConfig.builder()
-      .setServiceName("CarRentalService")
-      .setFactory { CarRentalServiceImpl(/* injections here*/) }
-      .setConcurrency(5)
-  )
-  .addServiceExecutor(
-    ServiceExecutorConfig.builder()
-      .setServiceName("FlightBookingService")
-      .setFactory { FlightBookingServiceImpl(/* injections here*/) }
-      .setConcurrency(5)
-  )
-  .addServiceExecutor(
-    ServiceExecutorConfig.builder()
       .setServiceName("HotelBookingService")
-      .setFactory { ServiceExample(/* injections here*/) }
+      .setFactory { HotelBookingServiceImpl(/* injections here*/) }
       .setConcurrency(5)
       .setTimeoutSeconds(100.)
       .withRetry(withRetry)
@@ -268,18 +131,7 @@ While it's possible to configure multiple Service Executors within a single Work
 having only one Service Executor per Worker in production. This improves resource isolation, and simplifies monitoring and debugging.
 
 {% /callout  %}
-The argument to the `withRetry` should be an instance of the `io.infinitic.tasks.WithRetry` interface requiring a method:
-{% codes %}
-
-```java
-Double getSecondsBeforeRetry(Int retry, Exception e);
-```
-
-```kotlin
-fun getSecondsBeforeRetry(retry: Int, e: Exception): Double?
-```
-{% /codes %}
-
+The argument to the `withRetry` method should be an instance of the [`WithRetry`](/docs/services/references#using-with-retry-interface) interface.
 
 
 ### YAML-based Configuration
@@ -325,14 +177,6 @@ transport:
 
 # Configuration of Services executors
 services:
-  - name: CarRentalService
-    executor:
-      class: example.booking.services.carRental.CarRentalServiceImpl
-      concurrency: 5
-  - name: FlightBookingService
-    executor:
-      class: example.booking.services.flight.FlightBookingServiceImpl
-      concurrency: 5
   - name: HotelBookingService
     executor:
       class: example.booking.services.hotel.HotelBookingServiceImpl
@@ -345,7 +189,7 @@ services:
         maximumRetries: 11
 ```
 
-This configuration contains
+This configuration contains:
 
 - an optional worker name, this name must be unique among all our workers and clients connected to the same Pulsar namespace. It's used for logging purposes only
 - the [Pulsar settings](/docs/references/pulsar), describing how to connect to your Pulsar cluster
@@ -353,7 +197,6 @@ This configuration contains
 
     | Name                 | Type        | Description                                         | Default   |
     | -------------------- | ----------- | --------------------------------------------------- | --------- |
-    | `name`               | string      | Service name    |           |
     | `class`              | string      | Class of the Service                |           |
     | `concurrency`        | integer     | Number of tasks processed in parallel                | 1         |
     | `timeoutSeconds`     | double      | Maximum duration of a task execution before throwing a TimeoutException | none      |
@@ -399,6 +242,7 @@ min(
 ```
 
 where `random()` is a random value between `0` and `1`.
+
 
 
 ## Starting a Service Executor

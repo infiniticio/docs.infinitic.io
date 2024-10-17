@@ -136,6 +136,34 @@ pulsar:
     audience: https://dev-kt-aa9ne.us.auth0.com/api/v2/
 ```
 
+## Pulsar Exception
+
+### Exception During Message Deserialization
+
+Infinitic handles all aspects of message deserialization internally. User content is not deserialized at this stage but during the subsequent task preparation phase. Infinitic messages are serialized in Avro format, and rigorous testing ensures backward compatibility for all messages. Deserialization errors are extremely rare but can occur in specific scenarios, such as upgrading Infinitic to a new version and then rolling back to a previous version, if these versions have schema changes.
+
+If a deserialization error occurs:
+
+* The affected message is immediately negatively acknowledged and queued for reprocessing by another broker.
+* After three unsuccessful attempts, the message is moved to a dead letter queue, and the error is logged. The number of retry attempts can be adjusted using the `maxRedeliverCount` parameter in the [consumer configuration](/docs/references/pulsar#consumer-settings).
+
+In this unlikely event, the task remains pending in the workflow that dispatched it, as Infinitic cannot identify which specific task was in the failed message. To resolve this situation, you have two options:
+
+1. [Retry ongoing tasks](/docs/clients/retry-failed-tasks) (ideally, your tasks should be idempotent to ensure safe retries).
+2. If the issue was caused by an Infinitic downgrade, revert the downgrade and resend the messages from the dead letter queues to their original topics.
+
+### Exception During Message Sending
+
+When Infinitic processes a message, it sends new messages to the event brokers. If Infinitic fails to send a message successfully, it will immediately stop and attempt to negatively acknowledge the current message. Once negatively acknowledged, Pulsar will automatically reattempt to deliver the message after a delay. If the message cannot be successfully consumed after three attempts, it is moved to a dead letter queue, and the error is logged.
+
+Key settings to consider:
+
+- `ackTimeout`: Defines the period within which Infinitic must acknowledge received messages. If a message is not acknowledged within this period, it is considered unacknowledged, and the broker will resend it to the consumer. *By default, the acknowledgment timeout is disabled*, meaning that messages delivered to a consumer will not be redelivered unless the consumer stops or explicitly acknowledges or negatively acknowledges them.
+- `maxRedeliverCount`: Specifies the maximum number of times a message can be redelivered to a consumer after it has been negatively acknowledged (NACKed) or not acknowledged within the acknowledgment timeout period, before being sent to a Dead Letter Queue. The default is 3 for Infinitic.
+- `negativeAckRedeliveryDelay`: Determines the delay period that Pulsar will wait before redelivering a negatively acknowledged message. This delay helps manage transient errors by preventing immediate retries. The default is 60 seconds.
+
+Those settings can be set on [consumers](#consumer-settings).
+
 ## Using Infinitic With Third-Party Providers
 
 Infinitic has been tested successfully with the following providers:

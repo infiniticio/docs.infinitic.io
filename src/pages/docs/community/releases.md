@@ -3,6 +3,67 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.16.0
+
+{% version-new-features /%}
+
+* @Batch processing of services , - can add a batchKey into task meta, this batchKey is also in Task context
+
+* in-memory implementation for tests
+
+* Globalevent Event listener: new config, auto-refresh, processed by batch
+
+* CloudEvent as Logs during dec can now be seen in
+  - io.infinitic.cloudEvents.WorkflowStateEngine.$workflowName
+  - io.infinitic.cloudEvents.WorkflowExecutor.$workflowName
+  - io.infinitic.cloudEvents.ServiceExecutor.$serviceName
+  new entry in worker config to beautify cloudevents logs (true by default)
+
++ Improved documentation
+
+{% version-breaking-changes /%}
+
+*  CloudEvents: update some cloud events format
+* Rename delayedTTLInSeconds to timerTTLInSeconds: Updated variable name in PoliciesConfig.kt to reflect its actual purpose more accurately.
+* Remove default values for storage. Previously default values were set for local developement. we think now it can be misleading when going to production.
+* Normalize setters on all config builders
+* Refactor field names for consistency in PoliciesConfig
+* Updated field names to use consistent terminology by removing "In" and improving readability. (timeoutSeconds, shutdownGracePeriodSeconds, retentionTimeMinutes, retentionSizeMB, messageTTLSeconds, etc..)
+* Change 'user' to 'username' in MySQLConfig, PostgresConfig and RedisConfig
+* Transport definition in config
+* Update InfiniticClient and InfiniticWorker constructor, to only take a config object
+* Update the 'from***' static method for Clients and Workers
+- Rename ExponentialBackoffRetryPolicy class to WithExponentialBackoffRetry
+- Pulsar client config is now under the `client` keyword and has been extended to all available settings
+- Dashboard settings must now be under the `dashboard`keyword
+- CloudEvent: sources more clearly distinguish executor and stateEngine
+- CloudEvent: workflow version is now 0 (instead of null) when undefined
+- For consistency on CloudEvents, "start" command is replaced by "dispatched", "ended" event is replaced by "completed"
+
+
+{% version-bug-fixes /%}
+- In workflows, if a property is present in the workflow history but disappeared from the workflow class, a warning is now emitted. Previously an error was thrown.
+- when using dispatchAsync, multiple successive calls would use only the last arguments used
+- Fix use of Schema for Postgres
+
+{% version-improvements /%}
+* More reliable client deletion when topic is closing
+* Improved implementation of consumers to ensure all messages are processed, even in case of errors or Shutdown
+
+* Lib updates:
+  - Kotlin: 2.0.0 -> 2.0.10
+  - CloudEvents: 3.0.0 -> 4.0.1
+  - Jackson: 2.17.1 -> 2.17.2
+  - Uuid: 5.0.0 -> 5.1.0
+  - Kotest: 5.9.0 -> 5.9.1
+  - kotlinx-serialization-json: 1.6.3 -> 1.7.1
+  - TestContainers: 1.19.8 -> 1.20.1
+  - Mockk: 1.13.11 -> 1.13.12
+  - Pulsar: 3.0.4 -> 3.0.6
+  - Slf4j: 2.0.13 -> 2.0.16
+  - Logging: 6.0.9 -> 7.0.0
+  - Compress: 1.26.1 -> 1.27.1
+
 ## v0.15.0
 
 {% callout type="warning"  %}

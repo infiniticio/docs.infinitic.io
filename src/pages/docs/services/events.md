@@ -1,9 +1,9 @@
 ---
 title: Service Events
-description:
+description: Learn how to access and utilize Infinitic internal events in CloudEvent JSON format for auditing, custom dashboards, logging, and more. Discover how to configure event listeners for your services to handle events efficiently.
 ---
 
-Since version 0.13.0, it's possible to access Infinitic internal events in a [CloudEvents](https://cloudevents.io) JSON format. These events serve various use cases, including:
+Since version 0.13.0, it's possible to access Infinitic internal events in a [CloudEvent](https://cloudevents.io) JSON format. These events serve various use cases, including:
 
 - Auditing
 - Building custom dashboards
@@ -92,7 +92,7 @@ import io.infinitic.cloudEvents.CloudEventListener;
 
 public class Listener implements CloudEventListener {
     @Override
-    public void onEvent(CloudEvent event) {
+    public void onEvents(List<CloudEvent> events) {
         System.out.println(new String(new JsonFormat().serialize(event)));
     }
 }
@@ -150,9 +150,9 @@ For all service events:
 
 | CloudEvent's type postfix | Type   | Description                                                                      |
 | --------------------- | ------- | -------------------------------------------------------------------------------- |
-| `start`               | Command | A task has been scheduled.                                       |
-| `started`             | Event   | The worker has begun processing the task.                        |
-| `completed`           | Event   | Successful completion of the task by the worker.                      |
+| `dispatch`            | Command | A task execution is required                                       |
+| `started`             | Event   | A worker has begun processing the task.                        |
+| `completed`           | Event   | A worker has succesfuly processed the task                    |
 | `retryScheduled`      | Event   | The task has failed and is scheduled for retry per the retry policy. |
 | `failed`              | Event   | The task did not succeed within the allowed retries as defined by the retry policy. |
 | `delegationCompleted` | Event   | Successful completion of a delegated task by the worker.              |

@@ -1,13 +1,13 @@
 ---
 title: Service Logging
-description: .
+description: Learn how to effectively implement and configure logging for Infinitic services, including best practices for monitoring, debugging, and using SL4J logger to manage task retries and failures.
 ---
 
 ## Logging
 
 {% callout type="warning" %}
 
-Service Executors internally catch exceptions to manage task retries and failures. However, this means that these exceptions won't be visible in your application's standard error output. To effectively monitor and debug your service workers, it's crucial to implement a SL4J logger.
+Service Executors internally catch exceptions to manage task retries and failures. These exceptions won't be visible in your application's standard error output. To effectively monitor and debug your service workers, it's crucial to implement a SL4J logger.
 
 {% /callout %}
 

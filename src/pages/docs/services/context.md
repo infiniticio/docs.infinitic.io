@@ -1,9 +1,7 @@
 ---
 title: Task Context
-description: .
+description: Learn about the task context in Infinitic, including its properties and how it's used to understand the execution environment of a task.
 ---
-
-## Task Context
 
 In some cases, it is useful to understand more about the context in which a task is executed.
 
@@ -16,16 +14,17 @@ The `io.infinitic.tasks.Task` class provides the following static properties:
 | `taskName`      | String          | Name of the task (taken from the [@Name](#name-annotation) annotation if provided, otherwise defaulting to the service's method name) |
 | `workflowId`    | String?         | Unique identifier of the workflow (if part of a workflow)                                           |
 | `workflowName`  | String?         | Name of the workflow (if part of a workflow)                                         |
-| [`tags`](#tags)                    | Set\<String\>   | Tags provided when dispatching the task                                              |
-| [`meta`](#meta)                    | MutableMap\<String, ByteArray\>   | Metadata provided when dispatching the task                        |
+| [`tags`](#tags) | Set\<String\>   | Tags provided when dispatching the task                                              |
+| [`meta`](#meta) | Map\<String, ByteArray\>   | Metadata provided when dispatching the task                        |
 | [`retryIndex`  ](#retry-index)     | Integer         | Number of times the task was automatically retried                                   |
 | [`retrySequence`](#retry-sequence) | Integer         | Number of times the task was manually retried                                        |
 | [`lastError`](#last-error)         | ExecutionError? | If any, the error during the previous attempt                                        |
+| `batchKey`        | String? | If any, the [batch key](/docs/services/batched#optional-batch-key) provided when the task was dispatched                                       |
 | `client`        | InfiniticClient | An [InfiniticClient](/docs/introduction/terminology#clients) that can be used inside the task                                  |
 
 {% callout type="warning"  %}
 
-The task context is only accessible from the thread that started:
+The task context is injected by the Service worker executing the task, and is only accessible from the thread that started:
 * the task method
 * the `getTimeoutSeconds` method 
 * the `getSecondsBeforeRetry` method
@@ -38,7 +37,7 @@ In tests, `io.infinitic.tasks.TaskContext` can be mocked and injected through `T
 
 {% /callout  %}
 
-### `tags`
+## `tags`
 
 The `tags` property of the task context is an immutable set of strings.
 Its value is defined when dreating the Service stub before dispatching the task:
@@ -62,7 +61,7 @@ val helloService = newService(
 {% /codes %}
 
 
-### `meta`
+## `meta`
 
 The `meta` property of the task context is a mutable map of strings to arrays of bytes.
 Its value is defined when creating the Service stub before dispatching the task:
@@ -98,7 +97,7 @@ The `meta` property is mutable and can be read and write during the task executi
 
 {% /callout  %}
 
-### `retryIndex`
+## `retryIndex`
 
 The `retryIndex` property of the task context indicates the current number of retry attempts.
 It starts at 0 and is incremented when a task is [automatically retried](#retries-policy):
@@ -111,14 +110,14 @@ When a task is [manually retried](/docs/clients/retry-failed-tasks), the `retryI
 
 {% /callout  %}
 
-### `retrySequence`
+## `retrySequence`
 
 The `retrySequence` property of the task context indicates the current number of manual retries.
 It starts at 0 and is incremented when a task is [manually retried](/docs/clients/retry-failed-tasks):
 
 ![Tasks retries](/img/task-retries@2x.png)
 
-### `lastError`
+## `lastError`
 
 If not null (when `retryIndex` >= 1), the lastError property is a data object representing the exception thrown during the last task attempt. This `ExecutionError` instance has the following properties:
 
