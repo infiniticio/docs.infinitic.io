@@ -3,7 +3,7 @@ title: Batched Task
 description: Learn how to implement batched tasks in Infinitic for efficient processing of multiple tasks together, reducing overhead and improving performance.
 ---
 
-## Batched task purpose
+## Batched Task Purpose
 
 A batched task is a specialized mode of execution of task that processes multiple tasks together in a single execution. 
 
@@ -123,7 +123,7 @@ Here are some common use cases:
 
     {% /codes %} 
 
-## Batched task implementation
+## Batched Task Implementation
 
 Batching tasks is implemented at the [Service Executor](/docs/services/executors) level. To enable task batching, you need to define a batched version of your task method in your service implementation. Here's how to do it:
 
@@ -187,7 +187,7 @@ If the original method has multiple parameters, the batch method should have a s
    - No explicit mapping of results to tasks is required.
    - Infinitic will treat the return value of each individual task as `null`.
 
-## Batch behavior
+## Batch Behavior
 
 The batching process occurs after message deserialization. If a message corresponds to a method with a batch version, it's added to the current batch for that method. A batch is processed when it reaches `maxMessages` or when `maxSeconds` have elapsed since the first message was added to the batch. The batch is then sent to the executor. With an executor concurrency of 10, up to 10 batches could potentially be executed in parallel.
 
@@ -202,14 +202,14 @@ If needed, consider also increasing the default value of 1,000 for the `receiver
 {% /callout %}
 
 
-## Optional batch key
+## Optional Batch Key
 
 By default, batching is performed on a per-method basis. However, Infinitic provides the flexibility to create more specific batches using a  batch key. This feature allows you to group related tasks together.
 
 {% callout %}
 
 To use a batch kay, add a String value to the "batchKey" metadata when dispatching a task.
-Every batch will then contain only messages with the same batch key value.
+Every batch will then contain only tasks with the same batch key value.
 
 
 {% /callout %}

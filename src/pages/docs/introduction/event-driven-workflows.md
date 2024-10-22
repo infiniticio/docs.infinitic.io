@@ -1,5 +1,5 @@
 ---
-title: Event-Driven Workflows
+title: Event-Driven
 description: This page provides an in-depth exploration of how Infinitic harnesses event-driven architecture to facilitate robust and efficient business processes management in distributed systems. Ideal for Java and Kotlin developers, this guide is your resource for mastering event-driven processes with Infinitic.
 ---
 Infinitic enables the creation of scalable and robust business processes in Java or Kotlin, simplifying the complexities typically associated with distributed systems. This is achieved through several key features:

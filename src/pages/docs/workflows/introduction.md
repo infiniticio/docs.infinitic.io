@@ -1,11 +1,36 @@
 ---
-title: Service Introduction
-description: Learn about Infinitic services, their implementation, and how they facilitate distributed and asynchronous execution of business logic through event-based RPC mechanisms. Discover the benefits of using service interfaces as contracts and best practices for managing service versions.
+title: Workflow Introduction
+description: Learn about Infinitic workflows, their implementation, and how they facilitate distributed and asynchronous execution of business logic through event-based RPC mechanisms. Discover the benefits of using workflow interfaces as contracts and best practices for managing workflow versions.
 ---
 
-## What Are Services?
+## What Are Workflows?
+
+## Examples of Workflows
+
+## Examples of Workflows
+
+### Order Processing Workflow
+
+This workflow is triggered when a new order is created. It involves multiple services such as OrderService, InventoryService, and PaymentService.
+
+1. **Create Order**: The workflow starts with the creation of a new order using the OrderService.
+
+2. **Check Stock**: The InventoryService is then used to check the stock availability for the ordered items.
+
+3. **Process Payment**: Once the stock availability is confirmed, the PaymentService is used to process the payment for the order.
+
+4. **Update Order Status**: Finally, the OrderService is used to update the status of the order to 'Processed'.
+
+
+These are just a few examples of workflows that can be used in an e-commerce application. They demonstrate the power of Infinitic in orchestrating complex business processes involving multiple services.
+
+
+
+## What are Services ?
 
 Services are units of business logic that perform specific tasks or operations within your application. **A service is implemented as a class with methods that represent different operations**. For example, in an e-commerce application, you might have services like:
+
+
 
 * **OrderService**: Handles order processing, validation, and management.
    - Methods: createOrder(), updateOrderStatus(), cancelOrder()

@@ -6,11 +6,11 @@ description: This documentation introduces Infinitic's service workers, designed
 ## What are Service Executors?
 
 Service Executors are Infinitic Workers configured to execute tasks, by:
- - [Concurrently](#concurrency-level) listening for incoming task messages from Pulsar, as defined by the concurrency settings.
- - [Deserializing](/docs/references/serialization) task arguments.
+ - Concurrently listening for incoming task messages from Pulsar, as defined by the concurrency settings.
+ - Deserializing task arguments.
  - Instantiating the Service class and executing the requested task method with the provided arguments.
- - [Serializing](/docs/references/serialization) the return value and sending it back through Pulsar.
- - Handling [timeouts](/docs/services/references#task-timeout), [exceptions](/docs/services/references#retry-policy), and managing [task retries](docs/services/references#retry-policy).
+ - Serializing the return value and sending it back through Pulsar.
+ - Handling timeouts, exceptions, and managing task retries.
 
 ![Service workers](/img/concept-service.png)
 
@@ -60,7 +60,7 @@ Whatever the chosen method, you'll need to:
    - an optional [timeout](/docs/services/references#task-timeout) to prevent indefinite processing.
 
 
-### Code-based Configuration
+### Builder-based Configuration
 
 In the example below, we create an Infinitic Worker containing a Service Executor for the `HotelBookingService` service, with a concurrency of 5, a timeout of 100 seconds and a retry policy of exponential backoff with a maximum of 11 retries.
 
@@ -81,7 +81,6 @@ WithRetryBuilder withRetry = WithExponentialBackoffRetry.builder()
   .setMaximumRetries(11);
 
 InfiniticWorker worker = InfiniticWorker.builder()
-  .setName("gilles_worker")
   .setTransport(transport)
   .addServiceExecutor(
     ServiceExecutorConfig.builder()
@@ -94,12 +93,12 @@ InfiniticWorker worker = InfiniticWorker.builder()
 ```
 
 ```kotlin
-val transport = PulsarTransportConfig(
-  brokerServiceUrl = "pulsar://localhost:6650",
-  webServiceUrl = "http://localhost:8080",
-  tenant = "infinitic",
-  namespace = "dev"
-)
+val transport = PulsarTransportConfig.builder()
+  .setBrokerServiceUrl("pulsar://localhost:6650")
+  .setWebServiceUrl("http://localhost:8080")
+  .setTenant("infinitic")
+  .setNamespace("dev")
+  .build()
 
 val withRetry = WithExponentialBackoffRetry(
   minimumSeconds = 1,
@@ -110,7 +109,6 @@ val withRetry = WithExponentialBackoffRetry(
 )
 
 val worker = InfiniticWorker.builder()
-  .setName("gilles_worker")  
   .setTransport(transport)
   .addServiceExecutor(
     ServiceExecutorConfig.builder()

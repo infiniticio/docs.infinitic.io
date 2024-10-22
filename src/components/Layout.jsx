@@ -19,16 +19,24 @@ const navigation = [
     title: 'Introduction',
     links: [
       { title: 'Getting started', href: '/' },
-      { title: 'Terminology', href: '/docs/introduction/terminology' },
       { title: 'Event-Driven', href: '/docs/introduction/event-driven-workflows' },
+      { title: 'Interfaces As Contract', href: '/docs/introduction/interfaces' },
       { title: 'Examples', href: '/docs/introduction/examples' },
       { title: 'Hello World', href: '/docs/introduction/hello-world' },
     ],
   },
   {
-    title: 'Clients',
+    title: 'Components',
     links: [
-      { title: 'Creation', href: '/docs/clients/creation' },
+      { title: 'Terminology', href: '/docs/components/terminology' },
+      { title: 'Infrastructure', href: '/docs/components/infrastructure' },
+      { title: 'Worker Creation', href: '/docs/components/workers' },
+      { title: 'Client Creation', href: '/docs/components/clients' },
+    ],
+  },
+  {
+    title: 'Client Usage',
+    links: [
       { title: 'Workflow Stubs', href: '/docs/clients/workflow-stubs' },
       { title: 'Start A Workflow', href: '/docs/clients/start-workflow' },
       { title: 'Send A Signal', href: '/docs/clients/send-signal' },
@@ -40,14 +48,11 @@ const navigation = [
       }, ],
   },
   {
-    title: 'Services',
+    title: 'Service',
     links: [
-      { title: 'Introduction', href: '/docs/services/introduction' },
-      { title: 'Service Executors', href: '/docs/services/executors' },
-      { title: 'References', href: '/docs/services/references' },
+      { title: 'Implementation', href: '/docs/services/implementation' },
       { title: 'Good Practices', href: '/docs/services/practices' },
-     // { title: 'Task Tags', href: '/docs/services/tagEngines' },
-     { title: 'Task Context', href: '/docs/services/context' },
+      { title: 'Task Context', href: '/docs/services/context' },
       { title: 'Batched Task', href: '/docs/services/batched' },
       { title: 'Delegated Task', href: '/docs/services/delegated' },
       { title: 'Task Failures In Detail', href: '/docs/services/failures' },
@@ -57,9 +62,11 @@ const navigation = [
     ],
   },
   {
-    title: 'Workflows',
+    title: 'Workflow',
     links: [
+      { title: 'Introduction', href: '/docs/workflows/introduction' },
       { title: 'Workflow Executors', href: '/docs/workflows/executors' },
+      { title: 'Workflow Tag Engines', href: '/docs/workflows/tagEngines' },
       { title: 'Workflow Syntax', href: '/docs/workflows/syntax' },
       { title: 'Sequential Tasks', href: '/docs/workflows/sequential' },
       { title: 'Parallelization', href: '/docs/workflows/parallel' },
@@ -71,7 +78,6 @@ const navigation = [
       { title: 'Errors', href: '/docs/workflows/errors' },
       { title: 'Versioning', href: '/docs/workflows/versioning' },
       { title: 'Events', href: '/docs/workflows/events' },
-      { title: 'Tag Engines', href: '/docs/workflows/tagEngines' },
     ],
   },
   {

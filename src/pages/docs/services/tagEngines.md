@@ -179,7 +179,7 @@ A  Service Tag Engine configuration can also be created with builders:
 {% codes %}
 
 ```java
-TransportConfigBuilder transport = PulsarTransportConfig.builder()
+TransportConfigBuilder transportConfig = PulsarTransportConfig.builder()
   .setBrokerServiceUrl("pulsar://localhost:6650")
   .setWebServiceUrl("http://localhost:8080") 
   .setTenant("infinitic")
@@ -197,7 +197,7 @@ StorageConfigBuilder storage = MySQLStorageConfig.builder()
   .setPassword("***");
 
 InfiniticWorker worker = InfiniticWorker.builder()
-  .setTransport(transport)
+  .setTransport(transportConfig)
   .addServiceTagEngine(
     ServiceTagEngineConfig.builder()
       .setServiceName("CarRentalService")
@@ -220,12 +220,12 @@ InfiniticWorker worker = InfiniticWorker.builder()
 ```
 
 ```kotlin
-val transport = PulsarTransportConfig(
-  brokerServiceUrl = "pulsar://localhost:6650",
-  webServiceUrl = "http://localhost:8080",
-  tenant = "infinitic",
-  namespace = "dev"
-)
+val transportConfig = PulsarTransportConfig.builder()
+  .setBrokerServiceUrl("pulsar://localhost:6650")
+  .setWebServiceUrl("http://localhost:8080")
+  .setTenant("infinitic")
+  .setNamespace("dev")
+  .build()
 
 val storage = MySQLStorageConfig.builder()
   .setCompression(CompressionConfig.bzip2)
@@ -239,7 +239,7 @@ val storage = MySQLStorageConfig.builder()
   .setPassword("***")
 
 val worker = InfiniticWorker.builder()
-  .setTransport(transport)
+  .setTransport(transportConfig)
   .addServiceTagEngine(
     ServiceTagEngineConfig.builder()
       .setServiceName("CarRentalService")

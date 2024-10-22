@@ -58,6 +58,11 @@ This multi-tenancy capabilities extend to Infinitic. For example:
     - `infinitic/staging`
     - `infinitic/production`
 
+{% callout %}
+
+The following configurations use YAML, but the same configuration can be done using builders (see [clients](/docs/components/clients)).
+
+{% /callout  %}
 
 ## Connecting to a Pulsar cluster
 
@@ -69,11 +74,12 @@ This is done through a `pulsar` entry within their configuration file.
 The minimal configuration - typically needed for development - contains:
 
 ```yaml
-pulsar:
-  brokerServiceUrl: pulsar://localhost:6650
-  webServiceUrl: http://localhost:8080
-  tenant: infinitic
-  namespace: dev
+transport:
+  pulsar:
+    brokerServiceUrl: pulsar://localhost:6650
+    webServiceUrl: http://localhost:8080
+    tenant: infinitic
+    namespace: dev
 ```
 
 ### Transport encryption
@@ -81,23 +87,25 @@ pulsar:
 [Transport Encryption using TLS](https://pulsar.apache.org/docs/en/security-tls-transport/#client-configuration) can be configured with those additional parameters:
 
 ```yaml
-pulsar:
-  ...
-  useTls: true
-  tlsAllowInsecureConnection: false
-  tlsTrustCertsFilePath: /path/to/ca.cert.pem
-  tlsEnableHostnameVerification: false
+transport:
+  pulsar:
+    ...
+    useTls: true
+    tlsAllowInsecureConnection: false
+    tlsTrustCertsFilePath: /path/to/ca.cert.pem
+    tlsEnableHostnameVerification: false
 ```
 
 If we use a [KeyStore](https://pulsar.apache.org/docs/en/security-tls-keystore/#configuring-clients), it can be configured with:
 
 ```yaml
-pulsar:
-  ...
-  useKeyStoreTls: true
-  tlsTrustStoreType: JKS
-  tlsTrustStorePath: /var/private/tls/client.truststore.jks
-  tlsTrustStorePassword: clientpw
+transport:
+  pulsar:
+    ...
+    useKeyStoreTls: true
+    tlsTrustStoreType: JKS
+    tlsTrustStorePath: /var/private/tls/client.truststore.jks
+    tlsTrustStorePassword: clientpw
 ```
 
 ### Authentication
@@ -105,36 +113,173 @@ pulsar:
 Using [Json Web Token](https://pulsar.apache.org/docs/en/security-jwt/):
 
 ```yaml
-pulsar:
-  ...
-  authentication:
-    token: our_token
+transport:
+  pulsar:
+    ...
+    client:
+      authentication:
+        token: our_token
 
 ```
 
 Using [Athen](https://pulsar.apache.org/docs/en/security-athenz/#configure-clients-for-athenz):
 
 ```yaml
-pulsar:
-  ...
-  authentication:
-    tenantDomain: shopping
-    tenantService: some_app
-    providerDomain: pulsar
-    privateKey: file:///path/to/private.pem
-    keyId: v1
+transport:
+  pulsar:
+    ...
+    client:
+      authentication:
+        tenantDomain: shopping
+        tenantService: some_app
+        providerDomain: pulsar
+        privateKey: file:///path/to/private.pem
+        keyId: v1
 ```
 
 Using [OAuth2](https://pulsar.apache.org/docs/en/security-oauth2/#pulsar-client)
 
 ```yaml
-pulsar:
-  ...
-  authentication:
-    privateKey: file:///path/to/key/file.json
-    issuerUrl: https://dev-kt-aa9ne.us.auth0.com
-    audience: https://dev-kt-aa9ne.us.auth0.com/api/v2/
+transport:
+  pulsar:
+    ...
+    client:
+      authentication:
+        privateKey: file:///path/to/key/file.json
+        issuerUrl: https://dev-kt-aa9ne.us.auth0.com
+        audience: https://dev-kt-aa9ne.us.auth0.com/api/v2/
 ```
+
+## Pulsar Settings
+
+Infinitic allows you to customize Pulsar client, producer and consumer settings to optimize performance for your specific use case. Below are the configuration options for both producers and consumers.
+
+### Pulsar Client Settings
+
+You can provide default settings for all clients in the `pulsar.client` section of your configuration file. All settings are optional; Pulsar defaults will be used if not specified.
+
+```yaml
+transport:
+  pulsar:
+    ...
+    client:
+      listenerName: # String
+      connectionMaxIdleSeconds: # Int
+      authentication: # ClientAuthenticationConfig, see above
+      operationTimeoutSeconds: # Double
+      lookupTimeoutSeconds: # Double
+      ioThreads: # Int
+      listenerThreads: # Int
+      connectionsPerBroker: # Int
+      enableTcpNoDelay: # Boolean
+      tlsKeyFilePath: # String
+      tlsCertificateFilePath: # String
+      tlsTrustCertsFilePath: # String
+      allowTlsInsecureConnection: # Boolean
+      enableTlsHostnameVerification: # Boolean
+      useKeyStoreTls: # Boolean
+      sslProvider: # String
+      tlsKeyStoreType: # String
+      tlsKeyStorePath: # String
+      tlsKeyStorePassword: # String
+      tlsTrustStoreType: # String
+      tlsTrustStorePath: # String
+      tlsTrustStorePassword: # String
+      tlsCiphers: # Set<String>
+      tlsProtocols: # Set<String>
+      memoryLimitMB: # Long
+      statsIntervalSeconds: # Double
+      maxConcurrentLookupRequests: # Int
+      maxLookupRequests: # Int
+      maxLookupRedirects: # Int
+      maxNumberOfRejectedRequestPerConnection: # Int
+      keepAliveIntervalSeconds: # Double
+      connectionTimeoutSeconds: # Double
+      startingBackoffIntervalSeconds: # Double
+      maxBackoffIntervalSeconds: # Double
+      enableBusyWait: # Boolean
+      enableTransaction: # Boolean
+      socks5ProxyUsername: # String
+      socks5ProxyPassword: # String
+      ## Admin only
+      readTimeoutSeconds: # Double
+      requestTimeoutSeconds: # Double
+      autoCertRefreshTime: # Double
+```
+
+### Pulsar Producer Settings
+
+You can provide default settings for all producers in the `pulsar.producer` section of your configuration file. All settings are optional; Pulsar defaults will be used if not specified.
+
+```yaml
+transport:
+  pulsar:
+    ...
+    producer:
+      autoUpdatePartitions: # Boolean
+      autoUpdatePartitionsIntervalSeconds: # Double
+      batchingMaxBytes: # Int
+      batchingMaxMessages: # Int
+      batchingMaxPublishDelaySeconds: # Double
+      blockIfQueueFull: # Boolean (Infinitic default: true)
+      compressionType: # CompressionType
+      cryptoFailureAction: # ProducerCryptoFailureAction
+      defaultCryptoKeyReader: # String
+      encryptionKey: # String
+      enableBatching: # Boolean
+      enableChunking: # Boolean
+      enableLazyStartPartitionedProducers: # Boolean
+      enableMultiSchema: # Boolean
+      hashingScheme: # HashingScheme
+      messageRoutingMode: # MessageRoutingMode
+      properties: # Map<String, String>
+      roundRobinRouterBatchingPartitionSwitchFrequency: # Int
+      sendTimeoutSeconds: # Double
+```
+
+The `blockIfQueueFull` setting for producers defaults to true in Infinitic, which differs from Pulsar's default.
+
+Consult the Apache Pulsar documentation for detailed explanations of each setting.
+
+
+### Pulsar Consumer Settings
+
+Similarly, you can configure default settings for all consumers in the `pulsar.consumer` section. All settings are optional, with Pulsar defaults used if not provided.
+We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
+
+```yaml
+transport:  
+  pulsar:
+    ...
+    consumer:
+      loadConf: # Map<String, String>
+      subscriptionProperties: # Map<String, String>
+      ackTimeoutSeconds: # Double
+      isAckReceiptEnabled: # Boolean
+      ackTimeoutTickTimeSeconds: # Double
+      negativeAckRedeliveryDelaySeconds: # Double
+      defaultCryptoKeyReader: # String
+      cryptoFailureAction: # ConsumerCryptoFailureAction
+      receiverQueueSize: # Int
+      acknowledgmentGroupTimeSeconds: # Double
+      replicateSubscriptionState: # Boolean
+      maxTotalReceiverQueueSizeAcrossPartitions: # Int
+      priorityLevel: # Int
+      properties: # Map<String, String>
+      autoUpdatePartitions: # Boolean
+      autoUpdatePartitionsIntervalSeconds: # Double
+      enableBatchIndexAcknowledgment: # Boolean
+      maxPendingChunkedMessage: # Int
+      autoAckOldestChunkedMessageOnQueueFull: # Boolean
+      expireTimeOfIncompleteChunkedMessageSeconds: # Double
+      startPaused: # Boolean
+      maxRedeliverCount: # Int (Infinitic default: 3)
+```
+
+The `maxRedeliverCount` for consumers is set to 3 by default in Infinitic.
+
+Consult the Apache Pulsar documentation for detailed explanations of each setting.
+
 
 ## Pulsar Exception
 
@@ -178,13 +323,15 @@ Infinitic has been tested successfully with the following providers:
 3. Use the provided data to set up Infinitic access to Pulsar:
 
 ```yaml
-pulsar:
-  brokerServiceUrl: pulsar+ssl://materiamq.eu-fr-1.services.clever-cloud.com:6651 # Paste ADDON_PULSAR_BINARY_URL here
-  webServiceUrl: https://materiamq.eu-fr-1.services.clever-cloud.com:443          # Paste ADDON_PULSAR_HTTP_URL here
-  tenant: orga_f8786ef8-ac53-43ec-8c34-f81dab32b7cb              # Paste ADDON_PULSAR_TENANT here
-  namespace: pulsar_f3f94e46-0a32-4430-a05f-f458abca7297         # Paste ADDON_PULSAR_NAMESPACE here
-  authentication:
-    token: EnYKDBgDIggKBggE**********************EgIYDRIkCAASIDZ # Paste ADDON_PULSAR_TOKEN here
+transport:
+  pulsar:
+    brokerServiceUrl: pulsar+ssl://materiamq.eu-fr-1.services.clever-cloud.com:6651 # Paste ADDON_PULSAR_BINARY_URL here
+    webServiceUrl: https://materiamq.eu-fr-1.services.clever-cloud.com:443          # Paste ADDON_PULSAR_HTTP_URL here
+    tenant: orga_f8786ef8-ac53-43ec-8c34-f81dab32b7cb              # Paste ADDON_PULSAR_TENANT here
+    namespace: pulsar_f3f94e46-0a32-4430-a05f-f458abca7297         # Paste ADDON_PULSAR_NAMESPACE here
+    client:
+      authentication:
+        token: EnYKDBgDIggKBggE**********************EgIYDRIkCAASIDZ # Paste ADDON_PULSAR_TOKEN here
 ```
 
 ### [Datastax](https://www.datastax.com/)
@@ -199,13 +346,15 @@ pulsar:
 4. Configure Infinitic Pulsar as follows:
 
 ```yaml
-pulsar:
-  brokerServiceUrl: pulsar+ssl://pulsar-gcp-europewest1.streaming.datastax.com:6651 # See Tenant Details
-  webServiceUrl: https://pulsar-gcp-europewest1.api.streaming.datastax.com          # See Tenant Details
-  tenant: test-inf # See Tenant Details
-  namespace: dev   # Your choice
-  authentication:
-    token: eyJhbGciOiJS********************pIzmCvpI8t_g # Paste the token here
+transport:
+  pulsar:
+    brokerServiceUrl: pulsar+ssl://pulsar-gcp-europewest1.streaming.datastax.com:6651 # See Tenant Details
+    webServiceUrl: https://pulsar-gcp-europewest1.api.streaming.datastax.com          # See Tenant Details
+    tenant: test-inf # See Tenant Details
+    namespace: dev   # Your choice
+    client:
+      authentication:
+        token: eyJhbGciOiJS********************pIzmCvpI8t_g # Paste the token here
 ```
 
 {% callout type="warning"  %}
@@ -236,15 +385,17 @@ StreamNative's offering differs from other providers in that it offers to manage
       b - Then your Infinitic pulsar configuration is:
 
       ```yaml
-      pulsar:
-        brokerServiceUrl: pulsar+ssl://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud:6651 # See Cluster Details
-        webServiceUrl: https://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud              # See Cluster Details
-        tenant: infinitic # Your choice
-        namespace: dev    # Your choice
-        authentication:
-          issuerUrl: https://auth.streamnative.cloud/
-          privateKey: file:///YOUR-KEY-FILE-PATH # e.g file:///Users/gilles/.sn/infinitic-admin.json
-          audience: urn:sn:pulsar:o-ye4kl:infinitic # See Cluster Details
+      transport:
+        pulsar:
+          brokerServiceUrl: pulsar+ssl://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud:6651 # See Cluster Details
+          webServiceUrl: https://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud              # See Cluster Details
+          tenant: infinitic # Your choice
+          namespace: dev    # Your choice
+          client:
+            authentication:
+              issuerUrl: https://auth.streamnative.cloud/
+              privateKey: file:///YOUR-KEY-FILE-PATH # e.g file:///Users/gilles/.sn/infinitic-admin.json
+              audience: urn:sn:pulsar:o-ye4kl:infinitic # See Cluster Details
       ```
 
     * API Key
@@ -254,86 +405,13 @@ StreamNative's offering differs from other providers in that it offers to manage
       b - Configure Infinitic Pulsar as follows:
 
       ```yaml
-      pulsar:
-        brokerServiceUrl: pulsar+ssl://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud:6651 # See Cluster Details
-        webServiceUrl: https://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud              # See Cluster Details
-        tenant: infinitic # Your choice
-        namespace: dev    # Your choice
-        authentication:
-          token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
+      transport:
+        pulsar:
+          brokerServiceUrl: pulsar+ssl://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud:6651 # See Cluster Details
+          webServiceUrl: https://pc-3d190e03.euw1-turtle.streamnative.g.snio.cloud              # See Cluster Details
+          tenant: infinitic # Your choice
+          namespace: dev    # Your choice
+          client:
+            authentication:
+              token: eyJhbGciOiJSUzII*************MWt8BFgm2rK4aA # Paste the API key here
       ```
-
-## Pulsar Client Settings
-
-Infinitic allows you to customize Pulsar producer and consumer settings to optimize performance for your specific use case. Below are the configuration options for both producers and consumers.
-
-### Producer Settings
-
-You can provide default settings for all producers in the `pulsar.producer` section of your configuration file. All settings are optional; Pulsar defaults will be used if not specified.
-
-```yaml
-pulsar:
-  ...
-  producer:
-    autoUpdatePartitions: # Boolean
-    autoUpdatePartitionsIntervalSeconds: # Double
-    batchingMaxBytes: # Int
-    batchingMaxMessages: # Int
-    batchingMaxPublishDelaySeconds: # Double
-    blockIfQueueFull: # Boolean (Infinitic default: true)
-    compressionType: # CompressionType
-    cryptoFailureAction: # ProducerCryptoFailureAction
-    defaultCryptoKeyReader: # String
-    encryptionKey: # String
-    enableBatching: # Boolean
-    enableChunking: # Boolean
-    enableLazyStartPartitionedProducers: # Boolean
-    enableMultiSchema: # Boolean
-    hashingScheme: # HashingScheme
-    messageRoutingMode: # MessageRoutingMode
-    properties: # Map<String, String>
-    roundRobinRouterBatchingPartitionSwitchFrequency: # Int
-    sendTimeoutSeconds: # Double
-```
-
-The `blockIfQueueFull` setting for producers defaults to true in Infinitic, which differs from Pulsar's default.
-
-Consult the Apache Pulsar documentation for detailed explanations of each setting.
-
-
-### Consumer Settings
-
-Similarly, you can configure default settings for all consumers in the `pulsar.consumer` section. All settings are optional, with Pulsar defaults used if not provided.
-We can provide default settings for all consumers. All are optional. Pulsar default will be used if not provided.
-
-```yaml
-pulsar:
-  ...
-  consumer:
-    loadConf: # Map<String, String>
-    subscriptionProperties: # Map<String, String>
-    ackTimeoutSeconds: # Double
-    isAckReceiptEnabled: # Boolean
-    ackTimeoutTickTimeSeconds: # Double
-    negativeAckRedeliveryDelaySeconds: # Double
-    defaultCryptoKeyReader: # String
-    cryptoFailureAction: # ConsumerCryptoFailureAction
-    receiverQueueSize: # Int
-    acknowledgmentGroupTimeSeconds: # Double
-    replicateSubscriptionState: # Boolean
-    maxTotalReceiverQueueSizeAcrossPartitions: # Int
-    priorityLevel: # Int
-    properties: # Map<String, String>
-    autoUpdatePartitions: # Boolean
-    autoUpdatePartitionsIntervalSeconds: # Double
-    enableBatchIndexAcknowledgment: # Boolean
-    maxPendingChunkedMessage: # Int
-    autoAckOldestChunkedMessageOnQueueFull: # Boolean
-    expireTimeOfIncompleteChunkedMessageSeconds: # Double
-    startPaused: # Boolean
-    maxRedeliverCount: # Int (Infinitic default: 3)
-```
-
-The `maxRedeliverCount` for consumers is set to 3 by default in Infinitic.
-
-Consult the Apache Pulsar documentation for detailed explanations of each setting.
