@@ -64,10 +64,7 @@ const navigation = [
   {
     title: 'Workflow',
     links: [
-      { title: 'Introduction', href: '/docs/workflows/introduction' },
-      { title: 'Workflow Executors', href: '/docs/workflows/executors' },
-      { title: 'Workflow Tag Engines', href: '/docs/workflows/tagEngines' },
-      { title: 'Workflow Syntax', href: '/docs/workflows/syntax' },
+      { title: 'Implementation', href: '/docs/workflows/implementation' },
       { title: 'Sequential Tasks', href: '/docs/workflows/sequential' },
       { title: 'Parallelization', href: '/docs/workflows/parallel' },
       { title: 'Properties', href: '/docs/workflows/properties' },

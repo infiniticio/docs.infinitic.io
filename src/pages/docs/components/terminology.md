@@ -44,14 +44,14 @@ To scale your Infinitic Service and handle increased workload, you can allow tho
 ### Service Executor
 
 {% callout %}
-**Service Executors** are stateless components needed to process [tasks](#tasks) for a Service. They contains the implementation of the Service interface and are responsible for executing the methods defined in the Service interface.
+*Service Executors* are stateless components needed to process [tasks](#tasks) for a Service. They contains the implementation of the Service interface and are responsible for executing the methods defined in the Service interface.
 {% /callout %}
 
 
 ### Service Tag Engine
 
 {% callout %}
-**Service Tag Engines** are stateless components that are useful if you want to process bulk operations on tasks based on their tags. They maintain the relationship between task IDs and task tags within a [database](/docs/infrastructure/databases).
+*Service Tag Engines* are stateless components that are useful if you want to process bulk operations on tasks based on their tags. They maintain the relationship between task IDs and task tags within a [database](/docs/components/infrastructure#databases).
 {% /callout %}
 
 ## Tasks
@@ -112,19 +112,19 @@ To scale your Infinitic Workflow and handle increased workload, you can allow th
 ### Workflow Executor
 
 {% callout %}
-**Workflow Executors** are stateless components needed to process steps of Workflow. They contains the implementation of the Workflow interface and are responsible for processing the methods defined in the Workflow interface.
+*Workflow Executors* are stateless components needed to process steps of Workflow. They contains the implementation of the Workflow interface and are responsible for processing the methods defined in the Workflow interface.
 {% /callout %}
 
 ### Workflow State Engine
 
 {% callout %}
-**Workflow State Engines** are stateless components needed to maintain and store the state of the Workflow in a [database](/docs/infrastructure/databases). They are responsible for triggering the Workflow Executor when needed.
+*Workflow State Engines* are stateless components needed to maintain and store the state of the Workflow in a [database](/docs/components/infrastructure#databases). They are responsible for triggering the Workflow Executor when needed.
 {% /callout %}  
 
 ### Workflow Tag Engine
 
 {% callout %}
-**Workflow Tag Engines** are stateless components that are useful if you want to process bulk operations on workflows based on their tags. They maintain the relationship between workflow IDs and workflow tags within a [database](/docs/infrastructure/databases).
+*Workflow Tag Engines* are stateless components that are useful if you want to process bulk operations on workflows based on their tags. They maintain the relationship between workflow IDs and workflow tags within a [database](/docs/components/infrastructure#databases).
 {% /callout %}
 
 ## Clients

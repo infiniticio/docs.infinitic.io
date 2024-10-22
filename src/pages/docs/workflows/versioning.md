@@ -7,7 +7,7 @@ description: This section provides guidelines for versioning workflows, ensuring
 ### Class name
 
 As a workflow is internally named through its interface's class name (including package), we need to keep it stable.
-We can change it, as long as we use the [`@Name`](/docs/workflows/syntax#name-annotation) annotation to ensure that the internal name does not change.
+We can change it, as long as we use the [`@Name`](/docs/workflows/implementation#name-annotation) annotation to ensure that the internal name does not change.
 For example,
 
 {% codes %}

@@ -1,5 +1,5 @@
 ---
-title: Service Introduction
+title: Service Implementation
 description: Learn about Infinitic services, their implementation, and how they facilitate distributed and asynchronous execution of business logic through event-based RPC mechanisms. Discover the benefits of using service interfaces as contracts and best practices for managing service versions.
 ---
 

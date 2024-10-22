@@ -197,6 +197,6 @@ The `@Ignore` (`io.infinitic.annotations.Ignore`) annotation lets us tag propert
 
 {% callout type="note"  %}
 
-[Service stubs](/docs/workflows/syntax#dispatch-a-task), [Workflow stubs](/docs/workflows/syntax#dispatch-a-child-workflow) and [Channels](/docs/workflows/signals#implementing-channels) are automatically ignored and are not saved with the workflow state.
+[Service stubs](/docs/workflows/implementation#dispatch-a-task), [Workflow stubs](/docs/workflows/implementation#dispatch-a-child-workflow) and [Channels](/docs/workflows/signals#implementing-channels) are automatically ignored and are not saved with the workflow state.
 
 {% /callout  %} 

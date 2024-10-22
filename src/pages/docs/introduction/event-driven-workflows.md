@@ -109,7 +109,7 @@ As shown in this example, a 'running workflow' is actually a series of events. E
 
 ## Constraints
 
-For deterministic replayability, a workflow must contain only the logical sequence of tasks and avoid elements that change behavior over time. More details on these constraints are available [here](/docs/workflows/syntax).
+For deterministic replayability, a workflow must contain only the logical sequence of tasks and avoid elements that change behavior over time. More details on these constraints are available [here](/docs/workflows/implementation#constraints).
 
 ## Possibilities
 

@@ -9,7 +9,7 @@ The code examples for pages in this section are available on [Github](https://gi
 
 {% /callout %}
 
-When dispatching a workflow, you can associate [metadata](/docs/workflows/syntax#meta) with it. 
+When dispatching a workflow, you can associate [metadata](/docs/workflows/implementation#meta) with it. 
 This metadata can be useful for passing additional information or context to your workflows.
 
 ## Setting Metadata on Workflows
