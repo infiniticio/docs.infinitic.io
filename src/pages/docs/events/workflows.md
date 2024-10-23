@@ -3,7 +3,7 @@ title: Workflow Events
 description:
 ---
 
-## Workflow events description
+## Description
 
 Here is a typical CloudEvent example:
 

@@ -3,7 +3,8 @@ title: Getting Started
 pageTitle: Scalable Workflow Engine for Distributed Services
 description: Welcome to Infinitic's official documentation - your comprehensive guide to mastering our scalable workflow engine for distributed services. Dive into detailed tutorials, explore in-depth concepts, and discover practical examples to leverage Infinitic effectively in your Java or Kotlin projects. Whether you're orchestrating microservices, managing data pipelines, or implementing complex business processes, our documentation provides the tools and insights you need for success. Start enhancing your distributed systems with Infinitic's robust, scalable, and resilient framework today.
 ---
-Infinitic accelerates the implementation of event-driven architectures, reducing development time from months to weeks. {% .lead %}
+
+Infinitic implements a durable execution pattern, empowering developers to build complex business processes that withstand failures and outages. It maintains simplicity in design and maintenance while ensuring scalability and reliability.  {% .lead %}
 
 Infinitic is ideal for backend teams developing applications that are time-dependant, dynamic or including human interactions, such as:
 

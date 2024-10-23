@@ -5,8 +5,6 @@ description: This page provides a comprehensive guide on Infinitic Clients, esse
 
 An Infinitic **Client**  allows you to interact with the Infinitic application. It can be used to start or cancel workflows, retry tasks, etc.
 
-![Client](/img/concept-client-only@2x.png)
-
 ## Creating a Client
 
 To build an Infinitic Client you need first to add the `infinitic-client` dependency into your project:

@@ -60,8 +60,6 @@ You have the flexibility to configure workers based on your needs:
 
 This approach allows for fine-tuned scaling and improved performance in production environments.
 
-![Workers](/img/concept-worker@2x.png)
-
 ## Clients
 
 An Infinitic **Client**  allows you to interact with the Infinitic application. It can be used to start or cancel workflows, retry tasks, etc.
