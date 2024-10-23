@@ -303,7 +303,7 @@ InfiniticWorker worker = InfiniticWorker.builder()
   .addServiceExecutor(
     ServiceExecutorConfig.builder()
       .setServiceName("CarRentalService")
-      .setFactory(() -> new CarRentalServiceImpl(/* injections here*/))
+      .addFactory(() -> new CarRentalServiceImpl(/* injections here*/))
       .setConcurrency(5)
   )
   .addServiceTagEngine(

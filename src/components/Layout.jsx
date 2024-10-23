@@ -56,9 +56,8 @@ const navigation = [
       { title: 'Batched Task', href: '/docs/services/batched' },
       { title: 'Delegated Task', href: '/docs/services/delegated' },
       { title: 'Task Failures In Detail', href: '/docs/services/failures' },
-      { title: 'Service Versioning', href: '/docs/services/versioning' },
-      { title: 'Service Events', href: '/docs/services/events' },
-      { title: 'Service Logging', href: '/docs/services/logging' },
+      { title: 'Versioning', href: '/docs/services/versioning' },
+      { title: 'Logging', href: '/docs/services/logging' },
     ],
   },
   {
@@ -74,7 +73,15 @@ const navigation = [
       { title: 'Deferred', href: '/docs/workflows/deferred' },
       { title: 'Errors', href: '/docs/workflows/errors' },
       { title: 'Versioning', href: '/docs/workflows/versioning' },
-      { title: 'Events', href: '/docs/workflows/events' },
+      { title: 'Logging', href: '/docs/workflows/logging' },
+    ],
+  },
+  {
+    title: 'Event Listener',
+    links: [
+      { title: 'Creation', href: '/docs/events/creation' },
+      { title: 'Service Events', href: '/docs/events/services' },
+      { title: 'Workflow Events', href: '/docs/events/workflows' },
     ],
   },
   {

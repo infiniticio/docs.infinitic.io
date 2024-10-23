@@ -8,44 +8,46 @@ description: This section lists the release notes for Infinitic, detailing new f
 {% version-new-features /%}
 
 * [Batch processing](/docs/services/batched) of Tasks: 
-  This is useful when dealing with operations that benefit from bulk processing, such as sending emails, updating a database, or calling an external API. Also, if you add a `batchKey` into task meta, this task will be processed in a batch with other tasks that have the same `batchKey`.
+  Enables efficient handling of operations that benefit from bulk processing, such as sending emails, updating databases, or calling external APIs. Tasks with the same `batchKey` in their metadata are processed together in a single batch.
 
-* In Memory implementation for tests: 
-  The internal exchange of messages is now fully abstracted. This should allow later for using another broker than Pulsar. With this version, an in-memory implementation is proposed, useful for testing purpose, as it allows you to run tests without starting a Pulsar cluster.
+* In-Memory implementation for testing: 
+  The internal message exchange is now fully abstracted, paving the way for potential future support of alternative message brokers. This version introduces an in-memory implementation, ideal for testing purposes, allowing tests to run without the need for a Pulsar cluster.
 
-* Global Event listener: 
-  Infinitic now proposes a new way to listen to internal Infinitic events. This can be used to trigger external actions or to send those events to an analytics database, for example to build some dashboards. The event listener now automatically detects the existing Services and Workflows and listen to their events. Also, the events are now always processed in batch.
+* Enhanced [Event Listener](/docs/events/creation): 
+  Infinitic introduces a more powerful way to monitor internal events. This feature can be used to trigger external actions or send events to analytics databases for dashboard creation. The event listener now automatically detects existing Services and Workflows, listening to their events. All events are now processed in batches for improved efficiency.
 
-* Development Logs:
-  Developping a distributed system can be difficult, in particular because of the black box problem. If something goes wrong you may not know where to look. To help with this issue, Infinitic now proposes an easy way to see the CloudEvents generated during development. The only thing you need to do is to log at DEBUG level the following classes
+* Improved Development Logging:
+  To address the challenges of debugging distributed systems, Infinitic now offers a streamlined method for viewing CloudEvents during development. Simply set the log level to DEBUG for these classes:
   - io.infinitic.cloudEvents.WorkflowStateEngine.$workflowName
   - io.infinitic.cloudEvents.WorkflowExecutor.$workflowName
   - io.infinitic.cloudEvents.ServiceExecutor.$serviceName
+  This enhancement provides greater visibility into the system's internal workings, making it easier to identify and resolve issues.
 
 {% version-breaking-changes /%}
 
-* Worker configuration: A new page in the documentation is available to explain how to [set workers](/docs/components/workers), please refer to it for more details.
-  * **settings for State Engines and Tag Engines must now be explicit**. Previously, it was possible to have them implicit. 
-  * All setters on config builders have been normalized to use `set` + variable name. For example `maxPoolSize` is now `setMaxPoolSize`.
-  * For consistency, all settings ending by "InSeconds" were replaced by "Seconds", for example `timeoutInSeconds` has been replaced by `timeoutSeconds`. Same for `InMinutes`, `InMB`, etc.
-  * The `fromConfigResource`, `fromConfigString` and `fromConfigFile` static methods for Clients and Workers have been replaced by `fromYamlResource`, `fromYamlString` or `fromYamlFile`
+* Worker configuration: A new page in the documentation is available to explain how to [set workers](/docs/components/workers). Please refer to it for more details on the following changes:
+  * **State Engines and Tag Engines settings must now be explicitly defined**. Implicit settings are no longer supported.
+  * Config builder setters have been standardized to use `set` + variable name (e.g., `setMaxPoolSize` instead of `maxPoolSize`).
+  * Time-related settings now use consistent suffixes: "Seconds" replaces "InSeconds", "Minutes" replaces "InMinutes", etc.
+  * Static methods for Clients and Workers configuration now use "Yaml" prefix: `fromYamlResource`, `fromYamlString`, `fromYamlFile`.
   * Storage:
-    * previously default values were set for local developement. We think now it can be misleading when going to production, so we now force you to set explicitly the storage configuration.
-    * Change 'user' to 'username' in MySQLConfig, PostgresConfig and RedisConfig
+    * Explicit storage configuration is now required. Default values for local development have been removed to prevent confusion in production environments.
+    * 'user' parameter renamed to 'username' in MySQLConfig, PostgresConfig, and RedisConfig.
   * Pulsar:
-    * Pulsar configuration should be now under the `transport` keyword
-    * Pulsar client config is now under the `client` keyword and has been extended to all available settings
-    * Policies field names refactored for consistency
-    * `delayedTTLInSeconds` in Pulsar Policies configuration was replaced by `timerTTLSeconds`
+    * Pulsar configuration moved under the `transport` keyword.
+    * Pulsar client config now under `client` keyword, with expanded settings.
+    * Policies field names refactored for consistency.
+    * `delayedTTLInSeconds` renamed to `timerTTLSeconds` in Pulsar Policies configuration.
   * Dashboard:
-    * settings must now be under the `dashboard` keyword
-  * Rename `ExponentialBackoffRetryPolicy` class to `WithExponentialBackoffRetry`
-*  CloudEvents: 
-    * update some cloud events format
-    * sources more clearly distinguish executor and stateEngine
-    * workflow version is now 0 (instead of null) when undefined
-    * "start" command is replaced by "dispatch",
-    * "ended" event is replaced by "completed"
+    * All settings must now be under the `dashboard` keyword.
+  * `ExponentialBackoffRetryPolicy` class renamed to `WithExponentialBackoffRetry`.
+* CloudEvents updates:
+  * Cloud-event listener are not anymore created under services and workflows
+  * Format changes for improved clarity and consistency.
+  * Sources now clearly differentiate between executor and stateEngine.
+  * Workflow version defaults to 0 when undefined (previously null).
+  * "start" command renamed to "dispatch".
+  * "ended" event renamed to "completed".
 
 
 {% version-bug-fixes /%}
@@ -66,7 +68,7 @@ description: This section lists the release notes for Infinitic, detailing new f
   - kotlinx-serialization-json: 1.6.3 -> 1.7.1
   - TestContainers: 1.19.8 -> 1.20.1
   - Mockk: 1.13.11 -> 1.13.12
-  - Pulsar: 3.0.4 -> 3.0.6
+  - Pulsar: 3.0.4 -> 3.0.7
   - Slf4j: 2.0.13 -> 2.0.16
   - Logging: 6.0.9 -> 7.0.0
   - Compress: 1.26.1 -> 1.27.1

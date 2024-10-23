@@ -1,5 +1,5 @@
 ---
-title: Service Logging
+title: Workflow Logging
 description: Learn how to effectively implement and configure logging for Infinitic services, including best practices for monitoring, debugging, and using SL4J logger to manage task retries and failures.
 ---
 
@@ -7,7 +7,7 @@ description: Learn how to effectively implement and configure logging for Infini
 
 {% callout type="warning" %}
 
-Service Executors internally catch exceptions to manage task retries and failures. These exceptions won't be visible in your application's standard error output. To effectively monitor and debug your service workers, it's crucial to implement a SL4J logger.
+Workflow Executors internally catch exceptions to manage task retries and failures. These exceptions won't be visible in your application's standard error output. To effectively monitor and debug your service workers, it's crucial to implement a SL4J logger.
 
 {% /callout %}
 
@@ -20,7 +20,7 @@ much information.
 
 - Log the `io.infinitic.workers.InfiniticWorker` class at the `info` level. This allows you to monitor the worker's status and configuration.
 
-- During development, consider logging the `io.infinitic.cloudEvents.ServiceExecutor.$serviceName` class at the `debug` level. This will display [events](/docs/events/services) related to your Service Executor in JSON format, which can be helpful for debugging.
+- During development, consider logging the `io.infinitic.cloudEvents.WorkflowExecutor.$workflowName` class at the `debug` level. This will display [events](/docs/events/workflows) related to your Workflow Executor in JSON format, which can be helpful for debugging.
 
 ### SimpleLogger Example 
 

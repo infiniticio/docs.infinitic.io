@@ -334,7 +334,7 @@ Here is the configuration to create a Workflow Executor associated to a Workflow
 ```java
 WorkflowExecutorConfig workflowExecutorConfig = WorkflowExecutorConfig.builder()
   .setWorkflowName("MyWorkflow")
-  .setFactory(() -> new MyWorkflowImpl(/* injections here*/))
+  .addFactory(() -> new MyWorkflowImpl(/* injections here*/))
   .setConcurrency(10)
   .build();
 
@@ -347,7 +347,7 @@ InfiniticWorker worker = InfiniticWorker.builder()
 ```kotlin
 val workflowExecutorConfig = WorkflowExecutorConfig.builder()
   .setWorkflowName("MyWorkflow")
-  .setFactory { MyWorkflowImpl(/* injections here*/) }
+  .addFactory { MyWorkflowImpl(/* injections here*/) }
   .setConcurrency(10)
   .build();
 
@@ -455,32 +455,36 @@ To prevent race conditions in the database, Infinitic ensures not to have 2 mess
 {% codes %}
 
 ```java
-EventListenerConfig eventListener = EventListenerConfig.builder()
-  .setListener(new TestEventListener())
+EventListenerConfig eventListenerConfig = EventListenerConfig.builder()
+  .setListener(new MyEventListener())
   .setConcurrency(50)
+  .setBatch(100, 10.0)
   .build();
 
 InfiniticWorker worker = InfiniticWorker.builder()
   .setTransport(transportConfig)
-  .setEventListener(eventListener)
+  .setEventListener(eventListenerConfig)
   .build();
 ```
 
 ```kotlin
-val eventListener = EventListenerConfig.builder()
-  .setListener(TestEventListener())
+val eventListenerConfig = EventListenerConfig.builder()
+  .setListener(MyEventListener())
   .setConcurrency(50)
+  .setBatch(100, 10.0)
   .build();
 
 val worker = InfiniticWorker.builder()
   .setTransport(transportConfig)
-  .setEventListener(eventListener)
+  .setEventListener(eventListenerConfig)
   .build()
 ``` 
 
 {% /codes %}
 
-This configuration creates a Worker embedding an Event Listener. The `setConcurrency(50)` method sets the concurrency to 50, meaning it will process up to fifty messages at a time.
+This configuration creates a Worker embedding an Event Listener. The `setConcurrency(50)` method sets the concurrency to 50, meaning it will process up to fifty batches at a time. A batch will be sent to the listener:
+- after 100 received events (default is 1000)
+- or 10 seconds after the first event was received (default is 1 second)
 
 ### All components
 
@@ -519,7 +523,7 @@ ServiceTagEngineConfig serviceTagEngineConfig = ServiceTagEngineConfig.builder()
 
 WorkflowExecutorConfig workflowExecutorConfig = WorkflowExecutorConfig.builder()
   .setWorkflowName("MyWorkflow")
-  .setFactory(() -> new MyWorkflowImpl(/* injections here*/))
+  .addFactory(() -> new MyWorkflowImpl(/* injections here*/))
   .setConcurrency(10)
   .build();
   
@@ -536,7 +540,7 @@ WorkflowTagEngineConfig workflowTagEngineConfig = WorkflowTagEngineConfig.builde
   .build();
 
 EventListenerConfig eventListener = EventListenerConfig.builder()
-  .setListener(new TestEventListener())
+  .setListener(new MyEventListener())
   .setConcurrency(50)
   .build();
 
@@ -572,36 +576,36 @@ val serviceExecutorConfig = ServiceExecutorConfig.builder()
   .setConcurrency(10)
   .withRetry(withRetry)
   .setTimeoutSeconds(100.0)
-  .build();
+  .build()
   
 val serviceTagEngineConfig = ServiceTagEngineConfig.builder()
   .setServiceName("MyService")
   .setStorage(storageConfig)
   .setConcurrency(5)
-  .build();
+  .build()
 
 val workflowExecutorConfig = WorkflowExecutorConfig.builder()
   .setWorkflowName("MyWorkflow")
-  .setFactory { MyWorkflowImpl(/* injections here*/) }
+  .addFactory { MyWorkflowImpl(/* injections here*/) }
   .setConcurrency(10)
-  .build();
+  .build()
 
 val workflowStateEngineConfig = WorkflowStateEngineConfig.builder()
   .setWorkflowName("MyWorkflow")
   .setStorage(storageConfig)
   .setConcurrency(10)
-  .build();
+  .build()
 
 val workflowTagEngineConfig = WorkflowTagEngineConfig.builder()
   .setWorkflowName("MyWorkflow")
   .setStorage(storageConfig)
   .setConcurrency(5)
-  .build();
+  .build()
 
-val eventListener = EventListenerConfig.builder()
-  .setListener(TestEventListener())
+val eventListenerConfig = EventListenerConfig.builder()
+  .setListener(MyEventListener())
   .setConcurrency(50)
-  .build();
+  .build()
 
 val worker = InfiniticWorker.builder()
   .setTransport(transportConfig)
@@ -610,7 +614,7 @@ val worker = InfiniticWorker.builder()
   .addWorkflowExecutor(workflowExecutorConfig)
   .addWorkflowStateEngine(workflowStateEngineConfig)
   .addWorkflowTagEngine(workflowTagEngineConfig)
-  .setEventListener(eventListener)
+  .setEventListener(eventListenerConfig)
   .build()
 ``` 
 
@@ -886,10 +890,17 @@ transport:
 
 # Configuration of an Event Listener
 eventListener:
-  listener:
-    class: example.MyEventListener
-    concurrency: 50
+  class: example.MyEventListener
+  concurrency: 50
+  batch:
+    maxEvents: 100
+    maxSeconds: 10.0
 ```
+
+This configuration creates a Worker embedding an Event Listener. The `setConcurrency(50)` method sets the concurrency to 50, meaning it will process up to fifty batches at a time. A batch will be sent to the listener:
+- after 100 received events (default is 1000)
+- or 10 seconds after the first event was received (default is 1 second)
+
 ### All components
 
 Here is an example of a valid yaml configuration containing all components for a service and a workflow:

@@ -58,16 +58,16 @@ This multi-tenancy capabilities extend to Infinitic. For example:
     - `infinitic/staging`
     - `infinitic/production`
 
-{% callout %}
-
-The following configurations use YAML, but the same configuration can be done using builders (see [clients](/docs/components/clients)).
-
-{% /callout  %}
-
 ## Connecting to a Pulsar cluster
 
 Infinitic clients and workers need to know how to connect to our Pulsar cluster.
 This is done through a `pulsar` entry within their configuration file.
+
+{% callout %}
+
+The configurations below use YAML, but the same configuration can be done using builders (see [clients](/docs/components/clients#builder-based-configurations)).
+
+{% /callout  %}
 
 ### Minimal configuration
 
