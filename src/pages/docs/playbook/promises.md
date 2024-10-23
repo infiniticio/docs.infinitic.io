@@ -45,7 +45,7 @@ interface RemoteService {
 
 {% /codes %}
 
-The [`@Name`](/docs/workflows/syntax#name-annotation) annotation is used by Infinitic for Workflow and Service identification.
+The [`@Name`](/docs/workflows/implementation#name-annotation) annotation is used by Infinitic for Workflow and Service identification.
 
 For this example, our dummy implementation will be:
 {% codes %}

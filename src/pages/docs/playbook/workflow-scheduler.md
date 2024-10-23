@@ -41,7 +41,7 @@ interface RecurringWorkflow {
 
 {% /codes %}
 
-The [`@Name`](/docs/workflows/syntax#name-annotation) annotation is used by Infinitic for Workflow and Service identification.
+The [`@Name`](/docs/workflows/implementation#name-annotation) annotation is used by Infinitic for Workflow and Service identification.
 
 
 We'll start by defining a `RecurringWorkflowScheduler` interface with a `schedule` method. This method takes two parameters:
@@ -185,8 +185,8 @@ class RecurringWorkflowSchedulerImpl : Workflow(), RecurringWorkflowScheduler {
 This implementation utilizes the [`cron-utils` package](http://cron-parser.com) to determine the timing of recurring executions based on cron expressions. Here's a breakdown:
 
 The `RecurringWorkflowSchedulerImpl` class:
-- Extends the [`Workflow` class](/docs/workflows/syntax#constraints) provided by Infinitic and implements the `RecurringWorkflowScheduler` contract
-- Initializes a `CronParser` for Unix-style cron expressions (the [`@Ignore` annotation](/docs/workflows/syntax#ignore-annotation) prevents Infinitic from serializing the `parser` field).
+- Extends the [`Workflow` class](/docs/workflows/implementation#constraints) provided by Infinitic and implements the `RecurringWorkflowScheduler` contract
+- Initializes a `CronParser` for Unix-style cron expressions (the [`@Ignore` annotation](/docs/workflows/implementation#ignore-annotation) prevents Infinitic from serializing the `parser` field).
 
 The `schedule` method handles the scheduling logic:
 
@@ -207,7 +207,7 @@ The `schedule` method handles the scheduling logic:
 
 {% callout %}
 
-The recursive scheduling approach (step 4c above) is crucial for [efficient workflow history management](/docs/workflows/syntax#constraints): By dispatching a new method on the same workflow instance for each occurrence, the workflow history doesn't accumulate indefinitely, as Infinitic deletes the history for each completed method execution.
+The recursive scheduling approach (step 4c above) is crucial for [efficient workflow history management](/docs/workflows/implementation#constraints): By dispatching a new method on the same workflow instance for each occurrence, the workflow history doesn't accumulate indefinitely, as Infinitic deletes the history for each completed method execution.
 
 {% /callout %}
 

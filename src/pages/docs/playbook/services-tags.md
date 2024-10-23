@@ -9,7 +9,7 @@ The code examples for pages in this section are available on [Github](https://gi
 
 {% /callout %}
 
-When dispatching a workflow, you can associate [tags](/docs/workflows/syntax#tags) with it. 
+When dispatching a workflow, you can associate [tags](/docs/workflows/implementation#tags) with it. 
 These tags can be useful for categorization, filtering, or tracking purposes.
 
 ## Setting Tags on Workflows

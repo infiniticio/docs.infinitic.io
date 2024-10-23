@@ -8,7 +8,7 @@ It could be useful to expose public properties of our workflow. We will illustra
 
 ```java
 public class LoyaltyImpl extends Workflow implements Loyalty {
-    private final Integer weekInSeconds = 3600*24*7;
+    private final Integer weekSeconds = 3600*24*7;
 
     private Integer points = 0;
 
@@ -20,7 +20,7 @@ public class LoyaltyImpl extends Workflow implements Loyalty {
         while (w < 56) {
             // every week, a new point is added
             w++;
-            timer(now.plusSeconds(w * weekInSeconds)).await();
+            timer(now.plusSeconds(w * weekSeconds)).await();
             points++;
         }
     }
@@ -29,7 +29,7 @@ public class LoyaltyImpl extends Workflow implements Loyalty {
 
 ```kotlin
 class LoyaltyImpl : Workflow(), Loyalty {
-    private val weekInSeconds = 3600*24*7;
+    private val weekSeconds = 3600*24*7;
 
     private var points = 0
 
@@ -40,7 +40,7 @@ class LoyaltyImpl : Workflow(), Loyalty {
         while (w < 56) {
             // every week, a new point is added
             w++
-            timer(now.plusSeconds((w * weekInSeconds).toLong())).await()
+            timer(now.plusSeconds((w * weekSeconds).toLong())).await()
             points++
         }
     }
@@ -197,6 +197,6 @@ The `@Ignore` (`io.infinitic.annotations.Ignore`) annotation lets us tag propert
 
 {% callout type="note"  %}
 
-[Service stubs](/docs/workflows/syntax#dispatch-a-task), [Workflow stubs](/docs/workflows/syntax#dispatch-a-child-workflow) and [Channels](/docs/workflows/signals#implementing-channels) are automatically ignored and are not saved with the workflow state.
+[Service stubs](/docs/workflows/implementation#dispatch-a-task), [Workflow stubs](/docs/workflows/implementation#dispatch-a-child-workflow) and [Channels](/docs/workflows/signals#implementing-channels) are automatically ignored and are not saved with the workflow state.
 
 {% /callout  %} 

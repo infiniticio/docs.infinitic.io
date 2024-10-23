@@ -171,7 +171,7 @@ The workflow is a perfect example of the Saga pattern in distributed transaction
 
 {% callout type="note"  %}
 
-In a workflow, when you use the [`dispatch`](/docs/workflows/syntax#dispatch-a-task) function, it starts a task without interrupting the workflow's ongoing process. If you use `dispatch` multiple times, it will run several tasks at the same time, in parallel. The `dispatch` function gives back a `Deferred` object. When you use the `await()` method on this `Deferred` object, it makes the workflow pause and wait until the task is finished, and then it provides the task's result.
+In a workflow, when you use the [`dispatch`](/docs/workflows/implementation#dispatch-a-task) function, it starts a task without interrupting the workflow's ongoing process. If you use `dispatch` multiple times, it will run several tasks at the same time, in parallel. The `dispatch` function gives back a `Deferred` object. When you use the `await()` method on this `Deferred` object, it makes the workflow pause and wait until the task is finished, and then it provides the task's result.
 
 {% /callout  %}
 
@@ -271,11 +271,11 @@ In a workflow, when you use a [`timer`](/docs/workflows/waiting) and `await` it,
 
 {% callout type="warning"  %}
 
-In a workflow, every step [must be deterministic](/docs/workflows/syntax#constraints), which is why commands like `LocalDate.now()` should be part of a task. The [`inline`](/docs/workflows/inline) function is used to create what's called a pseudo-task, which is integrated directly into the workflow.
+In a workflow, every step [must be deterministic](/docs/workflows/implementation#constraints), which is why commands like `LocalDate.now()` should be part of a task. The [`inline`](/docs/workflows/inline) function is used to create what's called a pseudo-task, which is integrated directly into the workflow.
 
 {% /callout  %}
 
-A workflow should not have [too many tasks](/docs/workflows/syntax#constraints), so it's best to avoid loops. In this example, the number of iterations is limited (running for 10 years results in just 120 iterations) and there are only 7 tasks in each iteration. Therefore, this setup is manageable and appropriate.
+A workflow should not have [too many tasks](/docs/workflows/implementation#constraints), so it's best to avoid loops. In this example, the number of iterations is limited (running for 10 years results in just 120 iterations) and there are only 7 tasks in each iteration. Therefore, this setup is manageable and appropriate.
 
 ## Loyalty program
 
@@ -398,7 +398,7 @@ An Infinitic client, or another workflow, can [invoke methods](/docs/clients/sta
 
 {% /callout  %}
 
-A workflow shouldn't have [too many tasks](/docs/workflows/syntax#constraints), which is why we restart the `start` method instead of looping within it.
+A workflow shouldn't have [too many tasks](/docs/workflows/implementation#constraints), which is why we restart the `start` method instead of looping within it.
 
 ## Location Booking
 
@@ -566,5 +566,5 @@ We have the ability to dispatch [external signals](/docs/workflows/signals) to a
 
 {% /callout  %}
 
-This example with the `PaymentWorkflow`` demonstrates that a workflow can launch another [sub-workflow](/docs/workflows/syntax#dispatch-a-child-workflow), either in a synchronous or asynchronous manner. This capability unlocks endless possibilities.
+This example with the `PaymentWorkflow`` demonstrates that a workflow can launch another [sub-workflow](/docs/workflows/implementation#dispatch-a-child-workflow), either in a synchronous or asynchronous manner. This capability unlocks endless possibilities.
 

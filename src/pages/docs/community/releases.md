@@ -3,6 +3,76 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.16.0
+
+{% version-new-features /%}
+
+* [Batch processing](/docs/services/batched) of Tasks: 
+  Enables efficient handling of operations that benefit from bulk processing, such as sending emails, updating databases, or calling external APIs. Tasks with the same `batchKey` in their metadata are processed together in a single batch.
+
+* In-Memory implementation for testing: 
+  The internal message exchange is now fully abstracted, paving the way for potential future support of alternative message brokers. This version introduces an in-memory implementation, ideal for testing purposes, allowing tests to run without the need for a Pulsar cluster.
+
+* Enhanced [Event Listener](/docs/events/creation): 
+  Infinitic introduces a more powerful way to monitor internal events. This feature can be used to trigger external actions or send events to analytics databases for dashboard creation. The event listener now automatically detects existing Services and Workflows, listening to their events. All events are now processed in batches for improved efficiency.
+
+* Improved Development Logging:
+  To address the challenges of debugging distributed systems, Infinitic now offers a streamlined method for viewing CloudEvents during development. Simply set the log level to DEBUG for these classes:
+  - io.infinitic.cloudEvents.WorkflowStateEngine.$workflowName
+  - io.infinitic.cloudEvents.WorkflowExecutor.$workflowName
+  - io.infinitic.cloudEvents.ServiceExecutor.$serviceName
+  This enhancement provides greater visibility into the system's internal workings, making it easier to identify and resolve issues.
+
+{% version-breaking-changes /%}
+
+* Worker configuration: A new page in the documentation is available to explain how to [set workers](/docs/components/workers). Please refer to it for more details on the following changes:
+  * **State Engines and Tag Engines settings must now be explicitly defined**. Implicit settings are no longer supported.
+  * Config builder setters have been standardized to use `set` + variable name (e.g., `setMaxPoolSize` instead of `maxPoolSize`).
+  * Time-related settings now use consistent suffixes: "Seconds" replaces "InSeconds", "Minutes" replaces "InMinutes", etc.
+  * Static methods for Clients and Workers configuration now use "Yaml" prefix: `fromYamlResource`, `fromYamlString`, `fromYamlFile`.
+  * Storage:
+    * Explicit storage configuration is now required. Default values for local development have been removed to prevent confusion in production environments.
+    * 'user' parameter renamed to 'username' in MySQLConfig, PostgresConfig, and RedisConfig.
+  * Pulsar:
+    * Pulsar configuration moved under the `transport` keyword.
+    * Pulsar client config now under `client` keyword, with expanded settings.
+    * Policies field names refactored for consistency.
+    * `delayedTTLInSeconds` renamed to `timerTTLSeconds` in Pulsar Policies configuration.
+  * Dashboard:
+    * All settings must now be under the `dashboard` keyword.
+  * `ExponentialBackoffRetryPolicy` class renamed to `WithExponentialBackoffRetry`.
+* CloudEvents updates:
+  * Cloud-event listener are not anymore created under services and workflows
+  * Format changes for improved clarity and consistency.
+  * Sources now clearly differentiate between executor and stateEngine.
+  * Workflow version defaults to 0 when undefined (previously null).
+  * "start" command renamed to "dispatch".
+  * "ended" event renamed to "completed".
+
+
+{% version-bug-fixes /%}
+- In workflows, if a property is present in the workflow history but disappeared from the workflow class, a warning is now emitted. Previously an error was thrown.
+- when using dispatchAsync, multiple successive calls would use only the last arguments used
+- Fix use of Schema for Postgres
+
+{% version-improvements /%}
+* More reliable client deletion when topic is closing
+* Improved implementation of consumers to ensure all messages are processed, even in case of errors or Shutdown
+
+* Lib updates:
+  - Kotlin: 2.0.0 -> 2.0.10
+  - CloudEvents: 3.0.0 -> 4.0.1
+  - Jackson: 2.17.1 -> 2.17.2
+  - Uuid: 5.0.0 -> 5.1.0
+  - Kotest: 5.9.0 -> 5.9.1
+  - kotlinx-serialization-json: 1.6.3 -> 1.7.1
+  - TestContainers: 1.19.8 -> 1.20.1
+  - Mockk: 1.13.11 -> 1.13.12
+  - Pulsar: 3.0.4 -> 3.0.7
+  - Slf4j: 2.0.13 -> 2.0.16
+  - Logging: 6.0.9 -> 7.0.0
+  - Compress: 1.26.1 -> 1.27.1
+
 ## v0.15.0
 
 {% callout type="warning"  %}
@@ -187,7 +257,7 @@ Please ensure to terminate all running workers prior to upgrading to version 0.1
 * Infinitic has been updated to use UUID version 7. These are sortable UUIDs that include a timestamp, which is expected to enhance performance when used as primary keys in databases.
 * **Idempotency**: In scenarios where hardware or network issues occur, there's a possibility that the same tasks may be processed multiple times. Ultimately, it falls upon the user to ensure tasks are designed to be idempotent as required. Starting from version 0.13.0, the `taskId` can be reliably used as an idempotent key. This is because Infinitic will generate the same value for `taskId`, even if the task creation process is executed repeatedly.
 * **Performance Improvement:** Prior to version 0.13.0, initiating a workflow involved sending a message to the workflow engine, which would then create an entry to store its state in the database. Following this, it would send another message to commence the workflow execution in order to identify and dispatch the first task. This task information would be relayed back to the engine for dispatch. The drawback of this approach was evident during surges in workflow initiation (for example, 1 million starts), where Infinitic had to sequentially store 1 million state entries before beginning to process the first task. This could significantly delay the start of task processing in practical scenarios. Since the release of version 0.13.0, the execution process has been optimized. Now, the first task is processed immediately upon dispatch by all available workers, substantially reducing the "time to first execution."
-* **Worker Graceful Shutdown**: Infinitic is designed to ensure no messages are lost and that workflow executions continue under any circumstances. However, prior to version 0.13.0, shutting down a worker could result in a significant number of duplicated messages or actions. This was because the worker could close while still sending multiple messages. With the introduction of version 0.13.0, workers now attempt to complete any ongoing executions before shutting down, with a default grace period of 30 seconds. This duration can be adjusted using the new `shutdownGracePeriodInSeconds` setting in the worker configuration.
+* **Worker Graceful Shutdown**: Infinitic is designed to ensure no messages are lost and that workflow executions continue under any circumstances. However, prior to version 0.13.0, shutting down a worker could result in a significant number of duplicated messages or actions. This was because the worker could close while still sending multiple messages. With the introduction of version 0.13.0, workers now attempt to complete any ongoing executions before shutting down, with a default grace period of 30 seconds. This duration can be adjusted using the new `shutdownGracePeriodSeconds` setting in the worker configuration.
 * **Worker Quicker Start**: Upon startup, a worker verifies the existence of the tenant, namespace, and necessary topics for the services and workflows it utilizes, creating them if necessary. Previously, this setup was performed sequentially. Now, it is executed in parallel, significantly reducing startup time, especially in scenarios where a worker is responsible for managing a large number of tasks or workflows.
 * 
 
@@ -355,7 +425,7 @@ Bump dependencies version:
 - new @CheckMode annotation
 - new WithTimeout interface
 - new WithRetry interface
-- new timeoutInSeconds parameter in worker's configuration file
+- new timeoutSeconds parameter in worker's configuration file
 - new retry parameter in worker's configuration file
 - new checkMode in worker's configuration file
 

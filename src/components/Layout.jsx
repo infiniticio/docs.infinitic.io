@@ -12,23 +12,31 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
-const CURRENT_VERSION = 'v0.15.0'
+const CURRENT_VERSION = 'v0.16.0'
 
 const navigation = [
   {
     title: 'Introduction',
     links: [
       { title: 'Getting started', href: '/' },
-      { title: 'Terminology', href: '/docs/introduction/terminology' },
       { title: 'Event-Driven', href: '/docs/introduction/event-driven-workflows' },
+      { title: 'Interfaces As Contract', href: '/docs/introduction/interfaces' },
       { title: 'Examples', href: '/docs/introduction/examples' },
       { title: 'Hello World', href: '/docs/introduction/hello-world' },
     ],
   },
   {
-    title: 'Clients',
+    title: 'Components',
     links: [
-      { title: 'Creation', href: '/docs/clients/creation' },
+      { title: 'Terminology', href: '/docs/components/terminology' },
+      { title: 'Infrastructure', href: '/docs/components/infrastructure' },
+      { title: 'Worker Creation', href: '/docs/components/workers' },
+      { title: 'Client Creation', href: '/docs/components/clients' },
+    ],
+  },
+  {
+    title: 'Client Usage',
+    links: [
       { title: 'Workflow Stubs', href: '/docs/clients/workflow-stubs' },
       { title: 'Start A Workflow', href: '/docs/clients/start-workflow' },
       { title: 'Send A Signal', href: '/docs/clients/send-signal' },
@@ -40,21 +48,22 @@ const navigation = [
       }, ],
   },
   {
-    title: 'Services',
+    title: 'Service',
     links: [
-      { title: 'Service Workers', href: '/docs/services/workers' },
-      { title: 'Service Syntax', href: '/docs/services/syntax' },
-      { title: 'Using APIs', href: '/docs/services/apis' },
+      { title: 'Implementation', href: '/docs/services/implementation' },
+      { title: 'Good Practices', href: '/docs/services/practices' },
+      { title: 'Task Context', href: '/docs/services/context' },
+      { title: 'Batched Task', href: '/docs/services/batched' },
       { title: 'Delegated Task', href: '/docs/services/delegated' },
-      { title: 'Service Versioning', href: '/docs/services/versioning' },
-      { title: 'Service Events', href: '/docs/services/events' },
+      { title: 'Task Failures In Detail', href: '/docs/services/failures' },
+      { title: 'Versioning', href: '/docs/services/versioning' },
+      { title: 'Logging', href: '/docs/services/logging' },
     ],
   },
   {
-    title: 'Workflows',
+    title: 'Workflow',
     links: [
-      { title: 'Workflow Workers', href: '/docs/workflows/workers' },
-      { title: 'Workflow Syntax', href: '/docs/workflows/syntax' },
+      { title: 'Implementation', href: '/docs/workflows/implementation' },
       { title: 'Sequential Tasks', href: '/docs/workflows/sequential' },
       { title: 'Parallelization', href: '/docs/workflows/parallel' },
       { title: 'Properties', href: '/docs/workflows/properties' },
@@ -63,8 +72,16 @@ const navigation = [
       { title: 'Inline Tasks', href: '/docs/workflows/inline' },
       { title: 'Deferred', href: '/docs/workflows/deferred' },
       { title: 'Errors', href: '/docs/workflows/errors' },
-      { title: 'Workflow Versioning', href: '/docs/workflows/versioning' },
-      { title: 'Workflow Events', href: '/docs/workflows/events' },
+      { title: 'Versioning', href: '/docs/workflows/versioning' },
+      { title: 'Logging', href: '/docs/workflows/logging' },
+    ],
+  },
+  {
+    title: 'Event Listener',
+    links: [
+      { title: 'Creation', href: '/docs/events/creation' },
+      { title: 'Service Events', href: '/docs/events/services' },
+      { title: 'Workflow Events', href: '/docs/events/workflows' },
     ],
   },
   {

@@ -29,7 +29,7 @@ You can either run Redis and Pulsar on their own, or with [Docker](https://www.d
 services:
   # Pulsar
   pulsar-standalone:
-    image: apachepulsar/pulsar:3.0.4
+    image: apachepulsar/pulsar:3.0.7
     environment:
       - BOOKIE_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
     command: >
@@ -167,9 +167,9 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation "io.infinitic:infinitic-client:0.15.0"
+    implementation "io.infinitic:infinitic-client:0.16.0"
     // infinitic worker
-    implementation "io.infinitic:infinitic-worker:0.15.0"
+    implementation "io.infinitic:infinitic-worker:0.16.0"
 }
 
 java {
@@ -191,9 +191,9 @@ repositories {
 
 dependencies {
     // infinitic client
-    implementation("io.infinitic:infinitic-client:0.15.0")
+    implementation("io.infinitic:infinitic-client:0.16.0")
     // infinitic worker
-    implementation("io.infinitic:infinitic-worker:0.15.0")
+    implementation("io.infinitic:infinitic-worker:0.16.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.services.KotlinCompile> {
@@ -396,11 +396,12 @@ Syntax-wise, this stub functions like an implementation of `HelloService`. Howev
 Configure Pulsar in the  `app/infinitic.yml` file:
 
 ```yaml
-pulsar:
-  brokerServiceUrl: pulsar://localhost:6650
-  webServiceUrl: http://localhost:8080
-  tenant: infinitic
-  namespace: dev
+transport:
+  pulsar:
+    brokerServiceUrl: pulsar://localhost:6650/
+    webServiceUrl: http://localhost:8080
+    tenant: infinitic
+    namespace: dev
 ```
 
 ## Deploying workers
@@ -408,6 +409,13 @@ pulsar:
 Set up services and workflows, and update values for Redis and Pulsar connections as necessary:
 
 ```yaml
+transport:
+  pulsar:
+    brokerServiceUrl: pulsar://localhost:6650/
+    webServiceUrl: http://localhost:8080
+    tenant: infinitic
+    namespace: dev
+
 storage:
   redis:
     host: localhost
@@ -416,18 +424,21 @@ storage:
     password:
     database: 0
 
-pulsar:
-  brokerServiceUrl: pulsar://localhost:6650
-  tenant: infinitic
-  namespace: dev
-
 services:
   - name: HelloService
-    class: hello.world.services.HelloServiceImpl
+    executor:
+      class: hello.world.services.HelloServiceImpl
+      concurrency: 10
 
 workflows:
   - name: HelloWorkflow
-    class: hello.world.workflows.HelloWorkflowImpl
+    executor:
+      class: hello.world.workflows.HelloWorkflowImpl
+      concurrency: 10
+    stateEngine:
+      concurrency: 10
+    tagEngine:
+      concurrency: 10
 ```
 
 Replace the App file with:

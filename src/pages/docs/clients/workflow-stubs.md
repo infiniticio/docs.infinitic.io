@@ -30,7 +30,7 @@ Stubs are used to trigger actions such as:
 - sending a signal to running workflows
 - starting a new method on running workflows
 
-## Stub of new workflow
+## Stub of New Workflow
 
 The client has a `newWorkflow` method to create the stub of a new workflow:
 
@@ -67,7 +67,7 @@ val w : HelloWorkflow =
 The stub of new workflow can be used to start a new workflow instance.
 It can be used multiple times to start multiple instances.
 
-## Running workflow stub
+## Stub of An Running Workflow
 
 A workflow is said running, as long as it is neither completed neither canceled.
 

@@ -7,7 +7,7 @@ description: This section provides guidelines for versioning workflows, ensuring
 ### Class name
 
 As a workflow is internally named through its interface's class name (including package), we need to keep it stable.
-We can change it, as long as we use the [`@Name`](/docs/workflows/syntax#name-annotation) annotation to ensure that the internal name does not change.
+We can change it, as long as we use the [`@Name`](/docs/workflows/implementation#name-annotation) annotation to ensure that the internal name does not change.
 For example,
 
 {% codes %}
@@ -199,52 +199,36 @@ or through direct registration:
 {% codes %}
 
 ```java
-import io.infinitic.workers.InfiniticWorker;
+WorkflowExecutorConfig workflowExecutorConfig = WorkflowExecutorConfig.builder()
+  .setWorkflowName("MyWorkflow")
+  .addFactory(() -> new MyWorkflowImpl(/* injections here*/))
+  .addFactory(() -> new MyWorkflowImpl_1(/* injections here*/))
+  .addFactory(() -> new MyWorkflowImpl_2(/* injections here*/))
+  .addFactory(() -> new MyWorkflowImpl_3(/* injections here*/))
+  .setConcurrency(10)
+  .build();
 
-public class App {
-    public static void main(String[] args) {
-        try(InfiniticWorker worker = InfiniticWorker.fromConfigFile("infinitic.yml")) {
-            worker.registerWorkflow(
-                // workflow name
-                "com.company.workflows.MyWorkflow",                                              
-                // workflow implementation classes
-                List.of(
-                    MyWorkflowImpl.class,
-                    MyWorkflowImpl_1.class,
-                    MyWorkflowImpl_2.class,
-                    MyWorkflowImpl_3.class,
-                ),
-                // number of parallel processings
-                10
-            );
-            worker.start();
-        }
-    }
-}
+InfiniticWorker worker = InfiniticWorker.builder()
+  .setTransport(transportConfig)
+  .addWorkflowExecutor(workflowExecutorConfig)
+  .build();
 ```
 
 ```kotlin
-import io.infinitic.workers.InfiniticWorker
+val workflowExecutorConfig = WorkflowExecutorConfig.builder()
+  .setWorkflowName("MyWorkflow")
+  .addFactory { MyWorkflowImpl(/* injections here*/) }
+  .addFactory { MyWorkflowImpl_1(/* injections here*/) }
+  .addFactory { MyWorkflowImpl_2(/* injections here*/) }
+  .addFactory { MyWorkflowImpl_3(/* injections here*/) }
+  .setConcurrency(10)
+  .build();
 
-fun main(args: Array<String>) {
-    InfiniticWorker.fromConfigFile("infinitic.yml").use { worker ->
-        worker.registerWorkflow(
-            // workflow name
-            "com.company.workflows.MyWorkflow", 
-            // workflow implementation classes
-            listOf( 
-                MyWorkflowImpl::class.java
-                MyWorkflowImpl_1::class.java
-                MyWorkflowImpl_2::class.java
-                MyWorkflowImpl_3::class.java
-            ),
-            // number of parallel processings
-            10
-        )
-        worker.start()
-    }
-}
-```
+val worker = InfiniticWorker.builder()
+  .setTransport(transportConfig)
+  .addWorkflowExecutor(workflowExecutorConfig)
+  .build()
+``` 
 
 {% /codes %}
 

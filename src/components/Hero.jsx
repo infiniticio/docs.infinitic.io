@@ -51,12 +51,10 @@ export function Hero() {
             />
             <div className="relative">
               <p className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
-              
-              Scalable Workflow Engine For Distributed Services 
-
+              Streamline Your Journey to Sophisticated Distributed Applications
               </p>
               <p className="mt-3 text-2xl tracking-tight text-slate-400">
-              Add durable executions capabilities to your existing event streaming platform. Build business processes that endure failures, crashes, or server outages
+              Infinitic enables the implementation of complex event-driven business processes in weeks instead of months.
               </p>
                <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
                 {/* <Button href="/">Get started</Button> */}

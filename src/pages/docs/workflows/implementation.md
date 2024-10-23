@@ -1,5 +1,5 @@
 ---
-title: Workflows Syntax
+title: Workflow Implementation
 description: This page provides guidelines on the syntax for defining workflows in Infinitic, emphasizing serializable and thread-safe methods, along with instructions for method versioning and error handling.
 ---
 Here is an example of workflow implementation, from our [Hello World app](/docs/introduction/hello-world):
@@ -67,12 +67,12 @@ For more detailed explanations, please read [under the hood of a event-driven wo
 
 The abstract class `io.infinitic.workflows.Workflow` exposes a set of useful functions to:
 
-- [dispatch a new task](/docs/workflows/syntax#dispatch-a-new-task)
-- [dispatch a child-workflow](/docs/workflows/syntax#dispatch-a-child-workflow)
-- [inline simple task](/docs/workflows/syntax#inline-task)
-- [receive signal](/docs/workflows/syntax#receive-signal)
-- [manage time](/docs/workflows/syntax#manage-time)
-- [interacting with other workflows](/docs/workflows/syntax#interacting-with-other-workflows)
+- [dispatch a new task](/docs/workflows/implementation#dispatch-a-new-task)
+- [dispatch a child-workflow](/docs/workflows/implementation#dispatch-a-child-workflow)
+- [inline simple task](/docs/workflows/implementation#inline-task)
+- [receive signal](/docs/workflows/implementation#receive-signal)
+- [manage time](/docs/workflows/implementation#manage-time)
+- [interacting with other workflows](/docs/workflows/implementation#interacting-with-other-workflows)
 
 ## Constraints
 
@@ -332,7 +332,7 @@ Defining global timeouts can be useful to ensure that a workflow is never stuck.
 
 ## Inline Task
 
-As described [here](/docs/workflows/syntax), any non-deterministic instructions, or instructions with side-effect, should be in tasks, not in workflows. For very simple instructions, it can be frustrating to write such simple tasks. For those cases, we can use inline tasks:
+As described [here](/docs/workflows/implementation), any non-deterministic instructions, or instructions with side-effect, should be in tasks, not in workflows. For very simple instructions, it can be frustrating to write such simple tasks. For those cases, we can use inline tasks:
 
 {% codes %}
 
