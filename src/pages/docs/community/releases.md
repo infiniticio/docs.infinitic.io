@@ -3,6 +3,12 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.16.1
+
+{% version-bug-fixes /%}
+
+* Resolved an issue that occurred when calling `or(deferred1, deferred2).await()` within a loop, specifically when `deferred1` is a deferred signal.
+
 ## v0.16.0
 
 {% version-new-features /%}
