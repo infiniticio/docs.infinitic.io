@@ -274,26 +274,6 @@ Here are several examples of scenarios where key batching can be particularly us
     {% /codes %}
 
 
-4. **Priority Levels**: If your system handles tasks with different priority levels, you can use the priority as the key batch to ensure high-priority tasks are batched and processed separately from lower-priority ones.
-
-    {% codes %}
-
-    ```java
-    Map<String, byte[]> meta = new HashMap<>();
-    meta.put("batchKey", String.valueOf(taskPriority).getBytes());
-    TaskService taskService = newService(TaskService.class, null, meta);
-    taskService.executeTask(task);
-    ```
-
-    ```kotlin
-    val meta = mapOf("batchKey" to taskPriority.toString().toByteArray())
-    val taskService = newService(TaskService::class.java, meta = meta)
-    taskService.executeTask(task)
-    ```
-
-    {% /codes %}
-
-
 ## Batch Task Context
 
 For convenience, a `batchKey` String property  - initialized from the service metadata - has been added to the [task context](/docs/services/context). 
