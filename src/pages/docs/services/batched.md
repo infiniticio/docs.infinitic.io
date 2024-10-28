@@ -151,7 +151,7 @@ public class MyServiceImpl extends MyService {
     }
 
     @Batch(maxMessages = 10, maxSeconds = 1.0)
-    Map<String, List<MyFirstTaskOutput>> myFirstTask(Map<String, List<MyFirstTaskOutput>> input) {
+    Map<String, MyFirstTaskOutput> myFirstTask(Map<String, MyFirstTaskInput> input) {
         ... batch implementation
     }
 }
@@ -168,12 +168,12 @@ class MyServiceImpl : MyService {
     }
 
     @Batch(maxMessages = 10, maxSeconds = 1.0)
-    private fun myFirstTask(input: Map<String, List<MyFirstTaskOutput>>): Map<String, List<MyFirstTaskOutput>> {
+    private fun myFirstTask(input: Map<String, MyFirstTaskOutput>): Map<String, MyFirstTaskOutput> {
         ... batch implementation
     }
 }
 ```
-
+    
 {% /codes %}
 
 {% callout type="note" %}
