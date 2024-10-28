@@ -1,8 +1,8 @@
 import { MegaphoneIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-const URL = "https://infinitic.substack.com/p/news-from-infinitic-new-website-support"
-const TITLE_SMALL = "New infinitic.io Website!"
-const TITLE = "Support Plans & Customer Spotlight."
+const URL = "https://infinitic.substack.com/p/batch-processing"
+const TITLE_SMALL = "New in 0.16.0"
+const TITLE = "Batch Processing"
 
 export  function Banner() {
   return (
