@@ -39,7 +39,7 @@ Here are some common use cases:
     
     {% /codes %}
 
-2. **API Rate Limiting**: When interacting with external APIs that have rate limits, batching requests can help stay within those limits while maximizing throughput.
+2. **API Cost Optimization**: When interacting with external APIs that charge per request, batching multiple operations into a single API call can significantly reduce costs while maintaining functionality.
 
     Example:
 
@@ -130,7 +130,7 @@ Batching tasks is implemented at the [Service Executor](/docs/services/executors
 1. Create a new method with the same name as the original task method.
 2. Annotate this new method with `@Batch`, with those parameters:
     - `maxMessages`: The maximum number of tasks to batch together.
-    - `maxSeconds`: The maximum time to wait (after the first message) before processing a batch.
+    - `maxSeconds`: The maximum time to wait (after the first message) before processing a batch. (This ensures tasks don't wait indefinitely if the `maxMessages` threshold isn't met.)
 3. The method should take a `Map<String, I>` as a parameter, where `I` is the input type of the original task.
 4. The method should return a `Map<String, O>`, where `O` is the output type of the original task.
 5. The keys in both maps are task IDs, which Infinitic uses to correctly associate inputs with their corresponding outputs.
