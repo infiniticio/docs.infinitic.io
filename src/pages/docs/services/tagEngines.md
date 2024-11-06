@@ -46,7 +46,7 @@ Before building a Service Executor, you need to add the `infinitic-worker` depen
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.16.1"
+    implementation "io.infinitic:infinitic-worker:0.16.2"
     ...
 }
 ```
@@ -54,7 +54,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.16.1")
+    implementation("io.infinitic:infinitic-worker:0.16.2")
     ...
 }
 ```

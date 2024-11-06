@@ -12,7 +12,7 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
-const CURRENT_VERSION = 'v0.16.1'
+const CURRENT_VERSION = 'v0.16.2'
 
 const navigation = [
   {
@@ -30,7 +30,6 @@ const navigation = [
     links: [
       { title: 'Terminology', href: '/docs/components/terminology' },
       { title: 'Infrastructure', href: '/docs/components/infrastructure' },
-      { title: 'Worker Creation', href: '/docs/components/workers' },
       { title: 'Client Creation', href: '/docs/components/clients' },
     ],
   },
@@ -51,9 +50,9 @@ const navigation = [
     title: 'Service',
     links: [
       { title: 'Implementation', href: '/docs/services/implementation' },
-      { title: 'Good Practices', href: '/docs/services/practices' },
+      { title: 'Deployment', href: '/docs/services/deployment' },
       { title: 'Task Context', href: '/docs/services/context' },
-      { title: 'Batched Task', href: '/docs/services/batched' },
+      { title: 'Bulk Tasks', href: '/docs/services/bulk' },
       { title: 'Delegated Task', href: '/docs/services/delegated' },
       { title: 'Task Failures In Detail', href: '/docs/services/failures' },
       { title: 'Versioning', href: '/docs/services/versioning' },
@@ -64,6 +63,7 @@ const navigation = [
     title: 'Workflow',
     links: [
       { title: 'Implementation', href: '/docs/workflows/implementation' },
+      { title: 'Deployment', href: '/docs/workflows/deployment' },
       { title: 'Sequential Tasks', href: '/docs/workflows/sequential' },
       { title: 'Parallelization', href: '/docs/workflows/parallel' },
       { title: 'Properties', href: '/docs/workflows/properties' },
@@ -104,6 +104,7 @@ const navigation = [
     title: 'References',
     links: [
       { title: 'Pulsar', href: '/docs/references/pulsar' },
+      { title: 'Storage', href: '/docs/references/storage' },
       { title: 'Serialization', href: '/docs/references/serialization' },
     ],
   },

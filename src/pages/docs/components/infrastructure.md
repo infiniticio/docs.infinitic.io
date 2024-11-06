@@ -43,12 +43,12 @@ Adding support for other databases is typically a straightforward process that c
 
 Infinitic Workers are stateless components that produce and consume messages from the message broker. Infinitic provides the core code for these workers, which you can configure to perform various roles:
 
-- [Service Executors](/docs/components/terminology#service-executor)
-- [Service Tag Engine](/docs/components/terminology#service-tag-engine) (*Optional*)
-- [Workflow Executors](/docs/components/terminology#workflow-executor)
-- [Workflow State Engine](/docs/components/terminology#workflow-state-engine)
-- [Workflow Tag Engine](/docs/components/terminology#workflow-tag-engine) (*Optional*)
-- [Event Listeners](/docs/components/terminology#event-listener) (*Optional*)
+- [Service Executors](/docs/services/deployment#service-executors)
+- [Service Tag Engine](/docs/services/deployment#service-tag-engines)
+- [Workflow Executors](/docs/workflows/deployment#workflow-executors)
+- [Workflow State Engine](/docs/workflows/deployment#workflow-state-engine)
+- [Workflow Tag Engine](/docs/workflows/deployment#workflow-tag-engines) 
+- [Event Listeners](/docs/components/terminology#event-listener)
 
 You have the flexibility to configure workers based on your needs:
 
