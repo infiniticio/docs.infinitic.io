@@ -309,7 +309,7 @@ Key settings to consider:
 
 Those settings can be set on [consumers](#consumer-settings).
 
-## Using Infinitic With Third-Party Providers
+## Third-Party Providers
 
 Infinitic has been tested successfully with the following providers:
 

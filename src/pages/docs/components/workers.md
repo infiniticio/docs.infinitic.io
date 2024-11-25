@@ -12,7 +12,7 @@ To build a Worker you need first to add the `infinitic-worker` dependency into y
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.16.1"
+    implementation "io.infinitic:infinitic-worker:0.16.2"
     ...
 }
 ```
@@ -20,7 +20,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.16.1")
+    implementation("io.infinitic:infinitic-worker:0.16.2")
     ...
 }
 ```
@@ -279,8 +279,8 @@ val worker = InfiniticWorker.builder()
 
 {% /codes %}
 
-This configuration creates a Worker embedding a Service Executor for the `MyService` service that will process up to 10 tasks in parallel, with a [retry policy](/docs/services/references#retry-policy)
-and a [timeout](/docs/services/references#task-execution-timeout) of 100 seconds.
+This configuration creates a Worker embedding a Service Executor for the `MyService` service that will process up to 10 tasks in parallel, with a [retry policy](/docs/services/implementation#retry-policy)
+and a [timeout](/docs/services/implementation#task-execution-timeout) of 100 seconds.
 
 
 ### Service Tag Engine 
@@ -829,7 +829,6 @@ workflows:
 This configuration creates a Worker embedding a Workflow Executor for the `MyWorkflow` workflow that will process steps of up to 10 different instances in parallel.
 
 {% callout %}
-
 It's also possible to set a [retry policy](/docs/workflows/references#retry-policy) and a [timeout](/docs/workflows/references#step-execution-timeout) for the workflow executor. But this is not recommended, as a workflow implemention is expected to be deterministic.
 {% /callout %}
 

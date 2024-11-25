@@ -44,6 +44,12 @@ In this situation, you should:
 1. Deploy a fix for the underlying code issue, if any.
 2. [Retry the failed tasks](/docs/clients/retry-failed-tasks) once the fix is in place.
 
+{% callout  %}
+
+The workflow that dispatched a task remains unaware of any retry attempts occurring for that task. From the workflow's perspective, it only receives the final outcome: either the task has succeeded after potentially multiple retry attempts, or it has ultimately failed once all retry attempts have been exhausted. This abstraction allows the workflow to focus on the overall task completion status rather than the intricacies of the retry mechanism.
+
+{% /callout  %}
+
 ## Exception During Task Finalization
 
 The task finalization phase includes:
