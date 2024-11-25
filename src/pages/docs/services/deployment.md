@@ -244,7 +244,7 @@ executor:
   concurrency: 50
 ```
 
-### Batching (beta)
+### Batching
 
 Batching refers to the process of grouping multiple messages together into a single batch before receiving from or sending to the message broker. This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
 

@@ -52,7 +52,7 @@ const navigation = [
       { title: 'Implementation', href: '/docs/services/implementation' },
       { title: 'Deployment', href: '/docs/services/deployment' },
       { title: 'Task Context', href: '/docs/services/context' },
-      { title: 'Bulk Tasks', href: '/docs/services/bulk' },
+      { title: 'Batched Task', href: '/docs/services/batch' },
       { title: 'Delegated Task', href: '/docs/services/delegated' },
       { title: 'Task Failures In Detail', href: '/docs/services/failures' },
       { title: 'Versioning', href: '/docs/services/versioning' },

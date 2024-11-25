@@ -205,7 +205,7 @@ With `concurrency = 50`, a Workflow Executor will execute up to 50 messages conc
 
 {% callout  %}
 
-By design, Infinitic guarantees that only one Workflow Executor can process a given workflow instance at the same time. 
+By design, Infinitic guarantees that only one Workflow Executor can process a given workflow instance at ta given time. 
 
 {% /callout  %}
 
@@ -239,9 +239,14 @@ executor:
   concurrency: 50
 ```
 
-### Batching (beta)
+### Batching (Beta)
 
-Batching refers to the process of grouping multiple messages together into a single batch before receiving from or sending to the message broker. This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
+Batching refers to the process of grouping multiple messages together into a single batch:
+- while receiving messages from the broker;
+- while processing messages;
+- while sending messages to the broker.
+
+This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
 
 Batching can be configured with 2 parameters:
 
@@ -250,7 +255,7 @@ Batching can be configured with 2 parameters:
 
 {% callout  %}
 
-To be efficient, `maxMessages` should be set typically set to the same number than the `concurrency` parameter and `maxSeconds` should be set small enough to not add delay to the messages processing. 
+When batching, the `concurrency` settings indicates how many batches are processed in parallel.
 
 {% /callout  %}
 
@@ -453,15 +458,70 @@ fun main() {
 Configuring a storage is mandatory to run a Workflow State Engine.
 See [Storage](/docs/references/storage) for more details.
 
+### Concurrency
 
-### Batching (beta)
+**By default, messages are executed sequentially, one after another, within the same Workflow State Engine.** However, we can increase the level of parallelism with the `concurrency` parameter. 
 
-Batching refers to the process of grouping multiple messages together into a single batch before receiving from or sending to the message broker. This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
+With `concurrency = 10`, a Workflow State Engine will execute up to 10 messages concurrently. If 10 messages are already running, the worker will stop consuming messages until a slot becomes available. 
+
+{% callout  %}
+
+By design, Infinitic guarantees that only one Workflow State Engine can process a given workflow instance at a given time. 
+
+{% /callout  %}
+
+#### Configuration Using Builders
+
+{% codes %}
+
+```java
+WorkflowStateEngineConfig workflowStateEngineConfig = WorkflowStateEngineConfig.builder()
+  .setWorkflowName("MyWorkflow")
+  .setStorage(storageConfig)
+  .setConcurrency(10)
+  .build();
+```
+
+```kotlin
+val workflowStateEngineConfig = WorkflowStateEngineConfig.builder()
+    .setWorkflowName("MyWorkflow")
+    .setStorage(storageConfig)
+    .setConcurrency(10)
+    .build();
+```
+
+{% /codes %}
+
+#### Configuration Using YAML
+
+```yaml
+workflows:
+  - name: MyWorkflow
+    stateEngine:
+      concurrency: 10
+      storage:
+        # storage configuration
+```
+
+### Batching (Beta)
+
+Batching refers to the process of grouping multiple messages together into a single batch:
+- while receiving messages from the broker;
+- while processing messages;
+- while sending messages to the broker.
+
+This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
 
 Batching can be configured with 2 parameters:
 
 - `maxMessages` (int): the maximal number of messages in a batch.
 - `maxSeconds` (double): the maximal duration of a batch in seconds.
+
+{% callout  %}
+
+When batching, the `concurrency` settings indicates how many batches are processed in parallel.
+
+{% /callout  %}
 
 #### Configuration Using Builders
 
@@ -649,15 +709,68 @@ fun main() {
 Configuring a storage is mandatory to run a Service Tag Engine, to store the relationship between task IDs and task tags.
 See [Storage](/docs/references/storage) for more details.
 
+### Concurrency
 
-### Batching (beta)
+**By default, messages are executed sequentially, one after another, within the same Workflow Tag Engine.** However, we can increase the level of parallelism with the `concurrency` parameter. 
 
-Batching refers to the process of grouping multiple messages together into a single batch before receiving from or sending to the message broker. This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
+With `concurrency = 10`, a Workflow Tag Engine will execute up to 10 messages concurrently. If 10 messages are already running, the worker will stop consuming messages until a slot becomes available. 
+
+{% callout  %}
+
+By design, Infinitic guarantees that only one Workflow Tag Engine can process a message for a specific workflow tag at a given time. 
+
+{% /callout  %}
+
+#### Configuration Using Builders
+
+{% codes %}
+
+```java
+WorkflowTagEngineConfig workflowTagEngineConfig = WorkflowTagEngineConfig.builder()
+  .setWorkflowName("MyWorkflow")
+  .setStorage(storageConfig)
+  .setConcurrency(10)
+  .build();
+```
+
+```kotlin
+val workflowTagEngineConfig = WorkflowTagEngineConfig.builder()
+  .setWorkflowName("MyWorkflow")
+  .setStorage(storageConfig)
+  .setConcurrency(10)
+  .build()
+```
+
+{% /codes %}
+
+#### Configuration Using YAML
+
+```yaml
+tagEngine:
+  concurrency: 10
+  storage:
+    # storage configuration
+```
+
+### Batching (Beta)
+
+Batching refers to the process of grouping multiple messages together into a single batch:
+- while receiving messages from the broker;
+- while processing messages;
+- while sending messages to the broker.
+
+This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
 
 Batching can be configured with 2 parameters:
 
 - `maxMessages` (int): the maximal number of messages in a batch.
 - `maxSeconds` (double): the maximal duration of a batch in seconds.
+
+{% callout  %}
+
+When batching, the `concurrency` settings indicates how many batches are processed in parallel.
+
+{% /callout  %}
 
 #### Configuration Using Builders
 

@@ -5,6 +5,29 @@ description: This section lists the release notes for Infinitic, detailing new f
 
 ## v0.16.2
 
+{% version-new-features /%}
+* All components now support message batching:
+  * [Service Executors](/docs/services/deployment#batching)
+  * [Service Tag Engine](/docs/services/deployment#batching-beta)
+  * [Workflow Executors](/docs/workflows/deployment#batching-beta)
+  * [Workflow State Engines](/docs/workflows/deployment#batching-beta-2)
+  * [Workflow Tag Engine](/docs/workflows/deployment#batching-beta-3)
+
+  Batching groups multiple messages together into a single batch at three stages:
+  * When receiving messages from the broker
+  * When processing messages
+  * When sending messages to the broker
+
+  This technique significantly improves efficiency and reduces latency for high-throughput applications by minimizing the number of network calls required.
+
+{% version-breaking-changes /%}
+* The `@Batch` annotation parameters have been removed. Batch configuration is now handled at the deployment level.
+
+{% version-improvements /%}
+* Improved concurrency handling for components that use keys (Service Tag Engine, Workflow State Engine, Workflow Tag Engine). Previously, setting `concurrency > 1` would create multiple consumers equal to the concurrency value. Now, only one consumer is created (matching other components' behavior), with messages sharded internally to prevent parallel processing of messages with the same key.
+
+## v0.16.1
+
 {% version-bug-fixes /%}
 
 * Resolved an issue that occurred when calling `or(deferred1, deferred2).await()` within a loop, specifically when `deferred1` is a deferred signal.
