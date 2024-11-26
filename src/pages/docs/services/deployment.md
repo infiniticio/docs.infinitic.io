@@ -580,48 +580,6 @@ Configuring a storage is mandatory to run a Service Tag Engine, to store the rel
 See [Storage](/docs/references/storage) for more details.
 
 
-### Batching (beta)
-
-Batching refers to the process of grouping multiple messages together into a single batch before receiving from or sending to the message broker. This technique improves efficiency and reduces latency, especially for high-throughput applications, by reducing the number of network calls required.
-
-Batching can be configured with 2 parameters:
-
-- `maxMessages` (int): the maximal number of messages in a batch.
-- `maxSeconds` (double): the maximal duration of a batch in seconds.
-
-#### Configuration Using Builders
-
-{% codes %}
-
-```java
-ServiceTagEngineConfig serviceTagEngineConfig = ServiceTagEngineConfig.builder()
-  .setServiceName("MyService")
-  .setStorage(storageConfig)
-  .setBatch(1000, 0.1)
-  .build();
-```
-
-```kotlin
-val serviceTagEngineConfig = ServiceTagEngineConfig.builder()
-  .setServiceName("MyService")
-  .setStorage(storageConfig)
-  .setBatch(1000, 0.1)
-  .build()
-```
-
-{% /codes %}
-
-#### Configuration Using YAML
-
-```yaml
-tagEngine:
-  batch: 
-    maxMessages: 1000
-    maxSeconds: 0.1
-  storage:
-    # storage configuration
-```
-
 
 ## Mixing Components
 
