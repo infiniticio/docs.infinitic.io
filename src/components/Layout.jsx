@@ -106,6 +106,7 @@ const navigation = [
       { title: 'Pulsar', href: '/docs/references/pulsar' },
       { title: 'Storage', href: '/docs/references/storage' },
       { title: 'Serialization', href: '/docs/references/serialization' },
+      { title: 'Batching', href: '/docs/references/batching' },
     ],
   },
   {
