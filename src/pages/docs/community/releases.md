@@ -3,6 +3,14 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.16.3
+
+{% version-bug-fixes /%}
+* Fix use of batches in Workflow Tag Engine consumers
+
+{% version-improvements /%}
+* Use Kotlin 2.1.0
+
 ## v0.16.2
 
 {% version-new-features /%}
