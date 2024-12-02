@@ -186,6 +186,8 @@ val storageConfig = PostgresStorageConfig.builder()
   .build()
 ``` 
 
+{% /codes %}
+
 Configuration using a YAML configuration:
 
 ```yaml
@@ -197,7 +199,7 @@ storage:
     password: ********
 ```
 
-{% /codes %}
+
 
 #### Optional Parameters
 
