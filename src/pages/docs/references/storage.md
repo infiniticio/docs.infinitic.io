@@ -7,9 +7,11 @@ Storage is used to store the state of the workflow, the relationship between wor
 
 Here are the different minimal configurations for the databases. Look at the builders' methods for more details.
 
-## Redis
+## Databases
 
-### Mandatory Parameters
+### Redis
+
+#### Mandatory Parameters
 
 - `host`: The hostname of the Redis server
 - `port`: The port number the Redis server is listening on
@@ -51,9 +53,11 @@ storage:
     password: ********
 ```
 
-### Optional Parameters
+#### Optional Parameters
 
 If you need you can use the following optional parameters:
+- `compression` (default: none): Enable [compression](#compression) of data stored in Redis to reduce storage space and network bandwidth
+- `cache` (default: none): Enable [caching](#cache) mechanism to improve read performance 
 - `database`: The Redis database number to use
 - `timeout`: Connection timeout in milliseconds
 - `ssl`: Whether to use SSL/TLS for the connection
@@ -74,6 +78,14 @@ Configuration using a builder:
 
 ```java
 StorageConfig storageConfig = MySQLStorageConfig.builder()
+  .setCompression(CompressionConfig.gzip)
+  .setCache(
+    CacheConfig.builder()
+      .setMaximumSize(10000L)
+      .setExpireAfterAccess(3600L)
+      .setExpireAfterWrite(3600L)
+      .build()
+  )
   .setHost("localhost")
   .setPort(6379)
   .setUsername("redis")
@@ -93,6 +105,14 @@ StorageConfig storageConfig = MySQLStorageConfig.builder()
 
 ```kotlin
 val storageConfig = MySQLStorageConfig.builder()
+  .setCompression(CompressionConfig.gzip)
+  .setCache(
+    CacheConfig.builder()
+      .setMaximumSize(10000L)
+      .setExpireAfterAccess(3600L)
+      .setExpireAfterWrite(3600L)
+      .build()
+  )
   .setHost("localhost")
   .setPort(6379)
   .setUsername("redis")
@@ -116,7 +136,12 @@ Configuration using a YAML configuration:
 
 ```yaml
 storage:
-  mysql:
+  compression: gzip
+  cache:
+    maximumSize: 10000
+    expireAfterAccess: 3600
+    expireAfterWrite: 3600
+  redis:
     host: localhost
     port: 6379
     username: redis
@@ -130,9 +155,9 @@ storage:
       minIdle: 0
 ```
 
-## Postgres
+### Postgres
 
-### Mandatory Parameters
+#### Mandatory Parameters
 
 - `host`: The hostname of the Postgres server
 - `port`: The port number the Postgres server is listening on
@@ -174,9 +199,11 @@ storage:
 
 {% /codes %}
 
-### Optional Parameters
+#### Optional Parameters
 
 If you need you can use the following optional parameters:
+- `compression` (default: none): Enable [compression](#compression) of data stored in Redis to reduce storage space and network bandwidth
+- `cache` (default: none): Enable [caching](#cache) mechanism to improve read performance 
 - `database` (default: "postgres"): The name of the database to use 
 - `schema` (default: "infinitic"): The name of the schema to use 
 - `keySetTable` (default: "key_set_storage"): The name of the table that stores key sets 
@@ -199,6 +226,14 @@ Configuration using a builder:
 
 ```java
 StorageConfig storageConfig = MySQLStorageConfig.builder()
+  .setCompression(CompressionConfig.gzip)
+  .setCache(
+    CacheConfig.builder()
+      .setMaximumSize(10000L)
+      .setExpireAfterAccess(3600L)
+      .setExpireAfterWrite(3600L)
+      .build()
+  )
   .setHost("localhost")
   .setPort(5432)
   .setUsername("postgres")
@@ -217,6 +252,14 @@ StorageConfig storageConfig = MySQLStorageConfig.builder()
 
 ```kotlin
 val storageConfig = MySQLStorageConfig.builder()
+  .setCompression(CompressionConfig.gzip)
+  .setCache(
+    CacheConfig.builder()
+      .setMaximumSize(10000L)
+      .setExpireAfterAccess(3600L)
+      .setExpireAfterWrite(3600L)
+      .build()
+  )
   .setHost("localhost")
   .setPort(5432)
   .setUsername("postgres")
@@ -239,6 +282,11 @@ Configuration using a YAML configuration:
 
 ```yaml
 storage:
+  compression: gzip
+  cache:
+    maximumSize: 10000
+    expireAfterAccess: 3600
+    expireAfterWrite: 3600
   postgres:
     host: localhost
     port: 5432
@@ -255,9 +303,9 @@ storage:
     maxLifetime: 1800000
 ```
 
-## MySQL
+### MySQL
 
-### Mandatory Parameters
+#### Mandatory Parameters
 
 - `host`: The hostname of the MySQL server
 - `port`: The port number the MySQL server is listening on
@@ -299,9 +347,11 @@ storage:
     password: ********
 ```
 
-### Optional Parameters
+#### Optional Parameters
 
 If you need you can use the following optional parameters:
+- `compression` (default: none): Enable [compression](#compression) of data stored in Redis to reduce storage space and network bandwidth
+- `cache` (default: none): Enable [caching](#cache) mechanism to improve read performance 
 - `database` (default: "infinitic"): The name of the database to use 
 - `keySetTable` (default: "key_set_storage"): The name of the table that stores key sets 
 - `keyValueTable` (default: "key_value_storage"): The name of the table that stores key-value pairs 
@@ -323,6 +373,14 @@ Configuration using a builder:
 
 ```java
 StorageConfig storageConfig = MySQLStorageConfig.builder()
+  .setCompression(CompressionConfig.gzip)
+  .setCache(
+    CacheConfig.builder()
+      .setMaximumSize(10000L)
+      .setExpireAfterAccess(3600L)
+      .setExpireAfterWrite(3600L)
+      .build()
+  )
   .setHost("localhost")
   .setPort(3306)
   .setUsername("root")
@@ -340,6 +398,14 @@ StorageConfig storageConfig = MySQLStorageConfig.builder()
 
 ```kotlin
 val storageConfig = MySQLStorageConfig.builder()
+  .setCompression(CompressionConfig.gzip)
+  .setCache(
+    CacheConfig.builder()
+      .setMaximumSize(10000L)
+      .setExpireAfterAccess(3600L)
+      .setExpireAfterWrite(3600L)
+      .build()
+  )
   .setHost("localhost")
   .setPort(3306)
   .setUsername("root")
@@ -361,6 +427,11 @@ Configuration using a YAML configuration:
 
 ```yaml
 storage:
+  compression: gzip
+  cache:
+    maximumSize: 10000
+    expireAfterAccess: 3600
+    expireAfterWrite: 3600
   mysql:
     host: localhost
     port: 3306
@@ -376,7 +447,7 @@ storage:
     maxLifetime: 1800000
 ```
 
-## In Memory
+### In Memory
 
 Using a builder:
 
@@ -402,5 +473,60 @@ storage:
 {% callout type="warning" %}
 
 This storage should only be used for testing purposes, as it does not persist any data.
+
+{% /callout %}
+
+
+## Compression
+
+Compression can be used to reduce the size of data stored in the database, which can help:
+
+- Reduce storage costs
+- Reduce network bandwidth usage
+- Improve overall performance in some cases where network is the bottleneck
+
+However, compression comes with a CPU overhead as data needs to be compressed before being stored and decompressed when retrieved. You should benchmark your specific use case to determine if compression provides a net benefit.
+
+Infinitic uses [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/) and support the following compression algorithms:
+- gzip
+- bzip2
+- deflate
+
+{% callout %}
+
+You can change the compression settings at any time - Infinitic will automatically detect and decompress data using the compression algorithm that was used when the data was originally stored. This means you can safely switch between different compression algorithms or disable compression entirely without losing access to previously stored data.
+
+{% /callout %}
+
+## Cache
+
+Caching can significantly improve read performance by storing frequently accessed data in memory, reducing the need to query the database repeatedly. This can help:
+
+- Reduce database load
+- Improve response times for frequently accessed data
+- Reduce costs associated with database operations
+
+The cache implementation uses [Caffeine](https://github.com/ben-manes/caffeine), a high-performance Java caching library. The cache can be configured with:
+
+- `maximumSize`: Maximum number of entries the cache may contain
+- `expireAfterAccess`: Duration after which an entry should be automatically removed from the cache if it hasn't been accessed
+- `expireAfterWrite`: Duration after which an entry should be automatically removed from the cache after it was last written
+
+### Potential issue
+
+When deploying multiple workers, caching works effectively because messages for a specific workflow instance are always routed to the same worker. However, there is a potential issue to be aware of when starting and stopping workers in quick succession.
+
+Let's consider this scenario:
+
+1. Worker 1 is handling messages for Workflow A and has cached its state
+2. Worker 2 starts up and starts processing messages previously handled by Worker 1, including those of Workflow A
+   - This works fine because Worker 2 has no cached state and will fetch from the database
+3. Worker 2 is quickly shut down
+4. Messages for Workflow A return to Worker 1
+   - This can cause issues if Worker 1 still has outdated state in its cache
+
+{% callout type="warning" %}
+
+When using caching you should allow workers to run for at least the full cache duration before shutting them down.
 
 {% /callout %}
