@@ -10,7 +10,7 @@ Infinitic seamlessly integrates with existing infrastructures. You can enhance t
 
 ## Using Existing Events To Start Workflows
 
-Infinitic enables you to dynamically start workflows using the Infinitic client, integrating seamlessly with your existing infrastructure. This includes triggering workflows from webhooks, application servers, or events processed by message brokers like Kafka, RabbitMQ, or similar systems.
+Infinitic enables you to dynamically start workflows using the Infinitic client. This includes triggering workflows from webhooks, application servers, or events processed by message brokers like Kafka, RabbitMQ, or similar systems.
 
 ![Start Workflow](/img/existing-start-workflow.png)
 
@@ -268,8 +268,6 @@ If you already have existing API services, you can use them into your Infinitic 
 
 ![Using existing services](/img/existing-services.png)
 
-### Service Definitions
-
 To work with HTTP-based services, you'll first define an interface that describes the external service:
 
 {% codes %}
@@ -287,8 +285,6 @@ interface PaymentService {
 ```
 
 {% /codes %}
-
-### Infinitic Service Implementation
 
 Then create an implementation that uses an HTTP client to communicate with the external service:
 
@@ -345,9 +341,6 @@ class HttpPaymentService(private val httpClient: HttpClient) : PaymentService {
 
 {% /codes %}
 
-
-### Using HTTP Services in Workflows
-
 Incorporate the HTTP service into your workflow logic:
 
 {% codes %}
@@ -395,12 +388,12 @@ class OrderWorkflow : Workflow {
 
 {% /codes %}
 
-### Best Practices
+Best Practices when deploying a Service:
 
-- Use `concurrency` setting when deploying a PaymentService to process requests in parallel
-- Use `retry` setting when deploying a PaymentService to handle potential network failures gracefully
-- Implement proper timeout 
-- Consider using batch requests if needed
+- Use [`concurrency`](/docs/services/deployment#concurrency) setting to process requests in parallel
+- Use [`retry`](/docs/services/deployment#retry-policy) setting to handle potential network failures gracefully
+- Implement proper [timeout](/docs/services/deployment#execution-timeout) to handle non-responsiveness
+- Consider using [batch](/docs/services/deployment#batching) requests if needed
 
 By following these patterns, you can seamlessly integrate existing HTTP-based services into your Infinitic workflows, maintaining clean architecture and separation of concerns.
 
