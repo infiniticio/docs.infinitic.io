@@ -19,9 +19,10 @@ const navigation = [
     title: 'Introduction',
     links: [
       { title: 'Getting started', href: '/' },
+      { title: 'Examples', href: '/docs/introduction/examples' },
       { title: 'Event-Driven', href: '/docs/introduction/event-driven-workflows' },
       { title: 'Interfaces As Contract', href: '/docs/introduction/interfaces' },
-      { title: 'Examples', href: '/docs/introduction/examples' },
+      { title: 'Existing Infrastructure', href: '/docs/components/existing' },
       { title: 'Hello World', href: '/docs/introduction/hello-world' },
     ],
   },
