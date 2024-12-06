@@ -1,11 +1,9 @@
 ---
-title: Infinitic Clients
+title: Client Creation
 description: This page provides a comprehensive guide on Infinitic Clients, essential components for interacting with Infinitic applications. Learn how to create, configure, and utilize clients to manage workflows, retry tasks, and perform other crucial operations in your distributed system. Discover the flexibility of builder-based and YAML-based configurations for seamless integration with your Infinitic infrastructure.
 ---
 
 An Infinitic **Client**  allows you to interact with the Infinitic application. It can be used to start or cancel workflows, retry tasks, etc.
-
-## Creating a Client
 
 To build an Infinitic Client you need first to add the `infinitic-client` dependency into your project:
 

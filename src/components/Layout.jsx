@@ -31,12 +31,12 @@ const navigation = [
     links: [
       { title: 'Terminology', href: '/docs/components/terminology' },
       { title: 'Infrastructure', href: '/docs/components/infrastructure' },
-      { title: 'Client Creation', href: '/docs/components/clients' },
     ],
   },
   {
-    title: 'Client Usage',
+    title: 'Client',
     links: [
+      { title: 'Creation', href: '/docs/clients/creation' },
       { title: 'Workflow Stubs', href: '/docs/clients/workflow-stubs' },
       { title: 'Start A Workflow', href: '/docs/clients/start-workflow' },
       { title: 'Send A Signal', href: '/docs/clients/send-signal' },

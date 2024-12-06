@@ -65,7 +65,7 @@ This is done through a `pulsar` entry within their configuration file.
 
 {% callout %}
 
-The configurations below use YAML, but the same configuration can be done using builders (see [clients](/docs/components/clients#builder-based-configurations)).
+The configurations below use YAML, but the same configuration can be done using builders (see [clients](/docs/clients/creation#builder-based-configurations)).
 
 {% /callout  %}
 
