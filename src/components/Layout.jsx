@@ -22,7 +22,7 @@ const navigation = [
       { title: 'Examples', href: '/docs/introduction/examples' },
       { title: 'Event-Driven', href: '/docs/introduction/event-driven-workflows' },
       { title: 'Interfaces As Contract', href: '/docs/introduction/interfaces' },
-      { title: 'Extending Applications', href: '/docs/components/extending' },
+      { title: 'Extending Applications', href: '/docs/introduction/extending' },
       { title: 'Hello World', href: '/docs/introduction/hello-world' },
     ],
   },

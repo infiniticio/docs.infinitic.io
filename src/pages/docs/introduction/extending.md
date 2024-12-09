@@ -6,7 +6,6 @@ description: Learn how to integrate Infinitic with your existing applications, s
 If you’re considering introducing Infinitic into your stack to leverage its orchestration pattern, event-driven architecture, and built-in observability, you might be wondering how 
 to do it using your existing services and event systems.
 
-
 ## Starting Workflows
 
 You can trigger new workflow instances from any external source using the [Infinitic client](/docs/clients/start-workflow). Common integration points include:
@@ -43,9 +42,9 @@ By wrapping your existing service calls within Infinitic services, you automatic
 - Configurable [timeout management](/docs/services/deployment#execution-timeout)
 - Ability to handle errors gracefully using [workflow error handling](/docs/workflows/errors#try-catch-in-workflows)
 
-## Monitoring Workflow Events
+## Sending Workflow Events
 
-Infinitic emits internal events that provide detailed insights into workflow and service execution. You can subscribe to these events to:
+Infinitic emits internal events that provide detailed insights into workflow and service execution. You can subscribe to these events and send them back to your existing databases or event brokers (Kafka, RabbitMQ, etc.) to reuse those events by your applications or your monitoring stack:
 
 - Track workflow progress and completion
 - Monitor service task execution and failures 
