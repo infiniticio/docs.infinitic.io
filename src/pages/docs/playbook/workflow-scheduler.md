@@ -1,6 +1,6 @@
 ---
 title: Building A Workflow Scheduler
-description: .
+description: Learn how to build a workflow scheduler using Infinitic to automate recurring workflow execution with cron expressions. This guide shows you how to implement a RecurringWorkflowScheduler for dispatching workflows on a schedule.
 ---
 
 {% callout type="note"  %}

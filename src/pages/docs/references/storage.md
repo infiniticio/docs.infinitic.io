@@ -9,6 +9,7 @@ Here are the different minimal configurations for the databases. Look at the bui
 
 ## Databases
 
+
 ### Redis
 
 #### Mandatory Parameters
