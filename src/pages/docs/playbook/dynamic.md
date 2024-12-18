@@ -1,6 +1,6 @@
 ---
 title: Implementing Dynamic Workflows
-description: .
+description: Learn how to implement dynamic workflows that can be easily modified without coding, enabling business agility and rapid process adaptation.
 ---
 
 The ability to define workflows dynamically through a configuration file, or a user interface can become a game-changer for businesses seeking agility and rapid process adaptation,  
