@@ -1,6 +1,6 @@
 ---
 title: Promises On Asynchronous Tasks
-description: .
+description: Learn how to handle asynchronous tasks in Infinitic using promises. This guide explains how to execute remote tasks asynchronously, manage their completion, and handle errors through child-workflows and promises.
 ---
 
 {% callout type="note"  %}

@@ -1,6 +1,6 @@
 ---
 title: Forwarding Workflow's Metadata To Services
-description: .
+description: Learn how to forward workflow metadata to services in Infinitic. This guide explains how to set metadata when creating workflows and pass it to service stubs for enhanced workflow context and information sharing.
 ---
 
 {% callout type="note"  %}

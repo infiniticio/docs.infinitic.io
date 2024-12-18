@@ -1,6 +1,6 @@
 ---
 title: Forwarding Workflow's Tags To Services
-description: .
+description: Learn how to forward workflow tags to services in Infinitic. This guide shows you how to set tags when creating workflows and pass them to service stubs for better task tracking and categorization.
 ---
 
 {% callout type="note"  %}
