@@ -22,7 +22,7 @@ The key idea is to:
 
 ## How To Define Dynamic Workflows
 
-Dynamic workflows can be defined using a domain-specific language (DSL) specified in formats like JSON or YAML. While you can create your own custom DSL format, there are also established standards available like the [serverless workflow DSL](https://github.com/serverlessworkflow/specification/blob/main/dsl.md) that provide robust workflow definition capabilities.
+Dynamic workflows can be defined using a domain-specific language (DSL) specified in formats like JSON or YAML. While you can create your own custom DSL format, there are also established standards available like the [serverless workflow DSL](https://github.com/serverlessworkflow/specification/blob/main/dsl.md) that provide open (but not stable yet) workflow definition capabilities.
 
 The DSL acts as a configuration layer that describes the workflow's structure, logic, and behavior. This separation of workflow definition from implementation allows workflows to be modified without changing code.
 
@@ -104,7 +104,7 @@ This workflow will interpret and execute the DSL through these steps:
    * For each command node, determine its type (e.g. `http`, `fork`, `parallel`)
    * Execute the appropriate logic based on the command type
 
-3. Handle different command types - for examples:
+3. Handle different command types - for example:
    * For `http` commands:
      ```yaml
      - callNurse:
@@ -131,5 +131,4 @@ This workflow will interpret and execute the DSL through these steps:
    * Replace variables like `${ .patient.fullName }` with actual values from the input data
    * Validate that all required variables are present
 
-This approach enables the creation of a flexible system, allowing for the definition of new workflow patterns within the DSL by extending the interpreter code. Additionally, it allows the execution of multiple workflow definitions using the same interpreter.
-
+This approach allows the execution of multiple workflow definitions using the same interpreter. Additionally, it's a flexible system allowing for the definition of new workflow patterns within the DSL by extending the interpreter code. 
