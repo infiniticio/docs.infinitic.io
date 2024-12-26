@@ -3,7 +3,14 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.16.4
+
+{% version-bug-fixes /%}
+* Implements workaround to a [Kotlin bug](https://youtrack.jetbrains.com/issue/KT-71057) that triggers dependency issues in 0.16.3
+
 ## v0.16.3
+
+**Avoid using this version that contains a [Kotlin dependency management bug](https://youtrack.jetbrains.com/issue/KT-71057)**.
 
 {% version-bug-fixes /%}
 * Fix use of batches in Workflow Tag Engine consumers
