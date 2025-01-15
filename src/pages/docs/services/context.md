@@ -18,7 +18,7 @@ The `io.infinitic.tasks.Task` class provides the following static properties:
 | [`meta`](#meta) | Map\<String, ByteArray\>   | Metadata provided when dispatching the task                        |
 | [`retryIndex`  ](#retry-index)     | Integer         | Number of times the task was automatically retried                                   |
 | [`retrySequence`](#retry-sequence) | Integer         | Number of times the task was manually retried                                        |
-| [`lastError`](#last-error)         | ExecutionError? | If any, the error during the previous attempt                                        |
+| [`attempts`](#attempts)         | List<AttemptException> | list of previous `AttemptException`    |
 | `batchKey`        | String? | If any, the [batch key](/docs/services/batched#optional-batch-key) provided when the task was dispatched                                       |
 | `client`        | InfiniticClient | An [InfiniticClient](/docs/components/terminology#clients) that can be used inside the task                                  |
 
