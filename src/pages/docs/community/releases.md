@@ -3,6 +3,43 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.17.0
+
+{% callout type="warning" %}
+ Ensure all workers are terminated before upgrading to version 0.17.0 -  Version 0.17.0 is backward-compatible, meaning workers using this version can read messages produced by earlier versions. However, workers running earlier versions may not be able to read messages produced by version 0.17.0.
+{% /callout %}
+
+{% version-new-features /%}
+It's now possible for workflows to access custom property of exceptions raised in tasks - see [Workflow Errors](/docs/workflows/errors)
+
+{% version-breaking-changes /%}
+
+- Rename WorkflowTaskFailedException to WorkflowExecutorException
+- Rename WorkerException to TaskFailure, refactored with the following new properties:
+    - `exception`: description of the original exception, *including the exception custom properties*
+    - `retrySequence`, and `retryIndex`
+    - `secondsBeforeRetry`
+    - `previousFailure`
+- CloudEvents:
+  - changed task failure description (including `error` renamed to `failure`)
+  - `retryDelayMillis` property renamed to `secondsBeforeRetry` for consistency
+ 
+
+{% version-improvements /%}
+* Bump dependencies:
+  - kotlinx-coroutines: from 1.8.1 to 1.10.1
+  - kotlinx-serialization: from 1.7.1 to 1.8.0
+  - com.fasterxml.jackso: from 2.17.2 to 2.18.2
+  - testcontainers: from 1.20.1 to 1.20.4
+  - mockk : from 1.13.12 to 1.13.14
+  - hoplite: from 2.7.5 to 2.9.0
+  - kotlin-logging-jvm: from 7.0.0 to 7.0.3
+* Update Docker Compose setup: Upgrade Pulsar to version 3.0.7 and replaced Pulsar Manager with Streamvisor and Data-Faker containers.
+
+{% version-bug-fixes /%}
+
+* Fix internal Schema location (buggy since 0.16.0)
+
 ## v0.16.4
 
 {% version-bug-fixes /%}
