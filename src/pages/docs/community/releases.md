@@ -2,6 +2,14 @@
 title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
+## v0.17.1
+
+{% version-bug-fixes /%}
+- Resolved issue [#277](https://github.com/infiniticio/infinitic/issues/277).
+- Corrected a serialization issue that arose when the return type of an implementation differed from the return type of the corresponding interface in Services and Workflows.
+
+{% version-improvements /%}
+- Added additional backward compatibility tests for steps and serialization.
 
 ## v0.17.0
 
