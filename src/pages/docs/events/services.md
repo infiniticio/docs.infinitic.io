@@ -25,7 +25,7 @@ Here is a typical CloudEvent example:
     "taskMeta" : { },
     "taskTags" : [ ],
     "workerName" : "standalone-13907-104",
-    "infiniticVersion" : ":0.16.2"
+    "infiniticVersion" : "0.17.1"
   }
 }
 ```
@@ -56,7 +56,7 @@ The `data` field contains the data below, as well as type-specific information:
 | `taskName`          | String   | Name of the task (provided by the `@Name` method annotation or the method's name if not specified). |
 | `taskMeta`          | Map<String, ByteArray> | Metadata of the task.                                                   |
 | `taskTags`          | Array<String> | Tags associated with the task.                                           |
-| `infiniticVersion`  | String   | Version of Infinitic used by the entity that published the event (e.g., ":0.16.2"). |
+| `infiniticVersion`  | String   | Version of Infinitic used by the entity that published the event (e.g., ":0.17.1"). |
 
 {% callout type="note"  %}
 

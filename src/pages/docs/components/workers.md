@@ -12,7 +12,7 @@ To build a Worker you need first to add the `infinitic-worker` dependency into y
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-worker:0.16.2"
+    implementation "io.infinitic:infinitic-worker:0.17.1"
     ...
 }
 ```
@@ -20,7 +20,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-worker:0.16.2")
+    implementation("io.infinitic:infinitic-worker:0.17.1")
     ...
 }
 ```

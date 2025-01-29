@@ -28,8 +28,7 @@ For a detailed explanation of how things work, check out [nextjs](https://nextjs
 
 ## Releases
 
-update banner in `src/components/Banner`
-
-add version  `src/pages/docs/community/releases`
-
-update CURRENT_VERSION in `src/components/Layout`
+* update banner in `src/components/Banner`
+* add version  `src/pages/docs/community/releases`
+* update CURRENT_VERSION in `src/components/Layout`
+* update version in docs

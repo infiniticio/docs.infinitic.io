@@ -12,7 +12,7 @@ To build an Infinitic Client you need first to add the `infinitic-client` depend
 ```java
 dependencies {
     ...
-    implementation "io.infinitic:infinitic-client:0.16.2"
+    implementation "io.infinitic:infinitic-client:0.17.1"
     ...
 }
 ```
@@ -20,7 +20,7 @@ dependencies {
 ```kotlin
 dependencies {
     ...
-    implementation("io.infinitic:infinitic-client:0.16.2")
+    implementation("io.infinitic:infinitic-client:0.17.1")
     ...
 }
 ```
