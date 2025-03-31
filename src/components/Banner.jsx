@@ -1,8 +1,8 @@
 import { MegaphoneIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-const URL = "https://infinitic.substack.com/p/unlocking-performance-with-batches"
-const TITLE_SMALL = "New in 0.16.2"
-const TITLE = "Unlocking Performance With Batches"
+const URL = "https://infinitic.substack.com/p/infinitic-0180-how-we-fixed-a-critical"
+const TITLE_SMALL = "New in 0.18.0"
+const TITLE = "Solving Critical Message Ordering"
 
 export  function Banner() {
   return (
