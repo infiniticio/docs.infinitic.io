@@ -2,6 +2,32 @@
 title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
+
+## v0.18.0
+
+{% callout type="warning" %}
+ Before upgrading to version 0.18.0, you must migrate the database schema for Postgres or MySQL if you are already using them to store workflow states (see below).
+{% /callout %}
+
+{% version-bug-fixes /%}
+This version fixes a critical concurrency issue that could occur during worker restarts. When workers are shut down and restarted, Apache Pulsar cannot guarantee message ordering for a given key during this transition period. This could lead to race conditions where workflow state updates arrive out of order, potentially corrupting the workflow state or causing unexpected behavior.
+
+To address this, version 0.18.0 implements two key improvements:
+1. Messages are now processed safely even when they arrive out of order
+2. Optimistic locking has been added to workflow state management to prevent concurrent modifications
+
+These changes ensure workflow state consistency even during worker restarts or when experiencing temporary message ordering issues.
+
+{% version-breaking-changes /%}
+
+ Run the following SQL command to add a required version column to the key_value_storage table:
+
+ ```sql
+ ALTER TABLE key_value_storage ADD version BIGINT DEFAULT 1 NOT NULL;
+ ```
+
+ This migration is mandatory as version 0.18.0 introduces optimistic locking to prevent race conditions. The version column is used to track state changes and ensure data consistency.
+
 ## v0.17.1
 
 {% version-bug-fixes /%}
