@@ -154,12 +154,12 @@ There are multiple ways to define a retry policy for a Service:
 
 - During the [configuration](/docs/components/workers#service-executor) of the Service Executor.
 - Within the implementation code of the Service itself:
-  - By using the [`@Retry`](#using-retry-annotation) annotation
-  - By extending the [`WithRetry`](#using-with-retry-interface) interface
+  - By using the [`@Retry`](#retry-annotation) annotation
+  - By extending the [`WithRetry`](#with-retry-interface) interface
 
 ### `@Retry` Annotation
 
-The `@Retry` annotation takes a class implementing the [`WithRetry`](#using-with-retry-interface) interface as parameter, 
+The `@Retry` annotation takes a class implementing the [`WithRetry`](#with-retry-interface) interface as parameter, 
 and can be used to define a retry policy on a specific Service (when used as a class annotation) or Task (when used as a method annotation):
 
 {% codes %}
@@ -336,8 +336,8 @@ There are multiple ways to define an execution timeout for a Task:
 
 - During the [configuration](/docs/services/executors#creating-a-service-executor) of the Service Executor.
 - Within the implementation code of the Service itself:
-    - By using the [`@Timeout`](#using-timeout-annotation) annotation
-    - By extending the [`WithTimeout`](#using-with-timeout-interface) interface
+    - By using the [`@Timeout`](#timeout-annotation) annotation
+    - By extending the [`WithTimeout`](#with-timeout-interface) interface
 
 
 {% callout type="warning"  %}
@@ -348,7 +348,7 @@ When defined in the interface, a timeout has a different meaning. It represents 
 
 ### `@Timeout` Annotation
 
-This annotation has a class implementing [`WithTimeout`](#using-with-timeout-interface) as parameter.
+This annotation has a class implementing [`WithTimeout`](#with-timeout-interface) as parameter.
 
 It can be used as a method annotation to define a timeout on a specific task:
 
@@ -496,6 +496,143 @@ class MyServiceImpl : MyService, WithTimeout {
 
 {% /codes %}
 
+### Cooperative Canceling
+
+{% callout type="warning"  %}
+
+When a task times out, the current execution is not automatically stopped. It's your responsability to cooperate with Infinitic to cancel the task execution
+
+{% /callout  %}
+
+Infinitic provides a thread-local `hasTimedOut` property that can be used to check if the task has timed out:
+
+{% codes %}
+
+```java
+package com.company.services;
+
+import io.infinitic.tasks.Task;
+import io.infinitic.tasks.WithTimeout;
+
+public class MyServiceImpl implements MyService, WithTimeout {
+    MyFirstTaskOutput myFirstTask(MyFirstTaskInput input) { 
+        ...
+        while(!Task.getHasTimedOut()) {
+            ...
+        }
+     }
+
+    public Double getTimeoutSeconds() {
+        return 100.0;
+    }
+}
+```
+
+```kotlin
+package com.company.services
+
+import io.infinitic.tasks.Task
+import io.infinitic.tasks.WithTimeout
+
+class MyServiceImpl : MyService, WithTimeout {
+    override fun myFirstTask(MyFirstTaskInput input) { 
+        ...
+        while(!Task.hasTimedOut) {
+            ...
+        }
+     }
+
+    override fun getTimeoutSeconds() = 100.0
+}
+```
+
+{% /codes %}
+
+It is also possible to define a thread-local timeout callback to be executed when the task times out:
+
+{% codes %}
+
+```java
+package com.company.services;
+
+import io.infinitic.tasks.Task;
+import io.infinitic.tasks.WithTimeout;
+
+public class MyServiceImpl implements MyService, WithTimeout {
+    MyFirstTaskOutput myFirstTask(MyFirstTaskInput input) { 
+        Task.onTimeOut(() -> {
+            ...
+        });
+        ...
+     }
+
+    public Double getTimeoutSeconds() {
+        return 100.0;
+    }
+}
+```
+
+```kotlin
+package com.company.services
+
+import io.infinitic.tasks.Task
+import io.infinitic.tasks.WithTimeout
+
+class MyServiceImpl : MyService, WithTimeout {
+    override fun myFirstTask(MyFirstTaskInput input) { 
+        Task.onTimeOut {
+            ...
+        }
+        ...
+     }
+
+    override fun getTimeoutSeconds() = 100.0
+}
+```
+
+{% /codes %}
+
+Note: The current thread is automatically canceled when the timeout is reached. To provide time to do the necessary cleanup before the thread is canceled, you can specify a grace period in the `WithTimeout` interface.
+
+{% codes %}
+
+```java
+package com.company.services;
+
+import io.infinitic.tasks.WithTimeout;
+
+public class MyServiceImpl implements MyService, WithTimeout {
+    MyFirstTaskOutput myFirstTask(MyFirstTaskInput input) { /* */ }
+
+    MySecondTaskOutput mySecondTask(MySecondTaskInput input) { /* */ }
+
+    public Double getTimeoutSeconds() {
+        return 100.0;
+    }
+
+    public Double getGracePeriodAfterTimeoutSeconds() {
+        return 5.0;
+    }
+}
+```
+
+```kotlin
+package com.company.services
+
+import io.infinitic.tasks.WithTimeout
+
+class MyServiceImpl : MyService, WithTimeout {
+    override fun myFirstTask(MyFirstTaskInput input) { /* */ }
+
+    override mySecondTask(MySecondTaskInput input) { /* */ }
+
+    override fun getTimeoutSeconds() = 100.0
+
+    override fun getGracePeriodAfterTimeoutSeconds() = 5.0
+}
+```
+
+{% /codes %}
 
 ## Good Practices
 
