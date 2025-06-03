@@ -17,7 +17,7 @@ Here are some common use cases:
 
     ```java
     @Batch
-    public Map<String, Boolean> batchInsertUsers(Map<String, User> users) {
+    public Map<String, Boolean> insertUsers(Map<String, User> users) {
         Set<String> results = database.batchInsert(users.values());
         return users.entrySet().stream()
             .collect(Collectors.toMap(
@@ -29,7 +29,7 @@ Here are some common use cases:
 
     ```kotlin
     @Batch
-    fun batchInsertUsers(users: Map<String, User>): Map<String, Boolean> {
+    fun insertUsers(users: Map<String, User>): Map<String, Boolean> {
         val results = database.batchInsert(users.values)
         return users.mapValues { (_, user) -> results.contains(user.id) }
     }
@@ -45,7 +45,7 @@ Here are some common use cases:
 
     ```java
     @Batch
-    public Map<String, Boolean> sendBatchEmails(Map<String, EmailRequest> emails) {
+    public Map<String, Boolean> sendEmails(Map<String, EmailRequest> emails) {
         Set<String> results = emailService.sendbatch(emails.values());
         return emails.entrySet().stream()
             .collect(Collectors.toMap(
@@ -57,7 +57,7 @@ Here are some common use cases:
 
     ```kotlin
     @Batch
-    fun sendBatchEmails(emails: Map<String, EmailRequest>): Map<String, Boolean> {
+    fun sendEmails(emails: Map<String, EmailRequest>): Map<String, Boolean> {
         val results = emailService.sendbatch(emails.values)
         return emails.mapValues { (_, email) -> results.contains(email.id) }
     }
