@@ -2,6 +2,35 @@
 title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
+## v0.18.1
+
+{% version-new-features /%}
+
+* **Configurable Concurrency Settings**
+  Added fine-grained concurrency configuration for internal components:
+
+  * `eventHandlerConcurrency`
+  * `timerHandlerConcurrency`
+  * `retryHandlerConcurrency`
+
+   These options allow more control during deployment.
+
+* **Timeout Management Overhaul**
+
+  * Each execution now runs in its own dedicated thread, ensuring reliable timeout behavior.
+  * Task context now has a `hasTimedOut` variable indicating if the task has timed out.
+  * Task context now has a `onTimeOut` method to register a callback to run when task has timed out.
+  * After a timeout the corresponding future is canceled after a grace period,  configurable through the `getGracePeriodAfterTimeoutSeconds` method of the `WithTimeout` interface (defaults to none).
+
+{% version-improvements /%}
+
+* **Cleaner Timer Handling**
+  
+  * `TimerCompleted` messages are now ignored if older than 3 days after publishing. This is a turnaround to avoid reprocessing already processed delayed messages when Pulsar brokers are restarted. The default can be changed through the `timerHandlerPastDueSeconds` value of the workflow state engine configuration.
+
+* **Apache Pulsar Upgrade**
+
+  * Pulsar client libraries upgraded to **v4.0.5**
 
 ## v0.18.0
 
