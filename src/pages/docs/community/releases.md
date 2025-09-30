@@ -2,6 +2,13 @@
 title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
+
+## v0.18.2
+
+{% version-bug-fixes /%}
+This version fixes a MySQL database performance  issue when using batches. 
+Thx to [@alermant](https://github.com/alermant) for this contribution!
+
 ## v0.18.1
 
 {% version-new-features /%}
