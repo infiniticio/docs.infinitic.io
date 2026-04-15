@@ -1,6 +1,6 @@
 ---
 title: Infinitic Workers
-description: Explore Infinitic Workers, the core components for executing tasks and workflows in distributed systems. Learn how to create, configure, and deploy Workers efficiently, enabling scalable and resilient task processing in your Infinitic-powered applications. Discover the flexibility of code-based and YAML-based configurations for optimal performance and maintainability.
+description: Explore Infinitic Workers, the core components for executing tasks and workflows in distributed systems. Learn how to create, configure, and deploy Workers efficiently, enable metrics with Micrometer, and choose between code-based and YAML-based configurations for scalable and resilient applications.
 ---
 
 ## Creating a Worker
@@ -35,7 +35,9 @@ Whatever the chosen method, you'll need to:
 
 2. (Optionally) Specify how to connect to the database.
 
-3. Provide the configuration for the components you want to use.
+3. (Optionally) Attach a Micrometer `MeterRegistry` if you want Infinitic to publish metrics.
+
+4. Provide the configuration for the components you want to use.
 
 ## Builder-based Configuration
 
@@ -135,6 +137,48 @@ val worker = InfiniticWorker.builder()
 
 This transport should only be used for testing purposes, as it does not persist any messages. 
 It should be used with *one worker instance only* (embedding all Services and Workflows components), and with the client `worker.client`.
+
+{% /callout %}
+
+### Metrics
+
+Infinitic metrics are disabled by default.
+
+To enable them, attach a Micrometer `MeterRegistry` to the worker before calling `start()`:
+
+{% codes %}
+
+```java
+import io.micrometer.core.instrument.MeterRegistry;
+
+MeterRegistry registry = ...; // your Micrometer registry
+
+InfiniticWorker worker = InfiniticWorker.builder()
+  .setTransport(transportConfig)
+  .setMeterRegistry(registry)
+  ... // other components configuration here
+  .build();
+```
+
+```kotlin
+import io.micrometer.core.instrument.MeterRegistry
+
+val registry: MeterRegistry = ... // your Micrometer registry
+
+val worker = InfiniticWorker.builder()
+  .setTransport(transportConfig)
+  .setMeterRegistry(registry)
+  ... // other components configuration here
+  .build()
+```
+
+{% /codes %}
+
+{% callout %}
+
+Attaching a `MeterRegistry` enables Infinitic metrics only. Exporting these metrics to Prometheus, Datadog, OpenTelemetry, or another monitoring backend depends on the Micrometer registry you configure in your application.
+
+See [Metrics](/docs/references/metrics) for the list of exposed metrics and the meaning of each tag.
 
 {% /callout %}
 
@@ -622,7 +666,7 @@ val worker = InfiniticWorker.builder()
 
 ## YAML-based Configuration
 
-A ServiceExecutor can be created directly from a YAML string, a YAML file or a YAML resource:
+A worker can be created directly from a YAML string, a YAML file or a YAML resource:
 
 {% codes %}
 
@@ -645,6 +689,36 @@ val worker = InfiniticWorker.fromYamlResource("/path/to/infinitic.yml")
 ```
 
 {% /codes %}
+
+### Metrics
+
+Micrometer registries are runtime objects, so they are not configured in YAML.
+
+If your worker configuration comes from YAML, create the worker from YAML first, then attach the `MeterRegistry` in code before calling `start()`:
+
+{% codes %}
+
+```java
+import io.micrometer.core.instrument.MeterRegistry;
+
+MeterRegistry registry = ...; // your Micrometer registry
+
+InfiniticWorker worker = InfiniticWorker.fromYamlFile("infinitic.yml");
+worker.setMeterRegistry(registry);
+```
+
+```kotlin
+import io.micrometer.core.instrument.MeterRegistry
+
+val registry: MeterRegistry = ... // your Micrometer registry
+
+val worker = InfiniticWorker.fromYamlFile("infinitic.yml")
+worker.meterRegistry = registry
+```
+
+{% /codes %}
+
+See [Metrics](/docs/references/metrics) for the list of exposed metrics and how to interpret them.
 
 ### Transport
 
@@ -986,4 +1060,3 @@ fun main() {
 ```
 
 {% /codes %}
-
