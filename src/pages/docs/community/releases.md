@@ -10,15 +10,19 @@ description: This section lists the release notes for Infinitic, detailing new f
 * **Workflow State JSON Access**
 
   * Added `getWorkflowStateJsonById` together with async and suspend variants on the client.
-  * Workflow state can now be retrieved as a display-ready JSON string, with internal serialized values expanded into readable JSON.
+  Workflow state can now be retrieved as a display-ready JSON string, with internal serialized values expanded into readable JSON.
+  This makes it easier to inspect running workflows, debug issues, and build tooling around workflow state visualization.
 
 * **Micrometer Transport Metrics**
 
   * Added Micrometer-based instrumentation for transport producers and consumers across supported transports.
 
+
 * **Workflow Tag Fanout Scalability**
 
   * Internal workflow-tag fanout now uses paginated key-set traversal.
+  This improves reliability and responsiveness for workflows addressed by tag.
+
 
 {% version-improvements /%}
 
