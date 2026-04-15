@@ -12,7 +12,7 @@ import { Search } from '@/components/Search'
 import { CodeSelector } from '@/components/CodeSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
-const CURRENT_VERSION = 'v0.18.2'
+const CURRENT_VERSION = 'v0.18.3'
 
 const navigation = [
   {
@@ -44,8 +44,9 @@ const navigation = [
       { title: 'Retry Failed Tasks', href: '/docs/clients/retry-failed-tasks' },
       { title: 'Retry Failed Workflow Task', href: '/docs/clients/retry-failed-workflow-task' },
       { title: 'Complete Running Timers', href: '/docs/clients/complete-running-timers' },
-      { title: 'Cancel Running Workflows', href: '/docs/clients/cancel-running-workflows',
-      }, ],
+      { title: 'Cancel Running Workflows', href: '/docs/clients/cancel-running-workflows' },
+      { title: 'Get Workflow State', href: '/docs/clients/get-workflow-state' },
+    ],
   },
   {
     title: 'Service',
@@ -107,6 +108,7 @@ const navigation = [
     links: [
       { title: 'Pulsar', href: '/docs/references/pulsar' },
       { title: 'Storage', href: '/docs/references/storage' },
+      { title: 'Metrics', href: '/docs/references/metrics' },
       { title: 'Serialization', href: '/docs/references/serialization' },
       { title: 'Batching', href: '/docs/references/batching' },
     ],

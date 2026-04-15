@@ -570,6 +570,7 @@ Once an Infinitic Worker is created and configured to run a Workflow Tag Engine,
 Workflow Tag Engine have the following configuration parameters:
 
 - storage: the storage configuration to use to store the relationship between workflow IDs and workflow tags.
+- fanoutPageSize: the maximum number of workflow IDs processed at once when a command is sent to a workflow tag.
 - batch: the batching policy when receiving and sending messages from and to the message broker.
 
 ### Minimal Example Using Builders
@@ -750,6 +751,58 @@ tagEngine:
   concurrency: 10
   storage:
     # storage configuration
+```
+
+### Fan-out Page Size
+
+When a command is sent to a workflow tag containing a large number of workflow IDs, the Workflow Tag Engine does not process the whole tag in a single operation.
+Instead, it reads workflow IDs by pages. For each page, it sends commands to the matching workflows, then publishes a continuation to process the next page if needed.
+
+The `fanoutPageSize` parameter sets the maximum number of workflow IDs processed in one page. The default value is `5000`.
+
+This helps to:
+
+- reduce the risk of timeouts
+- reduce the risk of memory issues
+- bound the amount of work done by a single processing step
+- process very large tags progressively
+
+{% callout %}
+
+`fanoutPageSize` is an application-level limit inside the Workflow Tag Engine.
+It does not replace Pulsar batching and is not related to `batch.maxMessages`.
+
+{% /callout %}
+
+#### Configuration Using Builders
+
+{% codes %}
+
+```java
+WorkflowTagEngineConfig workflowTagEngineConfig = WorkflowTagEngineConfig.builder()
+  .setWorkflowName("com.example.MyWorkflow")
+  .setStorage(storageConfig)
+  .setFanoutPageSize(500)
+  .build();
+```
+
+```kotlin
+val workflowTagEngineConfig = WorkflowTagEngineConfig.builder()
+  .setWorkflowName("com.example.MyWorkflow")
+  .setStorage(storageConfig)
+  .setFanoutPageSize(500)
+  .build()
+```
+
+{% /codes %}
+
+#### Configuration Using YAML
+
+```yaml
+workflows:
+  - name: com.example.MyWorkflow
+    tagEngine:
+      fanoutPageSize: 500
 ```
 
 ### Batching (Beta)
