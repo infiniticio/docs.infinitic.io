@@ -3,6 +3,31 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.18.3
+
+{% version-new-features /%}
+
+* **Workflow State JSON Access**
+
+  * Added `getWorkflowStateJsonById` together with async and suspend variants on the client.
+  * Workflow state can now be retrieved as a display-ready JSON string, with internal serialized values expanded into readable JSON.
+
+* **Micrometer Transport Metrics**
+
+  * Added Micrometer-based instrumentation for transport producers and consumers across supported transports.
+
+* **Workflow Tag Fanout Scalability**
+
+  * Internal workflow-tag fanout now uses paginated key-set traversal.
+
+{% version-improvements /%}
+
+* **Build and Compatibility Updates**
+
+  * Upgraded build support for newer Gradle and Java toolchains.
+  * Upgraded Kotlin to `2.3.20` and migrated context APIs to context parameters.
+  * Regenerated Avro schemas and step resources for `0.18.3`.
+
 ## v0.18.2
 
 {% version-bug-fixes /%}
