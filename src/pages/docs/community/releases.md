@@ -3,6 +3,25 @@ title: Releases
 description: This section lists the release notes for Infinitic, detailing new features, improvements, and bug fixes for each version, keeping developers updated on the latest enhancements and changes.
 ---
 
+## v0.18.4
+
+{% version-bug-fixes /%}
+
+* **Workflow Tag Batch Fanout**
+
+  * Fixed workflow tag batch fanout while keeping paginated traversal.
+  * Restored batch buffering for tag mutations and produced messages.
+  * Reused page reads within the same tag/name batch to avoid duplicate storage calls for repeated fan-outs.
+
+  This improves reliability and performance for tag-scoped commands such as signal, cancel, retry, timer completion, and method dispatch.
+
+{% version-improvements /%}
+
+* **Build and Compatibility Updates**
+
+  * Upgraded the Gradle wrapper to `9.4.0`.
+  * Moved Gradle JVM arguments into `gradle.properties`.
+
 ## v0.18.3
 
 {% version-new-features /%}
